@@ -1,31 +1,21 @@
 import { InView } from "@/components/ui/in-view";
-import { SkeumorphicIcon } from "@/components/ui/skeumorphic-icon";
-import { Upload, Cpu, FileText, CheckCircle, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 export const HowItWorksSection = () => {
   const steps = [{
-    icon: Upload,
-    title: "Upload in Seconds",
-    description: "Drop your file and get started instantly—no setup.",
-    variant: "upload" as const,
+    image: "/lovable-uploads/87b328a8-e7d0-437f-8e6c-d49b84e25a98.png",
+    title: "Scan Legal Documents",
+    description: "Point, scan, and instantly detect legal document types with AI precision",
     number: "01"
   }, {
-    icon: Cpu,
-    title: "Analyze for Answers",
-    description: "Our engine surfaces risks, deadlines, and must-know clauses.",
-    variant: "process" as const,
+    image: "/lovable-uploads/59887f04-40af-4d2e-b9b4-6c6b13379015.png", 
+    title: "AI-Powered Analysis",
+    description: "Advanced legal AI analyzes risks, compliance, and generates confidence scores",
     number: "02"
   }, {
-    icon: FileText,
-    title: "Get Actionable Summary",
-    description: "Clear next steps and highlights—not technical fluff.",
-    variant: "result" as const,
+    image: "/lovable-uploads/39ad54a6-5e34-4d4c-8588-f972263f1752.png",
+    title: "Actionable Legal Insights", 
+    description: "Receive detailed analysis, recommendations, and export professional reports",
     number: "03"
-  }, {
-    icon: CheckCircle,
-    title: "Act with Confidence",
-    description: "Share, export, or proceed—reduce revisions and rework.",
-    variant: "action" as const,
-    number: "04"
   }];
   return <section className="py-16 md:py-24 lg:py-32 bg-gradient-to-br from-slate-50/80 via-white to-blue-50/30">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
@@ -49,7 +39,7 @@ export const HowItWorksSection = () => {
           </div>
         </InView>
 
-        <div className="relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 lg:gap-6">
+        <div className="relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12 lg:gap-8">
           {steps.map((step, index) => (
             <div key={index} className="flex flex-col items-center relative">
               <InView 
@@ -63,13 +53,19 @@ export const HowItWorksSection = () => {
                 }}
               >
                 <div className="text-center group">
-                  {/* Clean icon without background */}
-                  <div className="mb-6">
-                    <SkeumorphicIcon 
-                      icon={step.icon} 
-                      variant={step.variant}
-                      size="lg"
-                    />
+                  {/* Premium Mobile Mockup */}
+                  <div className="mb-8 relative">
+                    <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-8 shadow-lg border border-emerald-100/50 group-hover:shadow-xl transition-all duration-300">
+                      <div className="relative mx-auto max-w-[280px]">
+                        <img 
+                          src={step.image} 
+                          alt={step.title}
+                          className="w-full h-auto rounded-2xl shadow-2xl transform group-hover:scale-105 transition-transform duration-300"
+                        />
+                        {/* Premium mobile device frame effect */}
+                        <div className="absolute inset-0 rounded-2xl bg-gradient-to-t from-black/5 to-transparent pointer-events-none" />
+                      </div>
+                    </div>
                   </div>
                   
                   <div className="space-y-3">
