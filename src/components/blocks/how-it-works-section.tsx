@@ -1,5 +1,6 @@
 import { InView } from "@/components/ui/in-view";
 import { ArrowRight } from "lucide-react";
+
 export const HowItWorksSection = () => {
   const steps = [{
     image: "/lovable-uploads/87b328a8-e7d0-437f-8e6c-d49b84e25a98.png",
@@ -17,22 +18,26 @@ export const HowItWorksSection = () => {
     description: "Receive detailed analysis, recommendations, and export professional reports",
     number: "03"
   }];
-  return <section className="py-16 md:py-24 lg:py-32 bg-gradient-to-br from-slate-50/80 via-white to-blue-50/30">
+
+  return (
+    <section className="py-16 md:py-24 lg:py-32 bg-gradient-to-br from-slate-50/80 via-white to-blue-50/30">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         <InView variants={{
-        hidden: {
-          opacity: 0,
-          y: 30
-        },
-        visible: {
-          opacity: 1,
-          y: 0
-        }
-      }} transition={{
-        duration: 0.6
-      }}>
+          hidden: {
+            opacity: 0,
+            y: 30
+          },
+          visible: {
+            opacity: 1,
+            y: 0
+          }
+        }} transition={{
+          duration: 0.6
+        }}>
           <div className="text-center mb-16 md:mb-20 lg:mb-24">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-editorial font-light text-gray-900 mb-6 md:mb-8 tracking-tight">How it works 🚀 ?</h2>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-editorial font-light text-gray-900 mb-6 md:mb-8 tracking-tight">
+              How it works 🚀 ?
+            </h2>
             <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto font-editorial font-light leading-relaxed">
               Value at every step: faster reviews, clearer decisions
             </p>
@@ -98,5 +103,6 @@ export const HowItWorksSection = () => {
           ))}
         </div>
       </div>
-    </section>;
+    </section>
+  );
 };
