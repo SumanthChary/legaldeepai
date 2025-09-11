@@ -60,16 +60,12 @@ export const HowItWorksSection = () => {
                 <div className="text-center group">
                   {/* Premium Mobile Mockup */}
                   <div className="mb-8 relative">
-                    <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-8 shadow-lg border border-emerald-100/50 group-hover:shadow-xl transition-all duration-300">
-                      <div className="relative mx-auto max-w-[280px]">
-                        <img 
-                          src={step.image} 
-                          alt={step.title}
-                          className="w-full h-auto rounded-2xl shadow-2xl transform group-hover:scale-105 transition-transform duration-300"
-                        />
-                        {/* Premium mobile device frame effect */}
-                        <div className="absolute inset-0 rounded-2xl bg-gradient-to-t from-black/5 to-transparent pointer-events-none" />
-                      </div>
+                    <div className="relative mx-auto max-w-[280px]">
+                      <img 
+                        src={step.image} 
+                        alt={step.title}
+                        className="w-full h-auto rounded-2xl shadow-2xl transform group-hover:scale-105 transition-transform duration-300"
+                      />
                     </div>
                   </div>
                   
