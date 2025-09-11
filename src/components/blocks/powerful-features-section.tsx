@@ -56,7 +56,7 @@ export const PowerfulFeaturesSection = () => {
         duration: 0.6
       }}>
           <div className="text-center mb-16 md:mb-20">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-editorial font-light text-gray-900 mb-6 md:mb-8 tracking-tight">Powerful Features for Legal Professionals 🎓</h2>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-editorial font-light text-gray-900 mb-6 md:mb-8 tracking-tight">Powerful Features for Legal Professionals</h2>
             <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto font-editorial font-light leading-relaxed">
               Everything you need to transform your legal document workflow
             </p>
@@ -93,11 +93,7 @@ export const PowerfulFeaturesSection = () => {
                 
                 {/* 3D Icon */}
                 <div className="relative z-10 mb-8 flex justify-start">
-                  <SkeumorphicIcon 
-                    icon={feature.icon} 
-                    variant={feature.variant}
-                    size="md"
-                  />
+                  <SkeumorphicIcon icon={feature.icon} variant={feature.variant} size="md" />
                 </div>
                 
                 <div className="relative z-10">
@@ -105,13 +101,11 @@ export const PowerfulFeaturesSection = () => {
                     <h3 className="text-xl md:text-2xl font-editorial font-light text-gray-900 tracking-tight group-hover:text-blue-900 transition-colors duration-300">
                       {feature.title}
                     </h3>
-                    {'comingSoon' in feature && (feature as any).comingSoon && (
-                      <div className="relative">
+                    {'comingSoon' in feature && (feature as any).comingSoon && <div className="relative">
                         <span className="text-xs px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-100 to-orange-100 text-amber-800 border border-amber-200/50 font-medium">
                           Coming Soon
                         </span>
-                      </div>
-                    )}
+                      </div>}
                   </div>
                   <p className="text-gray-600 text-base md:text-lg font-editorial font-light leading-relaxed">
                     {feature.description}
