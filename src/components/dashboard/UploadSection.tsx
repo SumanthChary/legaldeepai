@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Upload, FileText, CheckCircle2, AlertCircle, X, Sparkles, Scan } from "lucide-react";
 import { useFileUpload } from "@/components/document-analysis/upload/useFileUpload";
 import { ScanButton } from "@/components/document-analysis/upload/ScanButton";
+import { GoogleDrivePicker } from "@/components/google/GoogleDrivePicker";
 
 type UploadSectionProps = {
   onSuccess?: () => void;
@@ -172,6 +173,15 @@ export const UploadSection = ({ onSuccess }: UploadSectionProps) => {
           </Button>
         </div>
       )}
+
+      {/* Google Drive Integration */}
+      <GoogleDrivePicker
+        onFileSelect={async (file) => {
+          // Handle Google Drive file selection
+          // Note: You would need to implement file download and processing here
+          console.log('Selected Google Drive file:', file);
+        }}
+      />
 
       {/* Features Grid */}
       <div className="grid md:grid-cols-3 gap-6 mt-8">

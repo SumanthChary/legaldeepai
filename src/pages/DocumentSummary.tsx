@@ -11,6 +11,7 @@ import {
   DocumentLoading,
   SummaryActions
 } from "@/components/document-summary";
+import { GoogleIntegrationPanel } from "@/components/google/GoogleIntegrationPanel";
 import { useDocumentAnalysis } from "@/hooks/document-summary/useDocumentAnalysis";
 
 const DocumentSummary = () => {
@@ -29,7 +30,7 @@ const DocumentSummary = () => {
     <PageLayout>
       <div className="min-h-screen bg-white">
         <div className="container mx-auto px-4 py-8">
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-4xl mx-auto space-y-8">
             <SummaryContent 
               analysisStatus={analysis.analysis_status} 
               summary={analysis.summary}
@@ -38,6 +39,15 @@ const DocumentSummary = () => {
               refreshAnalysis={fetchAnalysis}
               refreshing={refreshing}
             />
+            
+            {/* Google Integration Panel */}
+            {analysis.analysis_status === 'completed' && (
+              <GoogleIntegrationPanel
+                documentTitle={analysis.original_name || 'Document Analysis'}
+                documentContent={analysis.summary || ''}
+                analysisId={id}
+              />
+            )}
           </div>
         </div>
       </div>
