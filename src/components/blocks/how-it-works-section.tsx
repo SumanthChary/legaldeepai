@@ -3,19 +3,19 @@ import { ArrowRight } from "lucide-react";
 
 export const HowItWorksSection = () => {
   const steps = [{
-    image: "/lovable-uploads/87b328a8-e7d0-437f-8e6c-d49b84e25a98.png",
-    title: "Scan Legal Documents",
-    description: "Point, scan, and instantly detect legal document types with AI precision",
+    image: "/lovable-uploads/5086c1ff-4a7c-4e63-bae1-c6f638fa7181.png",
+    title: "Upload and Scan Document",
+    description: "Drag and drop legal documents for instant AI-powered document detection",
     number: "01"
   }, {
-    image: "/lovable-uploads/59887f04-40af-4d2e-b9b4-6c6b13379015.png", 
-    title: "AI-Powered Analysis",
-    description: "Advanced legal AI analyzes risks, compliance, and generates confidence scores",
+    image: "/lovable-uploads/04a53af2-7437-441c-90fa-57e44d2f6e03.png", 
+    title: "AI Analysis",
+    description: "Advanced algorithms analyze contract terms, risk levels, and compliance factors",
     number: "02"
   }, {
-    image: "/lovable-uploads/39ad54a6-5e34-4d4c-8588-f972263f1752.png",
-    title: "Actionable Legal Insights", 
-    description: "Receive detailed analysis, recommendations, and export professional reports",
+    image: "/lovable-uploads/95e7f973-3f19-424d-ad0c-6bdf78b4786b.png",
+    title: "Legal Insights", 
+    description: "Get detailed findings, risk assessments, and exportable professional reports",
     number: "03"
   }];
 
@@ -58,17 +58,15 @@ export const HowItWorksSection = () => {
                 }}
               >
                 <div className="text-center group">
-                  {/* Premium Mobile Mockup */}
+                  {/* Clean Desktop Mockup */}
                   <div className="mb-8 relative">
-                    <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-8 shadow-lg border border-emerald-100/50 group-hover:shadow-xl transition-all duration-300">
-                      <div className="relative mx-auto max-w-[280px]">
+                    <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 group-hover:shadow-xl transition-all duration-300">
+                      <div className="relative mx-auto max-w-[400px]">
                         <img 
                           src={step.image} 
                           alt={step.title}
-                          className="w-full h-auto rounded-2xl shadow-2xl transform group-hover:scale-105 transition-transform duration-300"
+                          className="w-full h-auto rounded-xl shadow-lg transform group-hover:scale-105 transition-transform duration-300"
                         />
-                        {/* Premium mobile device frame effect */}
-                        <div className="absolute inset-0 rounded-2xl bg-gradient-to-t from-black/5 to-transparent pointer-events-none" />
                       </div>
                     </div>
                   </div>
