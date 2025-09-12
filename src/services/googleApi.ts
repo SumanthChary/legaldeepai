@@ -1,8 +1,11 @@
 // Google API Service for Drive, Docs, and Gmail integration
+import { supabase } from '@/integrations/supabase/client';
+
 export class GoogleApiService {
   private static instance: GoogleApiService;
   private accessToken: string | null = null;
   private isInitialized = false;
+  private clientId: string | null = null;
 
   private constructor() {}
 
@@ -16,19 +19,24 @@ export class GoogleApiService {
   async initialize() {
     if (this.isInitialized) return;
     
+    // Get client ID from backend
+    try {
+      const { data, error } = await supabase.functions.invoke('google-config');
+      if (error) throw error;
+      this.clientId = data.clientId;
+    } catch (error) {
+      console.error('Failed to get Google Client ID:', error);
+      throw new Error('Failed to load Google configuration. Please try again.');
+    }
+    
     // Load Google API script
     await this.loadScript('https://apis.google.com/js/api.js');
     await new Promise((resolve) => {
       gapi.load('client:auth2', resolve);
     });
 
-    const clientId = localStorage.getItem('google_client_id');
-    if (!clientId) {
-      throw new Error('Missing Google OAuth Client ID. Please configure it in the app.');
-    }
-
     await gapi.client.init({
-      clientId,
+      clientId: this.clientId,
       scope: 'https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/documents https://www.googleapis.com/auth/gmail.send',
       discoveryDocs: [
         'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest',

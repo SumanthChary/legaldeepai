@@ -65,3 +65,7 @@ system_import = true
 [functions."whop-auth"]
 verify_jwt = false
 system_import = true
+
+[functions."google-config"]
+verify_jwt = false
+system_import = true
