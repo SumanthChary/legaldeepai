@@ -24,6 +24,7 @@ export const GoogleIntegrationPanel: React.FC<GoogleIntegrationPanelProps> = ({
   const [emailSubject, setEmailSubject] = useState(`Analysis Results: ${documentTitle}`);
   const [emailBody, setEmailBody] = useState('');
   const [showEmailForm, setShowEmailForm] = useState(false);
+  const [clientId, setClientId] = useState<string>(() => localStorage.getItem('google_client_id') || '');
   
   const {
     isLoading,
@@ -192,7 +193,7 @@ export const GoogleIntegrationPanel: React.FC<GoogleIntegrationPanelProps> = ({
       {/* Connection Status */}
       {!isAuthenticated && (
         <Card className="border-orange-200 bg-orange-50">
-          <CardContent className="pt-6">
+          <CardContent className="pt-6 space-y-3">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center">
                 <Upload className="w-4 h-4 text-orange-600" />
@@ -200,16 +201,28 @@ export const GoogleIntegrationPanel: React.FC<GoogleIntegrationPanelProps> = ({
               <div className="flex-1">
                 <p className="font-medium text-orange-900">Connect Google Services</p>
                 <p className="text-sm text-orange-700">
-                  Authenticate with Google to enable Drive, Docs, and Gmail integration
+                  Add your Google OAuth Client ID, then connect to enable Drive, Docs, and Gmail
                 </p>
               </div>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-2">
+              <Input
+                placeholder="Google OAuth Client ID"
+                value={clientId}
+                onChange={(e) => setClientId(e.target.value)}
+                onBlur={() => clientId && localStorage.setItem('google_client_id', clientId)}
+              />
               <Button
-                onClick={authenticate}
-                disabled={isLoading}
+                onClick={async () => {
+                  if (!clientId) return;
+                  localStorage.setItem('google_client_id', clientId);
+                  await authenticate();
+                }}
+                disabled={isLoading || !clientId}
                 size="sm"
                 variant="outline"
               >
-                Connect
+                {isLoading ? 'Connecting...' : 'Connect'}
               </Button>
             </div>
           </CardContent>

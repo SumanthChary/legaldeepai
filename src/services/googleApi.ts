@@ -19,10 +19,17 @@ export class GoogleApiService {
     // Load Google API script
     await this.loadScript('https://apis.google.com/js/api.js');
     await new Promise((resolve) => {
-      gapi.load('auth2:client', resolve);
+      gapi.load('client:auth2', resolve);
     });
 
+    const clientId = localStorage.getItem('google_client_id');
+    if (!clientId) {
+      throw new Error('Missing Google OAuth Client ID. Please configure it in the app.');
+    }
+
     await gapi.client.init({
+      clientId,
+      scope: 'https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/documents https://www.googleapis.com/auth/gmail.send',
       discoveryDocs: [
         'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest',
         'https://docs.googleapis.com/$discovery/rest?version=v1',

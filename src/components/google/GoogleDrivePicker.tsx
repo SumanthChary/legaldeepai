@@ -27,6 +27,7 @@ export const GoogleDrivePicker: React.FC<GoogleDrivePickerProps> = ({
   const [files, setFiles] = useState<GoogleFile[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [showFiles, setShowFiles] = useState(false);
+  const [clientId, setClientId] = useState<string>(() => localStorage.getItem('google_client_id') || '');
   
   const {
     isLoading,
@@ -37,10 +38,10 @@ export const GoogleDrivePicker: React.FC<GoogleDrivePickerProps> = ({
   } = useGoogleIntegration();
 
   const handleConnect = async () => {
+    if (!clientId) return;
+    localStorage.setItem('google_client_id', clientId);
     await authenticate();
-    if (isAuthenticated) {
-      await loadFiles();
-    }
+    await loadFiles();
   };
 
   const loadFiles = async () => {
@@ -97,20 +98,30 @@ export const GoogleDrivePicker: React.FC<GoogleDrivePickerProps> = ({
       </CardHeader>
       <CardContent className="space-y-4">
         {!isAuthenticated ? (
-          <div className="text-center py-8">
-            <p className="text-muted-foreground mb-4">
-              Connect to Google Drive to import documents or upload analysis results
-            </p>
-            <Button onClick={handleConnect} disabled={isLoading}>
-              {isLoading ? (
-                <>
-                  <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                  Connecting...
-                </>
-              ) : (
-                'Connect to Google Drive'
-              )}
-            </Button>
+          <div className="space-y-4 py-6">
+            <div className="space-y-2">
+              <p className="text-muted-foreground">
+                Enter your Google OAuth Client ID to enable Drive.
+              </p>
+              <Input
+                placeholder="Google OAuth Client ID"
+                value={clientId}
+                onChange={(e) => setClientId(e.target.value)}
+                onBlur={() => clientId && localStorage.setItem('google_client_id', clientId)}
+              />
+            </div>
+            <div className="flex items-center justify-center">
+              <Button onClick={handleConnect} disabled={isLoading || !clientId}>
+                {isLoading ? (
+                  <>
+                    <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                    Connecting...
+                  </>
+                ) : (
+                  'Connect to Google Drive'
+                )}
+              </Button>
+            </div>
           </div>
         ) : (
           <>
