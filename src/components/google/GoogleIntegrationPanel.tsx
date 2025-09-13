@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
-import { Mail, FileText, Share2, Settings } from 'lucide-react';
+import { Mail, FileText, Share2, Settings, Cloud } from 'lucide-react';
 import { useGoogleIntegration } from '@/hooks/useGoogleIntegration';
 import { GoogleDrivePicker } from './GoogleDrivePicker';
 
@@ -204,15 +204,41 @@ export const GoogleIntegrationPanel: React.FC<GoogleIntegrationPanelProps> = ({
           
           <div className="space-y-4">
             <p className="text-sm text-gray-600">
-              Connect your Google account to export documents to Google Docs and share via Gmail.
+              Connect your Google account to enable Drive, Docs, and Gmail.
             </p>
             <Button 
               onClick={authenticate} 
               disabled={isLoading}
               className="w-full"
             >
-              {isLoading ? 'Connecting...' : 'Connect Google Services'}
+              {isLoading ? 'Connecting...' : 'Connect All Google Services'}
             </Button>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <Button
+                variant="outline"
+                disabled={isLoading}
+                onClick={authenticate}
+                className="w-full h-10 flex items-center gap-2"
+              >
+                <Cloud className="w-4 h-4" /> Connect Drive
+              </Button>
+              <Button
+                variant="outline"
+                disabled={isLoading}
+                onClick={authenticate}
+                className="w-full h-10 flex items-center gap-2"
+              >
+                <FileText className="w-4 h-4" /> Connect Docs
+              </Button>
+              <Button
+                variant="outline"
+                disabled={isLoading}
+                onClick={authenticate}
+                className="w-full h-10 flex items-center gap-2"
+              >
+                <Mail className="w-4 h-4" /> Connect Gmail
+              </Button>
+            </div>
           </div>
         </Card>
       )}
