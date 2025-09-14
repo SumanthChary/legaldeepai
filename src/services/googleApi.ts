@@ -22,28 +22,58 @@ export class GoogleApiService {
     // Get client ID from backend
     try {
       const { data, error } = await supabase.functions.invoke('google-config');
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase function error:', error);
+        throw new Error(`Configuration error: ${error.message || 'Unable to load Google Client ID'}`);
+      }
+      if (!data?.clientId) {
+        throw new Error('Google Client ID not configured in Supabase Edge Functions');
+      }
       this.clientId = data.clientId;
+      console.log('✅ Google Client ID loaded successfully');
     } catch (error) {
       console.error('Failed to get Google Client ID:', error);
-      throw new Error('Failed to load Google configuration. Please try again.');
+      throw error instanceof Error ? error : new Error('Failed to load Google configuration. Please try again.');
     }
     
     // Load Google API script
-    await this.loadScript('https://apis.google.com/js/api.js');
-    await new Promise((resolve) => {
-      gapi.load('client:auth2', resolve);
-    });
+    try {
+      await this.loadScript('https://apis.google.com/js/api.js');
+      await new Promise((resolve, reject) => {
+        const timeoutId = setTimeout(() => reject(new Error('Google API loading timeout')), 10000);
+        gapi.load('client:auth2', () => {
+          clearTimeout(timeoutId);
+          resolve(undefined);
+        });
+      });
+    } catch (error) {
+      console.error('Failed to load Google API:', error);
+      throw new Error('Failed to load Google API. Please check your internet connection.');
+    }
 
-    await gapi.client.init({
-      clientId: this.clientId,
-      scope: 'https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/documents https://www.googleapis.com/auth/gmail.send',
-      discoveryDocs: [
-        'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest',
-        'https://docs.googleapis.com/$discovery/rest?version=v1',
-        'https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest'
-      ],
-    });
+    // Initialize Google API client with comprehensive scopes
+    try {
+      await gapi.client.init({
+        clientId: this.clientId,
+        scope: [
+          'openid',
+          'https://www.googleapis.com/auth/userinfo.profile',
+          'https://www.googleapis.com/auth/userinfo.email',
+          'https://www.googleapis.com/auth/drive.file',
+          'https://www.googleapis.com/auth/documents',
+          'https://www.googleapis.com/auth/gmail.send'
+        ].join(' '),
+        discoveryDocs: [
+          'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest',
+          'https://docs.googleapis.com/$discovery/rest?version=v1',
+          'https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest'
+        ],
+      });
+      console.log('✅ Google API client initialized');
+    } catch (error) {
+      console.error('Failed to initialize Google client:', error);
+      throw new Error('Failed to initialize Google services. Please verify your Google Cloud Console setup.');
+    }
 
     this.isInitialized = true;
   }
@@ -66,18 +96,49 @@ export class GoogleApiService {
   async authenticateWithGoogle(): Promise<boolean> {
     try {
       const authInstance = gapi.auth2.getAuthInstance();
+      
       if (!authInstance.isSignedIn.get()) {
-        await authInstance.signIn({
-          scope: 'https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/documents https://www.googleapis.com/auth/gmail.send'
+        console.log('🔐 Starting Google authentication...');
+        const user = await authInstance.signIn({
+          scope: [
+            'openid',
+            'https://www.googleapis.com/auth/userinfo.profile',
+            'https://www.googleapis.com/auth/userinfo.email',
+            'https://www.googleapis.com/auth/drive.file',
+            'https://www.googleapis.com/auth/documents',
+            'https://www.googleapis.com/auth/gmail.send'
+          ].join(' ')
         });
+        
+        if (!user.isSignedIn()) {
+          throw new Error('User cancelled authentication');
+        }
+        console.log('✅ User authenticated successfully');
       }
       
       const user = authInstance.currentUser.get();
-      this.accessToken = user.getAuthResponse().access_token;
+      const authResponse = user.getAuthResponse();
+      
+      if (!authResponse.access_token) {
+        throw new Error('No access token received');
+      }
+      
+      this.accessToken = authResponse.access_token;
+      console.log('✅ Access token acquired');
       return true;
-    } catch (error) {
-      console.error('Google Auth failed:', error);
-      return false;
+    } catch (error: any) {
+      console.error('❌ Google Auth failed:', error);
+      
+      // Provide specific error messages
+      if (error.error === 'popup_closed_by_user') {
+        throw new Error('Authentication cancelled by user');
+      } else if (error.error === 'access_denied') {
+        throw new Error('Access denied. Please accept the required permissions.');
+      } else if (error.message?.includes('Not a valid origin')) {
+        throw new Error('Domain not authorized. Please check your Google Cloud Console settings.');
+      } else {
+        throw new Error(error.message || 'Authentication failed');
+      }
     }
   }
 

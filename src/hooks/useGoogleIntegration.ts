@@ -11,23 +11,47 @@ export const useGoogleIntegration = () => {
   const authenticate = useCallback(async () => {
     setIsLoading(true);
     try {
+      console.log('🚀 Starting Google integration...');
       await googleApi.initialize();
       const success = await googleApi.authenticateWithGoogle();
       
       if (success) {
         setIsAuthenticated(true);
         toast({
-          title: "Connected to Google",
-          description: "Successfully connected to Google services",
+          title: "✅ Connected to Google",
+          description: "Successfully connected to Drive, Docs, and Gmail",
         });
+        console.log('✅ Google integration complete');
       } else {
         throw new Error('Authentication failed');
       }
-    } catch (error) {
-      console.error('Google auth error:', error);
+    } catch (error: any) {
+      console.error('❌ Google auth error:', error);
+      
+      let title = "Connection Failed";
+      let description = error.message || "Failed to connect to Google services. Please try again.";
+      
+      // Provide specific guidance based on error type
+      if (error.message?.includes('Google Client ID not configured')) {
+        title = "Configuration Error";
+        description = "Google Client ID not set up. Please check your Supabase Edge Functions configuration.";
+      } else if (error.message?.includes('Domain not authorized')) {
+        title = "Domain Authorization Error";
+        description = "Your domain needs to be added to Google Cloud Console authorized origins.";
+      } else if (error.message?.includes('Access denied')) {
+        title = "Permission Denied";
+        description = "Please accept the required permissions for Drive, Docs, and Gmail.";
+      } else if (error.message?.includes('cancelled')) {
+        title = "Authentication Cancelled";
+        description = "Authentication was cancelled. Click Connect to try again.";
+      } else if (error.message?.includes('APIs')) {
+        title = "API Configuration Error";
+        description = "Please enable Google Drive, Docs, and Gmail APIs in Google Cloud Console.";
+      }
+      
       toast({
-        title: "Connection Failed",
-        description: "Failed to connect to Google services. Please try again.",
+        title,
+        description,
         variant: "destructive",
       });
     } finally {
@@ -68,17 +92,19 @@ export const useGoogleIntegration = () => {
     
     setIsLoading(true);
     try {
+      console.log('📄 Exporting to Google Docs...');
       const result = await googleApi.createDocument(title, content);
       toast({
-        title: "Export Successful",
-        description: "Document exported to Google Docs",
+        title: "✅ Export Successful",
+        description: `"${title}" created in Google Docs - opening in new tab`,
       });
+      console.log('✅ Document created:', result.url);
       return result;
-    } catch (error) {
-      console.error('Docs export error:', error);
+    } catch (error: any) {
+      console.error('❌ Docs export error:', error);
       toast({
         title: "Export Failed",
-        description: "Failed to export to Google Docs",
+        description: error.message || "Failed to export to Google Docs",
         variant: "destructive",
       });
       throw error;
@@ -94,17 +120,19 @@ export const useGoogleIntegration = () => {
     
     setIsLoading(true);
     try {
+      console.log('📧 Sending email via Gmail...');
       const result = await googleApi.sendEmail(to, subject, body, attachments);
       toast({
-        title: "Email Sent",
+        title: "✅ Email Sent",
         description: `Email sent successfully to ${to}`,
       });
+      console.log('✅ Email sent:', result);
       return result;
-    } catch (error) {
-      console.error('Gmail send error:', error);
+    } catch (error: any) {
+      console.error('❌ Gmail send error:', error);
       toast({
         title: "Send Failed",
-        description: "Failed to send email via Gmail",
+        description: error.message || "Failed to send email via Gmail",
         variant: "destructive",
       });
       throw error;

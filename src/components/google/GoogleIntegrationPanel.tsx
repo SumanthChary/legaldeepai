@@ -220,7 +220,8 @@ export const GoogleIntegrationPanel: React.FC<GoogleIntegrationPanelProps> = ({
                 onClick={authenticate}
                 className="w-full h-10 flex items-center gap-2"
               >
-                <Cloud className="w-4 h-4" /> Connect Drive
+                <Cloud className="w-4 h-4" /> 
+                {isLoading ? 'Connecting...' : 'Connect Drive'}
               </Button>
               <Button
                 variant="outline"
@@ -228,7 +229,8 @@ export const GoogleIntegrationPanel: React.FC<GoogleIntegrationPanelProps> = ({
                 onClick={authenticate}
                 className="w-full h-10 flex items-center gap-2"
               >
-                <FileText className="w-4 h-4" /> Connect Docs
+                <FileText className="w-4 h-4" /> 
+                {isLoading ? 'Connecting...' : 'Connect Docs'}
               </Button>
               <Button
                 variant="outline"
@@ -236,8 +238,24 @@ export const GoogleIntegrationPanel: React.FC<GoogleIntegrationPanelProps> = ({
                 onClick={authenticate}
                 className="w-full h-10 flex items-center gap-2"
               >
-                <Mail className="w-4 h-4" /> Connect Gmail
+                <Mail className="w-4 h-4" /> 
+                {isLoading ? 'Connecting...' : 'Connect Gmail'}
               </Button>
+            </div>
+          </div>
+        </Card>
+      )}
+
+      {/* Connected Status */}
+      {isAuthenticated && (
+        <Card className="p-6 bg-green-50 border-green-200">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-green-100 rounded-lg">
+              <Settings className="w-5 h-5 text-green-600" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-900">✅ Google Services Connected</h3>
+              <p className="text-sm text-gray-600">Drive, Docs, and Gmail are ready to use</p>
             </div>
           </div>
         </Card>
