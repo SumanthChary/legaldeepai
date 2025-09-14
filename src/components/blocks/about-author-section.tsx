@@ -87,9 +87,8 @@ export const AboutAuthorSection = () => {
 
               <div className="lg:col-span-2">
                 <p className="text-gray-700 text-lg md:text-xl font-editorial font-light leading-relaxed mb-8">
-                  Passionate about leveraging AI technology to solve real-world problems in the legal industry. 
-                  With expertise in modern web development and artificial intelligence, I created LegalDeep AI to help 
-                  legal professionals streamline their document analysis workflow.
+                  As a technology entrepreneur, I saw how manual document review was slowing down legal professionals. 
+                  LegalDeep AI brings cutting-edge artificial intelligence to legal document analysis, built specifically for the modern legal practice.
                 </p>
                 
                 <div className="flex flex-wrap gap-4">
