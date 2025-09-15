@@ -15,18 +15,18 @@ interface MainFeaturesProps {
 
 export const MainFeatures = ({ features }: MainFeaturesProps) => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 mb-16">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mb-16">
       {features.map((feature) => (
         <div 
           key={feature.title}
           className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-4 sm:p-6 border border-gray-100 hover:border-blue-300 hover:shadow-xl transition-all duration-300 group"
         >
           {feature.image && (
-            <div className="mb-4 sm:mb-6 overflow-hidden rounded-lg bg-gradient-to-br from-blue-50 to-purple-50 p-3 sm:p-4">
+            <div className="mb-4 sm:mb-6 overflow-hidden rounded-lg p-2 sm:p-3">
               <img 
                 src={feature.image} 
                 alt={feature.title}
-                className="w-full h-24 sm:h-32 object-contain group-hover:scale-105 transition-transform duration-300"
+                className="w-full h-24 sm:h-32 md:h-36 object-contain group-hover:scale-105 transition-transform duration-300"
               />
             </div>
           )}
