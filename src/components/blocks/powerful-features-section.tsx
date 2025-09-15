@@ -100,11 +100,11 @@ export const PowerfulFeaturesSection = () => {
                 
                 {/* Feature Image */}
                 {(feature as any).image && (
-                  <div className="relative z-10 mb-6 md:mb-8 overflow-hidden rounded-2xl">
+                  <div className="relative z-10 mb-6 md:mb-8 overflow-hidden rounded-2xl bg-gray-50">
                     <img 
                       src={(feature as any).image} 
                       alt={feature.title}
-                      className="w-full h-32 sm:h-36 md:h-40 lg:h-44 object-cover rounded-2xl group-hover:scale-105 transition-transform duration-300"
+                      className="w-full aspect-[4/3] object-contain rounded-2xl group-hover:scale-105 transition-transform duration-300"
                     />
                   </div>
                 )}
