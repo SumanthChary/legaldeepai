@@ -100,37 +100,27 @@ export const PowerfulFeaturesSection = () => {
                 
                 {/* Feature Image */}
                 {(feature as any).image && (
-                  <div className="relative z-10 mb-4 md:mb-6 overflow-hidden rounded-xl p-2 md:p-3">
+                  <div className="relative z-10 mb-6 md:mb-8 overflow-hidden rounded-2xl">
                     <img 
                       src={(feature as any).image} 
                       alt={feature.title}
-                      className="w-full h-20 sm:h-24 md:h-28 lg:h-32 object-contain group-hover:scale-105 transition-transform duration-300"
+                      className="w-full h-32 sm:h-36 md:h-40 lg:h-44 object-cover rounded-2xl group-hover:scale-105 transition-transform duration-300"
                     />
                   </div>
                 )}
                 
                 {/* Category badge */}
-                <div className="relative z-10 mb-3 md:mb-4">
-                  <span className="inline-block px-2 md:px-3 py-1 text-xs font-medium bg-blue-100/80 text-blue-700 rounded-full border border-blue-200/50">
+                <div className="relative z-10 mb-4 md:mb-6">
+                  <span className="inline-block px-3 md:px-4 py-1.5 text-sm font-medium bg-blue-100/80 text-blue-700 rounded-full border border-blue-200/50">
                     {feature.category}
                   </span>
                 </div>
                 
-                {/* 3D Icon */}
-                <div className="relative z-10 mb-4 md:mb-6 lg:mb-8 flex justify-start">
-                  <SkeumorphicIcon icon={feature.icon} variant={feature.variant} size="md" />
-                </div>
-                
                 <div className="relative z-10">
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-3 md:mb-4">
+                  <div className="mb-3 md:mb-4">
                     <h3 className="text-lg md:text-xl lg:text-2xl font-editorial font-light text-gray-900 tracking-tight group-hover:text-blue-900 transition-colors duration-300">
                       {feature.title}
                     </h3>
-                    {'comingSoon' in feature && (feature as any).comingSoon && <div className="relative">
-                        <span className="text-xs px-2 md:px-3 py-1 md:py-1.5 rounded-full bg-gradient-to-r from-amber-100 to-orange-100 text-amber-800 border border-amber-200/50 font-medium">
-                          Coming Soon
-                        </span>
-                      </div>}
                   </div>
                   <p className="text-gray-600 text-sm md:text-base lg:text-lg font-editorial font-light leading-relaxed">
                     {feature.description}

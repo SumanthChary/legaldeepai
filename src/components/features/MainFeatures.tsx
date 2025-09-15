@@ -22,11 +22,11 @@ export const MainFeatures = ({ features }: MainFeaturesProps) => {
           className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-4 sm:p-6 border border-gray-100 hover:border-blue-300 hover:shadow-xl transition-all duration-300 group"
         >
           {feature.image && (
-            <div className="mb-4 sm:mb-6 overflow-hidden rounded-lg p-2 sm:p-3">
+            <div className="mb-4 sm:mb-6 overflow-hidden rounded-xl">
               <img 
                 src={feature.image} 
                 alt={feature.title}
-                className="w-full h-24 sm:h-32 md:h-36 object-contain group-hover:scale-105 transition-transform duration-300"
+                className="w-full h-28 sm:h-36 md:h-40 object-cover rounded-xl group-hover:scale-105 transition-transform duration-300"
               />
             </div>
           )}
