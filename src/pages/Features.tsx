@@ -27,63 +27,91 @@ const Features = () => {
 
   const features = [
     {
-      title: "Document Processing",
-      description: "Process from 50 to unlimited documents per month based on your plan",
+      title: "Mobile Contract Analysis",
+      description: "Analyze legal documents anywhere with our mobile-optimized platform",
       icon: FileText,
+      image: "/src/assets/features/mobile-contract-analysis.png",
       details: [
-        "Smart document summarization",
-        "Batch processing capabilities",
-        "Support for multiple file formats"
+        "Mobile-responsive interface",
+        "Touch-optimized document viewer",
+        "Real-time analysis on any device"
       ]
     },
     {
-      title: "Analysis Tools",
-      description: "Advanced clause analysis and risk detection systems",
+      title: "AI-Powered Analysis",
+      description: "Advanced artificial intelligence delivers precise legal document insights",
+      icon: Sparkles,
+      image: "/src/assets/features/ai-powered-analysis.png",
+      details: [
+        "87% accuracy in legal analysis",
+        "Compliance verification",
+        "Intelligent risk scoring"
+      ]
+    },
+    {
+      title: "Analysis Dashboard",
+      description: "Comprehensive dashboard with risk assessment and compliance tracking",
+      icon: Eye,
+      image: "/src/assets/features/document-analysis-dashboard.png",
+      details: [
+        "Risk assessment metrics",
+        "Compliance checks",
+        "Confidence scoring"
+      ]
+    },
+    {
+      title: "Contract Risk Assessment",
+      description: "Smart contract evaluation with color-coded risk indicators",
       icon: Shield,
+      image: "/src/assets/features/contract-risk-assessment.png",
       details: [
-        "Basic to advanced clause analysis",
-        "Risk detection and assessment",
-        "Jurisdiction-specific insights"
+        "Automated risk detection",
+        "Visual status indicators",
+        "Issue prioritization"
       ]
     },
     {
-      title: "Collaboration",
-      description: "Team features for seamless workflow",
+      title: "Team Collaboration",
+      description: "Collaborate seamlessly with your legal team on document analysis",
       icon: Users,
+      image: "/src/assets/features/team-collaboration.png",
       details: [
         "Multi-user access",
         "Real-time collaboration",
-        "Comments and annotations"
+        "Shared document workspace"
       ]
     },
     {
       title: "Cloud Integration",
-      description: "Connect with your favorite cloud storage solutions",
+      description: "Seamless integration with Google Drive and other cloud platforms",
       icon: Cloud,
+      image: "/src/assets/features/cloud-integration.png",
       details: [
-        "Google Drive integration",
-        "Dropbox support",
-        "Secure file handling"
+        "Google Drive sync",
+        "Automated document import",
+        "Cloud storage management"
       ]
     },
     {
-      title: "Support Options",
-      description: "Comprehensive support across all plans",
-      icon: Headphones,
+      title: "Mobile Legal Analysis",
+      description: "Professional legal analysis tools optimized for mobile devices",
+      icon: FileSignature,
+      image: "/src/assets/features/mobile-legal-analysis.png",
       details: [
-        "Email support",
-        "Priority support",
-        "24/7 dedicated support"
+        "Mobile risk assessment",
+        "Compliance checking on-the-go",
+        "Professional legal interface"
       ]
     },
     {
-      title: "Enterprise Solutions",
-      description: "Advanced features for large organizations",
+      title: "Document Security",
+      description: "Enterprise-grade security and compliance for your legal documents",
       icon: Server,
+      image: "/src/assets/features/document-security.png",
       details: [
-        "On-premises deployment",
-        "Private cloud options",
-        "Custom security policies"
+        "End-to-end encryption",
+        "Compliance verification",
+        "Secure document handling"
       ]
     }
   ];
