@@ -22,6 +22,16 @@ import { FeatureHighlight } from "@/components/features/FeatureHighlight";
 import { PreviewFeatures } from "@/components/features/PreviewFeatures";
 import { WaitlistForm } from "@/components/features/WaitlistForm";
 
+// Import feature images
+import mobileContractAnalysis from "@/assets/features/mobile-contract-analysis.png";
+import aiPoweredAnalysis from "@/assets/features/ai-powered-analysis.png";
+import documentAnalysisDashboard from "@/assets/features/document-analysis-dashboard.png";
+import contractRiskAssessment from "@/assets/features/contract-risk-assessment.png";
+import teamCollaboration from "@/assets/features/team-collaboration.png";
+import cloudIntegration from "@/assets/features/cloud-integration.png";
+import mobileLegalAnalysis from "@/assets/features/mobile-legal-analysis.png";
+import documentSecurity from "@/assets/features/document-security.png";
+
 const Features = () => {
   const navigate = useNavigate();
 
@@ -30,7 +40,7 @@ const Features = () => {
       title: "Mobile Contract Analysis",
       description: "Analyze legal documents anywhere with our mobile-optimized platform",
       icon: FileText,
-      image: "/src/assets/features/mobile-contract-analysis.png",
+      image: mobileContractAnalysis,
       details: [
         "Mobile-responsive interface",
         "Touch-optimized document viewer",
@@ -41,7 +51,7 @@ const Features = () => {
       title: "AI-Powered Analysis",
       description: "Advanced artificial intelligence delivers precise legal document insights",
       icon: Sparkles,
-      image: "/src/assets/features/ai-powered-analysis.png",
+      image: aiPoweredAnalysis,
       details: [
         "87% accuracy in legal analysis",
         "Compliance verification",
@@ -52,7 +62,7 @@ const Features = () => {
       title: "Analysis Dashboard",
       description: "Comprehensive dashboard with risk assessment and compliance tracking",
       icon: Eye,
-      image: "/src/assets/features/document-analysis-dashboard.png",
+      image: documentAnalysisDashboard,
       details: [
         "Risk assessment metrics",
         "Compliance checks",
@@ -63,7 +73,7 @@ const Features = () => {
       title: "Contract Risk Assessment",
       description: "Smart contract evaluation with color-coded risk indicators",
       icon: Shield,
-      image: "/src/assets/features/contract-risk-assessment.png",
+      image: contractRiskAssessment,
       details: [
         "Automated risk detection",
         "Visual status indicators",
@@ -74,7 +84,7 @@ const Features = () => {
       title: "Team Collaboration",
       description: "Collaborate seamlessly with your legal team on document analysis",
       icon: Users,
-      image: "/src/assets/features/team-collaboration.png",
+      image: teamCollaboration,
       details: [
         "Multi-user access",
         "Real-time collaboration",
@@ -85,7 +95,7 @@ const Features = () => {
       title: "Cloud Integration",
       description: "Seamless integration with Google Drive and other cloud platforms",
       icon: Cloud,
-      image: "/src/assets/features/cloud-integration.png",
+      image: cloudIntegration,
       details: [
         "Google Drive sync",
         "Automated document import",
@@ -96,7 +106,7 @@ const Features = () => {
       title: "Mobile Legal Analysis",
       description: "Professional legal analysis tools optimized for mobile devices",
       icon: FileSignature,
-      image: "/src/assets/features/mobile-legal-analysis.png",
+      image: mobileLegalAnalysis,
       details: [
         "Mobile risk assessment",
         "Compliance checking on-the-go",
@@ -107,7 +117,7 @@ const Features = () => {
       title: "Document Security",
       description: "Enterprise-grade security and compliance for your legal documents",
       icon: Server,
-      image: "/src/assets/features/document-security.png",
+      image: documentSecurity,
       details: [
         "End-to-end encryption",
         "Compliance verification",
