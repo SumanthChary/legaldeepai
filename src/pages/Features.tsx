@@ -48,36 +48,36 @@ const Features = () => {
       ]
     },
     {
-      title: "AI-Powered Analysis",
-      description: "Advanced artificial intelligence delivers precise legal document insights",
+      title: "AI-Powered Dominance",
+      description: "Make colleagues wonder how you analyze contracts so fast",
       icon: Sparkles,
       image: aiPoweredAnalysis,
       details: [
-        "87% accuracy in legal analysis",
-        "Compliance verification",
-        "Intelligent risk scoring"
+        "Advanced artificial intelligence that turns legal document review from tedious burden into competitive advantage",
+        "Lightning-fast analysis that impresses clients",
+        "Strategic insights that position you ahead of competitors"
       ]
     },
     {
-      title: "Analysis Dashboard",
-      description: "Comprehensive dashboard with risk assessment and compliance tracking",
+      title: "Executive Dashboard",
+      description: "Present risk assessments that make clients trust your expertise",
       icon: Eye,
       image: documentAnalysisDashboard,
       details: [
-        "Risk assessment metrics",
-        "Compliance checks",
-        "Confidence scoring"
+        "Comprehensive insights that position you as the strategic advisor who sees what others miss",
+        "Professional presentations that build client confidence",
+        "Executive-level reporting that elevates your status"
       ]
     },
     {
-      title: "Contract Risk Assessment",
-      description: "Smart contract evaluation with color-coded risk indicators",
+      title: "Reputation Protection",
+      description: "Never miss critical contract risks that could destroy your career",
       icon: Shield,
       image: contractRiskAssessment,
       details: [
-        "Automated risk detection",
-        "Visual status indicators",
-        "Issue prioritization"
+        "Smart evaluation system with automated alerts that keeps you ahead of legal landmines and client disasters",
+        "Career-protecting risk detection",
+        "Never look unprepared in front of clients again"
       ]
     },
     {
@@ -181,11 +181,10 @@ const Features = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              Powerful Features for Legal Document Analysis
+              Stop Looking Incompetent in Front of Partners
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              From basic document processing to advanced AI-powered analysis, 
-              we provide the tools you need to streamline your legal workflow
+              The AI that makes legal professionals appear brilliant to clients and colleagues
             </p>
           </div>
 
