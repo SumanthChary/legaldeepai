@@ -53,7 +53,12 @@ export const PowerfulFeaturesSection = () => {
     variant: "action" as const,
     category: "Workflow",
     image: teamCollaboration,
-    comingSoon: true
+    comingSoon: true,
+    details: [
+      "Lead teams with authority that impresses partners and clients",
+      "Real-time collaboration that positions you as the organized strategist",
+      "Shared insights that make you the go-to legal expert everyone relies on"
+    ]
   }, {
     icon: Cpu,
     title: "Cloud Integration",
@@ -61,14 +66,24 @@ export const PowerfulFeaturesSection = () => {
     variant: "upload" as const,
     category: "Integration",
     image: cloudIntegration,
-    comingSoon: true
+    comingSoon: true,
+    details: [
+      "Instant access to documents that makes you appear always prepared",
+      "Automated workflows that free you to focus on high-value strategic work",
+      "Seamless integration that positions you as the tech-savvy legal leader"
+    ]
   }, {
     icon: Server,
     title: "Document Security",
     description: "Enterprise-grade security with end-to-end encryption and compliance verification.",
     variant: "process" as const,
     category: "Security",
-    image: documentSecurity
+    image: documentSecurity,
+    details: [
+      "Never worry about data breaches that could end your career",
+      "Enterprise-level security that reassures the most demanding clients",
+      "Compliance protection that keeps you ahead of regulatory disasters"
+    ]
   }];
   return <section className="py-20 md:py-28 lg:py-32 bg-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
