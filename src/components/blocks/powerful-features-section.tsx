@@ -12,25 +12,40 @@ import documentSecurity from "@/assets/features/document-security.png";
 export const PowerfulFeaturesSection = () => {
   const features = [{
     icon: Sparkles,
-    title: "AI-Powered Analysis",
-    description: "Advanced artificial intelligence delivers precise legal document insights with 87% accuracy.",
+    title: "AI-Powered Dominance",
+    description: "Make colleagues wonder how you analyze contracts so fast",
     variant: "process" as const,
-    category: "AI Analysis",
-    image: aiPoweredAnalysis
+    category: "AI Dominance",
+    image: aiPoweredAnalysis,
+    details: [
+      "Advanced artificial intelligence that turns legal document review from tedious burden into competitive advantage",
+      "Lightning-fast analysis that impresses clients",
+      "Strategic insights that position you ahead of competitors"
+    ]
   }, {
     icon: Eye,
-    title: "Analysis Dashboard",
-    description: "Comprehensive dashboard with risk assessment and compliance tracking metrics.",
+    title: "Executive Dashboard",
+    description: "Present risk assessments that make clients trust your expertise",
     variant: "result" as const,
-    category: "Analytics", 
-    image: documentAnalysisDashboard
+    category: "Executive Insights", 
+    image: documentAnalysisDashboard,
+    details: [
+      "Comprehensive insights that position you as the strategic advisor who sees what others miss",
+      "Professional presentations that build client confidence",
+      "Executive-level reporting that elevates your status"
+    ]
   }, {
     icon: Shield,
-    title: "Risk Assessment",
-    description: "Smart contract evaluation with color-coded risk indicators and automated detection.",
+    title: "Reputation Protection",
+    description: "Never miss critical contract risks that could destroy your career",
     variant: "upload" as const,
-    category: "Security",
-    image: contractRiskAssessment
+    category: "Career Protection",
+    image: contractRiskAssessment,
+    details: [
+      "Smart evaluation system with automated alerts that keeps you ahead of legal landmines and client disasters",
+      "Career-protecting risk detection",
+      "Never look unprepared in front of clients again"
+    ]
   }, {
     icon: Users,
     title: "Team Collaboration",
@@ -122,9 +137,19 @@ export const PowerfulFeaturesSection = () => {
                       {feature.title}
                     </h3>
                   </div>
-                  <p className="text-gray-600 text-sm md:text-base lg:text-lg font-editorial font-light leading-relaxed">
+                  <p className="text-gray-600 text-sm md:text-base lg:text-lg font-editorial font-light leading-relaxed mb-4">
                     {feature.description}
                   </p>
+                  {(feature as any).details && (
+                    <ul className="space-y-1.5 sm:space-y-2">
+                      {(feature as any).details.map((detail: string, detailIndex: number) => (
+                        <li key={detailIndex} className="text-gray-600 flex items-start text-xs sm:text-sm">
+                          <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2 mt-1.5 sm:mt-2 flex-shrink-0" />
+                          {detail}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
                 
                 {/* Subtle hover effect */}
