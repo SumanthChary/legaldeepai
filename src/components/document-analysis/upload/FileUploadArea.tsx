@@ -1,8 +1,9 @@
 
 import React, { useCallback } from "react";
 import { Input } from "@/components/ui/input";
-import { Upload, FileText } from "lucide-react";
+import { Upload, FileText, Cloud } from "lucide-react";
 import { ScanButton } from './ScanButton';
+import { GoogleDrivePicker } from '@/components/google/GoogleDrivePicker';
 
 type FileUploadAreaProps = {
   handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -28,6 +29,26 @@ export const FileUploadArea = ({
       onFilesAccepted([file]);
     }
   }, [onFilesAccepted]);
+
+  const handleGoogleDriveSelect = useCallback(async (driveFile: any) => {
+    try {
+      // Download the file from Google Drive and convert to File object
+      const response = await fetch(`https://www.googleapis.com/drive/v3/files/${driveFile.id}?alt=media`, {
+        headers: {
+          Authorization: `Bearer ${(window as any).gapi?.client?.getToken()?.access_token}`
+        }
+      });
+      const blob = await response.blob();
+      const file = new File([blob], driveFile.name, { type: driveFile.mimeType });
+      
+      if (onFilesAccepted) {
+        onFilesAccepted([file]);
+      }
+    } catch (error) {
+      console.error('Error downloading from Google Drive:', error);
+    }
+  }, [onFilesAccepted]);
+
   return (
     <div className="flex flex-col items-center">
       <Upload className="h-12 w-12 text-gray-400 mb-2" />
@@ -49,6 +70,10 @@ export const FileUploadArea = ({
         {onFilesAccepted && (
           <ScanButton onScan={handleScanFile} disabled={disabled} />
         )}
+      </div>
+      
+      <div className="mt-6 w-full">
+        <GoogleDrivePicker onFileSelect={handleGoogleDriveSelect} />
       </div>
       <Input
         id="file-upload"
