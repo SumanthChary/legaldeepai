@@ -70,9 +70,25 @@ export class GoogleApiService {
         ],
       });
       console.log('✅ Google API client initialized');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to initialize Google client:', error);
-      throw new Error('Failed to initialize Google services. Please verify your Google Cloud Console setup.');
+      const origin = window.location.origin;
+      const details = error?.details || error?.error || error?.message || '';
+
+      // Provide actionable diagnostics for common init issues
+      if (typeof details === 'string') {
+        if (details.includes('origin_mismatch') || details.includes('Not a valid origin')) {
+          throw new Error(`Domain not authorized: ${origin}. Add this origin to Authorized JavaScript origins in Google Cloud Console.`);
+        }
+        if (details.includes('idpiframe_initialization_failed')) {
+          if (details.includes('Cookies are not enabled')) {
+            throw new Error('Third-party cookies are blocked. Enable cookies for accounts.google.com or try a different browser.');
+          }
+          throw new Error('Google Sign-In could not initialize (idpiframe_initialization_failed). Check authorized origins and content blockers.');
+        }
+      }
+
+      throw new Error(`Failed to initialize Google services. ${details ? `Details: ${details}` : 'Please verify your Google Cloud Console setup.'}`);
     }
 
     this.isInitialized = true;
