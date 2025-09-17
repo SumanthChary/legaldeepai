@@ -36,41 +36,33 @@ export class GoogleApiService {
       throw error instanceof Error ? error : new Error('Failed to load Google configuration. Please try again.');
     }
     
-    // Load Google API script
-    try {
-      await this.loadScript('https://apis.google.com/js/api.js');
-      await new Promise((resolve, reject) => {
-        const timeoutId = setTimeout(() => reject(new Error('Google API loading timeout')), 10000);
-        gapi.load('client:auth2', () => {
-          clearTimeout(timeoutId);
-          resolve(undefined);
-        });
+  // Load Google API scripts
+  try {
+    await this.loadScript('https://apis.google.com/js/api.js');
+    await this.loadScript('https://accounts.google.com/gsi/client');
+    await new Promise((resolve, reject) => {
+      const timeoutId = setTimeout(() => reject(new Error('Google API loading timeout')), 10000);
+      gapi.load('client', () => {
+        clearTimeout(timeoutId);
+        resolve(undefined);
       });
-    } catch (error) {
-      console.error('Failed to load Google API:', error);
-      throw new Error('Failed to load Google API. Please check your internet connection.');
-    }
+    });
+  } catch (error) {
+    console.error('Failed to load Google API:', error);
+    throw new Error('Failed to load Google API. Please check your internet connection.');
+  }
 
-    // Initialize Google API client with comprehensive scopes
-    try {
-      await gapi.client.init({
-        clientId: this.clientId,
-        scope: [
-          'openid',
-          'https://www.googleapis.com/auth/userinfo.profile',
-          'https://www.googleapis.com/auth/userinfo.email',
-          'https://www.googleapis.com/auth/drive.file',
-          'https://www.googleapis.com/auth/documents',
-          'https://www.googleapis.com/auth/gmail.send'
-        ].join(' '),
-        discoveryDocs: [
-          'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest',
-          'https://docs.googleapis.com/$discovery/rest?version=v1',
-          'https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest'
-        ],
-      });
-      console.log('✅ Google API client initialized');
-    } catch (error: any) {
+  // Initialize Google API client (without auth2)
+  try {
+    await gapi.client.init({
+      discoveryDocs: [
+        'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest',
+        'https://docs.googleapis.com/$discovery/rest?version=v1',
+        'https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest'
+      ],
+    });
+    console.log('✅ Google API client initialized');
+  } catch (error: any) {
       console.error('Failed to initialize Google client:', error);
       const origin = window.location.origin;
       const details = error?.details || error?.error || error?.message || '';
@@ -111,50 +103,52 @@ export class GoogleApiService {
 
   async authenticateWithGoogle(): Promise<boolean> {
     try {
-      const authInstance = gapi.auth2.getAuthInstance();
+      console.log('🔐 Starting Google authentication...');
       
-      if (!authInstance.isSignedIn.get()) {
-        console.log('🔐 Starting Google authentication...');
-        const user = await authInstance.signIn({
-          scope: [
-            'openid',
-            'https://www.googleapis.com/auth/userinfo.profile',
-            'https://www.googleapis.com/auth/userinfo.email',
-            'https://www.googleapis.com/auth/drive.file',
-            'https://www.googleapis.com/auth/documents',
-            'https://www.googleapis.com/auth/gmail.send'
-          ].join(' ')
-        });
+      // Use the new Google Identity Services OAuth2 flow
+      const client = google.accounts.oauth2.initTokenClient({
+        client_id: this.clientId!,
+        scope: [
+          'openid',
+          'https://www.googleapis.com/auth/userinfo.profile',
+          'https://www.googleapis.com/auth/userinfo.email',
+          'https://www.googleapis.com/auth/drive.file',
+          'https://www.googleapis.com/auth/documents',
+          'https://www.googleapis.com/auth/gmail.send'
+        ].join(' '),
+        callback: (tokenResponse: any) => {
+          if (tokenResponse.access_token) {
+            this.accessToken = tokenResponse.access_token;
+            gapi.client.setToken({ access_token: tokenResponse.access_token });
+            console.log('✅ Access token acquired');
+          }
+        },
+      });
+      
+      return new Promise((resolve, reject) => {
+        client.callback = (response: any) => {
+          if (response.error) {
+            console.error('❌ Google Auth failed:', response.error);
+            if (response.error === 'popup_closed_by_user') {
+              reject(new Error('Authentication cancelled by user'));
+            } else if (response.error === 'access_denied') {
+              reject(new Error('Access denied. Please accept the required permissions.'));
+            } else {
+              reject(new Error(response.error));
+            }
+          } else {
+            this.accessToken = response.access_token;
+            gapi.client.setToken({ access_token: response.access_token });
+            console.log('✅ User authenticated successfully');
+            resolve(true);
+          }
+        };
         
-        if (!user.isSignedIn()) {
-          throw new Error('User cancelled authentication');
-        }
-        console.log('✅ User authenticated successfully');
-      }
-      
-      const user = authInstance.currentUser.get();
-      const authResponse = user.getAuthResponse();
-      
-      if (!authResponse.access_token) {
-        throw new Error('No access token received');
-      }
-      
-      this.accessToken = authResponse.access_token;
-      console.log('✅ Access token acquired');
-      return true;
+        client.requestAccessToken();
+      });
     } catch (error: any) {
       console.error('❌ Google Auth failed:', error);
-      
-      // Provide specific error messages
-      if (error.error === 'popup_closed_by_user') {
-        throw new Error('Authentication cancelled by user');
-      } else if (error.error === 'access_denied') {
-        throw new Error('Access denied. Please accept the required permissions.');
-      } else if (error.message?.includes('Not a valid origin')) {
-        throw new Error('Domain not authorized. Please check your Google Cloud Console settings.');
-      } else {
-        throw new Error(error.message || 'Authentication failed');
-      }
+      throw new Error(error.message || 'Authentication failed');
     }
   }
 
@@ -302,10 +296,12 @@ export class GoogleApiService {
   }
 }
 
-// Global gapi type declaration
+// Global gapi and google type declarations
 declare global {
   interface Window {
     gapi: any;
+    google: any;
   }
   const gapi: any;
+  const google: any;
 }
