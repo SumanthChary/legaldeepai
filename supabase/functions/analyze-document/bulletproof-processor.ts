@@ -69,22 +69,22 @@ async function processSingleChunk(
 ): Promise<string> {
   const strategies = [
     {
-      name: "Specialized",
+      name: "Specialized Professional Analysis",
       getPrompt: () => {
         if (context.type === 'legal') return getLegalPrompt();
         if (context.type === 'business') return getBusinessPrompt();
         return getDetailedPrompt("complete");
       },
+      temperature: 0.1
+    },
+    {
+      name: "Comprehensive Standard Analysis",
+      getPrompt: () => getDetailedPrompt("complete"),
       temperature: 0.2
     },
     {
-      name: "Standard",
-      getPrompt: () => getDetailedPrompt("complete"),
-      temperature: 0.3
-    },
-    {
-      name: "Simple",
-      getPrompt: () => "Provide a comprehensive, professional analysis of this document with clear structure and detailed insights:",
+      name: "Focused Professional Review",
+      getPrompt: () => "You are a senior document analyst. Provide a comprehensive, professional analysis with detailed breakdown of key provisions, risk assessment, financial implications, and actionable recommendations. Focus on practical insights that deliver real value:",
       temperature: 0.1
     }
   ];

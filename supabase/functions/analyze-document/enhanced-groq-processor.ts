@@ -76,13 +76,13 @@ async function processSingleChunkGroq(
   model: string
 ): Promise<string> {
   
-  // Ultra-optimized prompt for speed
-  let prompt = "Analyze this document quickly and comprehensively. Provide key insights, main points, and important details in a structured professional format:";
+  // Professional-grade prompts for valuable analysis
+  let prompt = getDetailedPrompt("complete");
   
   if (context.type === 'legal') {
-    prompt = "Quickly analyze this legal document. Extract key clauses, terms, obligations, risks, and provide professional legal insights:";
+    prompt = getLegalPrompt();
   } else if (context.type === 'business') {
-    prompt = "Rapidly analyze this business document. Extract key business points, strategies, financials, and recommendations:";
+    prompt = getBusinessPrompt();
   }
   
   return await callGroqCloudAPI(chunk, prompt, model);
@@ -98,18 +98,25 @@ async function processMultipleChunksGroq(
   console.log(`⚡ Processing ${chunks.length} chunks in parallel for maximum speed`);
   
   try {
-    // Process chunks in parallel for maximum speed
+    // Process chunks in parallel with detailed analysis
     const chunkPromises = chunks.map(async (chunk, i) => {
-      const prompt = `Quickly analyze section ${i + 1}/${chunks.length} of this document. Extract key points and insights:`;
+      let prompt = getDetailedPrompt("chunk", i + 1, chunks.length);
+      
+      if (context.type === 'legal') {
+        prompt = `You are analyzing section ${i + 1} of ${chunks.length} from a legal document. ${getLegalPrompt()}`;
+      } else if (context.type === 'business') {
+        prompt = `You are analyzing section ${i + 1} of ${chunks.length} from a business document. ${getBusinessPrompt()}`;
+      }
+      
       const result = await callGroqCloudAPI(chunk, prompt, model);
-      return `SECTION ${i + 1}: ${result}`;
+      return `**SECTION ${i + 1} ANALYSIS:**\n${result}`;
     });
     
     const chunkSummaries = await Promise.all(chunkPromises);
     
-    // Quick combine
-    const combinedText = chunkSummaries.join("\n\n---\n\n");
-    const combinePrompt = "Synthesize these document sections into one comprehensive professional analysis:";
+    // Comprehensive synthesis
+    const combinedText = chunkSummaries.join("\n\n═══════════════════════════════════════\n\n");
+    const combinePrompt = getDetailedPrompt("combine");
     
     return await callGroqCloudAPI(combinedText, combinePrompt, model);
     
@@ -130,11 +137,9 @@ async function processMultipleChunksGroq(
 }
 
 function formatProfessionalSummary(summary: string, fileName: string, documentType: string, analysisType: string): string {
-  // Clean the summary extensively to make it more attractive
+  // Clean and preserve structure for professional presentation
   const cleanSummary = summary
     .replace(/#{1,6}\s*/g, '')
-    .replace(/\*{1,2}([^*]+)\*{1,2}/g, '$1')
-    .replace(/^\s*[\*\-\+]\s*/gm, '• ')
     .replace(/DOCUMENT ANALYSIS REPORT.*?\n/g, '')
     .replace(/File:.*?\n/g, '')
     .replace(/Analysis Date:.*?\n/g, '')
@@ -142,16 +147,28 @@ function formatProfessionalSummary(summary: string, fileName: string, documentTy
     .replace(/Analysis Method:.*?\n/g, '')
     .trim();
   
-  // Create an attractive, professional header
-  const header = `📋 COMPREHENSIVE DOCUMENT ANALYSIS
+  // Create professional document header
+  const analysisDate = new Date().toLocaleDateString('en-US', { 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric' 
+  });
+  
+  const header = `📋 **PROFESSIONAL DOCUMENT ANALYSIS REPORT**
 
-🎯 KEY INSIGHTS & HIGHLIGHTS:
+**Document:** ${fileName}
+**Analysis Date:** ${analysisDate}
+**Document Type:** ${documentType.charAt(0).toUpperCase() + documentType.slice(1)}
+**Analysis Method:** ${analysisType}
+
+═══════════════════════════════════════════════════════════════════
 
 `;
   
   const footer = `
 
-✨ Perfect Summary`;
+═══════════════════════════════════════════════════════════════════
+**Analysis Complete** | Professional Document Review | ${analysisDate}`;
   
   return header + cleanSummary + footer;
 }
