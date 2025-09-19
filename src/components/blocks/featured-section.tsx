@@ -29,10 +29,10 @@ export const FeaturedSection = () => {
       description: "Showcased Project"
     },
     {
-      name: "Listing Cat",
-      logo: "/lovable-uploads/568e8f08-4177-420c-a6c1-7586783cd416.png",
-      url: "https://www.listingcat.com/",
-      description: "Directory Listing"
+      name: "LinkedIn",
+      logo: "/lovable-uploads/linkedin-logo.png",
+      url: "https://www.linkedin.com/company/107756392",
+      description: "Company Profile"
     }
   ];
 
