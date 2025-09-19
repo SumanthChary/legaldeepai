@@ -22,10 +22,10 @@ export const FeaturedSection = () => {
     url: "https://peerlist.io/sumanthdev/project/legalbrief-ai",
     description: "Showcased Project"
   }, {
-    name: "Listing Cat",
-    logo: "/lovable-uploads/568e8f08-4177-420c-a6c1-7586783cd416.png",
-    url: "https://www.listingcat.com/",
-    description: "Directory Listing"
+    name: "LinkedIn",
+    logo: "/lovable-uploads/linkedin-logo.png",
+    url: "https://www.linkedin.com/company/107756392",
+    description: "Company Profile"
   }];
   return <section className="py-12 bg-white/50 backdrop-blur-sm">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
