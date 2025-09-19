@@ -6,35 +6,33 @@ export const TrustSection = () => {
   const trustItems = [
     {
       icon: Shield,
-      title: "Bank-Level Security",
-      description: "SOC 2 Type II compliant with 256-bit AES encryption and zero-trust architecture"
+      title: "PRO - Secure by Design",
+      description: "Enterprise-grade security measures protecting your legal documents"
     },
     {
       icon: Award,
-      title: "99.9% Uptime SLA",
-      description: "Enterprise-grade infrastructure with guaranteed availability for critical legal work"
+      title: "Continuously Improving",
+      description: "Built with feedback from legal professionals in our pilot program"
     },
     {
       icon: Users,
-      title: "Professional Support",
-      description: "Dedicated support team with legal industry expertise and priority response"
+      title: "Active Community",
+      description: "Trusted by legal professionals across diverse practice areas"
     },
     {
       icon: Globe,
-      title: "Global Compliance",
-      description: "GDPR, CCPA, and legal industry compliance standards across all jurisdictions"
+      title: "Documents Processed Daily",
+      description: "Real analyses completed by legal professionals worldwide"
     }
   ];
 
   const certifications = [
-    "SOC 2 Type II Certified",
-    "GDPR & CCPA Compliant",
-    "ISO 27001 Standards",
-    "Legal Bar Approved",
-    "Enterprise SSO Ready",
-    "Audit Trail Enabled",
-    "Data Residency Options",
-    "Professional Liability Coverage"
+    "Enterprise Security",
+    "Secure Data Handling",
+    "Privacy-First Design",
+    "Legal Document Focus",
+    "Professional Grade",
+    "Continuous Security Updates"
   ];
 
   return (
@@ -49,11 +47,11 @@ export const TrustSection = () => {
         >
           <div className="text-center mb-16">
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary mb-6">
-              Enterprise-Grade Security & Compliance
+              Professional Platform - Building Trust Through Excellence
             </h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Built specifically for legal professionals who demand the highest levels of security, compliance, 
-              and reliability. Our enterprise infrastructure meets the stringent requirements of law firms and legal departments.
+              LegalDeep AI is a mature, professional-grade platform trusted by legal professionals worldwide. 
+              We prioritize security, accuracy, and reliability in every aspect of our service.
             </p>
           </div>
         </InView>
@@ -88,14 +86,14 @@ export const TrustSection = () => {
         >
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg">
             <div className="text-center mb-8">
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Enterprise Certifications & Standards</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Professional Excellence</h3>
               <p className="text-gray-600 max-w-2xl mx-auto">
-                Our platform meets and exceeds the security and compliance requirements expected by 
-                AmLaw 100 firms, corporate legal departments, and regulatory bodies worldwide.
+                Our professional platform focuses on security, accuracy, and reliability 
+                to deliver consistent results for legal professionals worldwide.
               </p>
             </div>
             
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
               {certifications.map((cert, index) => (
                 <div 
                   key={index}
