@@ -4,13 +4,13 @@ import { ExternalLink, Github, Twitter, Linkedin } from "lucide-react";
 export const AboutAuthorSection = () => {
   const stats = [{
     label: "Years Experience",
-    value: "5+"
+    value: "3+"
   }, {
     label: "Projects Built",
-    value: "20+"
-  }, {
-    label: "Technologies",
     value: "10+"
+  }, {
+    label: "Happy Clients",
+    value: "50+"
   }];
   const socialLinks = [{
     icon: Twitter,
