@@ -76,7 +76,7 @@ export const HowItWorksSection = () => {
               {/* Arrow between steps - visible and prominent */}
               {index < steps.length - 1 && <div className="hidden lg:flex absolute top-12 -right-8 z-10">
                   <div className="bg-gradient-to-r from-blue-400 to-purple-500 rounded-full p-2 shadow-md">
-                    <ArrowRight className="w-6 h-6 text-white animate-pulse" />
+                    <ArrowRight className="w-6 h-6 text-white" />
                   </div>
                 </div>}
               
