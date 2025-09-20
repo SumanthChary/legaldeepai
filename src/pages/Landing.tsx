@@ -52,6 +52,10 @@ const Landing = () => {
     {
       question: "Can I integrate LegalDeep AI with my existing workflow?",
       answer: "Our professional platform is designed for seamless integration with existing legal workflows. We offer robust document processing capabilities with plans to expand integration features based on user needs and industry standards."
+    },
+    {
+      question: "How is LegalDeep AI different from ChatGPT or NotebookLM?",
+      answer: "While general AI tools like ChatGPT and NotebookLM can read documents, LegalDeep AI is specifically designed for legal work. We focus on understanding legal document structures, maintaining professional security standards, and providing features tailored to legal workflows rather than general document analysis."
     }
   ];
   

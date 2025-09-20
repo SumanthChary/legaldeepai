@@ -1,43 +1,23 @@
-import { Shield, Zap, Target, Lock, BookOpen, Users } from "lucide-react";
+import { Check } from "lucide-react";
 import { InView } from "@/components/ui/in-view";
 
 export const CompetitiveAdvantageSection = () => {
   const advantages = [
     {
-      icon: Target,
-      title: "Legal-Specific Training",
-      description: "Unlike general AI tools like NotebookLM, LegalDeep AI is trained exclusively on legal documents and jurisprudence.",
-      detail: "Our models understand legal terminology, contract structures, and regulatory frameworks."
+      title: "Legal-Focused Analysis",
+      description: "Specialized for legal document processing, unlike general tools like NotebookLM or ChatGPT."
     },
     {
-      icon: Shield,
-      title: "Enterprise-Grade Security",
-      description: "Bank-level encryption and compliance with legal industry standards ensure your sensitive documents stay protected.",
-      detail: "GDPR compliant with advanced data protection protocols specifically designed for legal practices."
+      title: "Professional Security",
+      description: "Enterprise-grade encryption designed for confidential legal documents."
     },
     {
-      icon: Zap,
-      title: "Superior Accuracy",
-      description: "Specialized legal training delivers 95%+ accuracy on legal document analysis compared to generic AI tools.",
-      detail: "Trained on millions of legal documents, court cases, and regulatory texts for unmatched precision."
+      title: "Document Structure Understanding",
+      description: "Recognizes legal document formats, clauses, and standard legal language patterns."
     },
     {
-      icon: Lock,
-      title: "Professional Compliance",
-      description: "Built for legal professionals with features that ensure confidentiality and professional standards.",
-      detail: "Audit trails, version control, and professional-grade reporting capabilities."
-    },
-    {
-      icon: BookOpen,
-      title: "Legal Context Understanding",
-      description: "Goes beyond simple text analysis to understand legal implications, precedents, and jurisdictional differences.",
-      detail: "Contextual analysis that considers legal precedents and cross-references regulatory requirements."
-    },
-    {
-      icon: Users,
-      title: "Purpose-Built for Legal Teams",
-      description: "Designed specifically for legal workflows, not adapted from general-purpose tools.",
-      detail: "Features like clause extraction, risk assessment, and compliance checking built from the ground up."
+      title: "Compliance Features",
+      description: "Built with legal workflow requirements and professional standards in mind."
     }
   ];
 
@@ -54,20 +34,20 @@ export const CompetitiveAdvantageSection = () => {
         >
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
-              <Target className="w-4 h-4" />
+              <Check className="w-4 h-4" />
               Why Choose LegalDeep AI
             </div>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-              Beyond NotebookLM and Generic AI Tools
+              Why Not Just Use ChatGPT or NotebookLM?
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              While general AI tools provide basic document analysis, LegalDeep AI is purpose-built for legal professionals 
-              with specialized training, enterprise security, and legal-specific features.
+              While generic AI tools can read documents, LegalDeep AI is built specifically for legal work 
+              with better document structure understanding and professional security standards.
             </p>
           </div>
         </InView>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+        <div className="grid md:grid-cols-2 gap-8 mb-16 max-w-4xl mx-auto">
           {advantages.map((advantage, index) => (
             <InView
               key={advantage.title}
@@ -78,19 +58,20 @@ export const CompetitiveAdvantageSection = () => {
               viewOptions={{ margin: "0px 0px -100px 0px" }}
               transition={{ duration: 0.4, ease: "easeInOut", delay: index * 0.1 }}
             >
-              <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300">
-                <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-6">
-                  <advantage.icon className="w-6 h-6 text-blue-600" />
+              <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300">
+                <div className="flex items-start gap-4">
+                  <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <Check className="w-4 h-4 text-blue-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                      {advantage.title}
+                    </h3>
+                    <p className="text-gray-600">
+                      {advantage.description}
+                    </p>
+                  </div>
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                  {advantage.title}
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  {advantage.description}
-                </p>
-                <p className="text-sm text-blue-600 font-medium">
-                  {advantage.detail}
-                </p>
               </div>
             </InView>
           ))}
@@ -104,27 +85,16 @@ export const CompetitiveAdvantageSection = () => {
           viewOptions={{ margin: "0px 0px -100px 0px" }}
           transition={{ duration: 0.5, ease: "easeInOut" }}
         >
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 md:p-12 text-center text-white">
-            <h3 className="text-2xl md:text-3xl font-bold mb-4">
-              The Difference is in the Training
+          <div className="bg-blue-50 rounded-xl p-8 text-center max-w-3xl mx-auto">
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">
+              Built for Legal Professionals
             </h3>
-            <p className="text-lg text-blue-100 mb-6 max-w-2xl mx-auto">
-              LegalDeep AI has been trained on over 10 million legal documents, court cases, and regulatory texts. 
-              This specialized training means we understand legal nuances that generic AI tools simply miss.
+            <p className="text-gray-700 mb-6">
+              While ChatGPT and NotebookLM are great general tools, LegalDeep AI focuses specifically 
+              on legal document processing with better understanding of legal structures and professional security needs.
             </p>
-            <div className="grid md:grid-cols-3 gap-6 text-center">
-              <div>
-                <div className="text-3xl font-bold text-white mb-2">10M+</div>
-                <div className="text-blue-100">Legal Documents Trained On</div>
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-white mb-2">95%+</div>
-                <div className="text-blue-100">Analysis Accuracy</div>
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-white mb-2">100%</div>
-                <div className="text-blue-100">Legal Professional Focus</div>
-              </div>
+            <div className="text-sm text-gray-600">
+              Trusted by legal professionals for specialized document analysis
             </div>
           </div>
         </InView>
