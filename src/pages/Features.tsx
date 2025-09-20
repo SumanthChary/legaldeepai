@@ -138,42 +138,9 @@ const Features = () => {
         "Better risk assessment",
         "Streamlined workflow integration"
       ]
-    },
-    {
-      icon: Shield,
-      title: "Compliance Management",
-      description: "Tools to help ensure regulatory compliance",
-      status: "coming-soon" as const,
-      infoList: [
-        "Regulatory compliance checking",
-        "Policy alignment verification",
-        "Automated compliance reporting",
-        "Risk mitigation suggestions"
-      ]
-    },
-    {
-      icon: Component,
-      title: "Document Automation",
-      description: "Streamlined document creation and management",
-      status: "coming-soon" as const,
-      infoList: [
-        "Template management system",
-        "Automated document generation",
-        "Custom workflow creation",
-        "Integration capabilities"
-      ]
     }
   ];
 
-  const previewFeatures = [
-    {
-      icon: Languages,
-      title: "Advanced Processing",
-      description: "Enhanced capabilities for document analysis",
-      status: "coming-soon" as const,
-      infoList: []
-    }
-  ];
 
   return (
     <PageLayout>
@@ -197,11 +164,6 @@ const Features = () => {
             showEnterpriseTip={true}
           />
           
-          <PreviewFeatures
-            title="More Innovations in Development"
-            description="A preview of additional capabilities on our roadmap"
-            features={previewFeatures}
-          />
           
           <div className="text-center bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8 mt-12">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">
