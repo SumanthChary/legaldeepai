@@ -150,35 +150,18 @@ export const HeroSection = ({
               ease: [0.25, 0.1, 0.25, 1]
             }}>
               <div className="relative">
-                {/* Pro stats floating card */}
-                <div className="absolute -top-8 -left-8 bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-gray-200/50 max-w-48 z-10 hidden lg:block">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                      <span className="text-xs font-bold text-white">✓</span>
+                {/* Placeholder for future illustration - clean and professional */}
+                <div className="aspect-video rounded-2xl bg-gradient-to-br from-slate-100 to-blue-50 border-2 border-dashed border-gray-200 flex items-center justify-center">
+                  <div className="text-center space-y-4">
+                    <div className="w-16 h-16 mx-auto bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
+                      <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
                     </div>
-                    <span className="text-sm font-medium text-gray-900">LIVE</span>
-                  </div>
-                  <p className="text-xs text-gray-600">"56+ documents analyzed today"</p>
-                </div>
-                
-                <div className="absolute -bottom-6 -right-6 bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-gray-200/50 max-w-52 z-10 hidden lg:block">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-green-500 rounded-full flex items-center justify-center">
-                      <Check className="w-4 h-4 text-white" />
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-800">Legal Document Analysis</h3>
+                      <p className="text-sm text-gray-600">AI-powered contract review</p>
                     </div>
-                    <span className="text-sm font-medium text-gray-900">What our users say</span>
-                  </div>
-                  <p className="text-xs text-gray-600">"Promising tool in development"</p>
-                </div>
-                
-                {/* Clean demo video */}
-                <DemoVideo />
-                
-                {/* Pro metrics floating card */}
-                <div className="absolute top-1/2 -right-4 bg-white/95 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-gray-200/50 z-10 hidden xl:block">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-blue-600 mb-1">9+</div>
-                    <div className="text-xs text-gray-600">users joined today</div>
                   </div>
                 </div>
               </div>

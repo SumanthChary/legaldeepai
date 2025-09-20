@@ -1,6 +1,7 @@
 
 import { PageLayout } from "@/components/layout";
 import { HeroSection } from "@/components/blocks/hero-section";
+import { DemoSection } from "@/components/blocks/demo-section";
 import { TestimonialsSection } from "@/components/blocks/testimonials-with-marquee";
 import { AboutSection } from "@/components/blocks/about-section";
 import { TrustSection } from "@/components/blocks/trust-section";
@@ -71,6 +72,7 @@ const Landing = () => {
     <div className="bg-gradient-to-br from-slate-50 via-white to-blue-50/30">
       <PageLayout withBanner={!isWhopUser}>
         <HeroSection benefits={benefits} isWhopUser={isWhopUser} />
+        <DemoSection />
         <FeaturedSection />
         <HowItWorksSection />
         <PowerfulFeaturesSection />
