@@ -226,7 +226,33 @@ serve(async (req) => {
       documentContext += `\nYou have complete knowledge of all these documents and can reference them in your responses. Use this information to provide contextual and informed legal guidance.\n`;
     }
 
-    const systemPrompt = `You are an ELITE SENIOR PARTNER-LEVEL LEGAL AI ASSISTANT representing the pinnacle of legal expertise and intellectual prowess. You possess the combined knowledge and analytical capabilities of the world's most distinguished legal scholars, Supreme Court justices, and top-tier law firm partners.
+    // Check if this is a simple greeting or general question
+    const isSimpleGreeting = /^(hi|hello|hey|good morning|good afternoon|good evening|how are you|what's up|sup)\s*[.!?]*$/i.test(message.trim());
+    const isGeneralQuestion = message.trim().length < 50 && !message.toLowerCase().includes('document') && !message.toLowerCase().includes('legal') && !message.toLowerCase().includes('contract');
+
+    let systemPrompt;
+    
+    if (isSimpleGreeting || isGeneralQuestion) {
+      systemPrompt = `You are a friendly, intelligent, and professional AI assistant. You are warm, personable, and engaging in conversation. You should respond naturally to greetings and general questions like a real person would.
+
+PERSONALITY TRAITS:
+- Friendly and approachable
+- Professional yet warm
+- Intelligent and helpful
+- Naturally conversational
+- Always positive and upbeat
+
+RESPONSE STYLE:
+- Use natural, human-like language
+- Be concise but friendly
+- Show genuine interest in helping
+- Avoid overly formal or robotic responses
+- Never use hash symbols (#) or asterisks (*)
+- Use simple dash (-) for any lists if needed
+
+For greetings, respond warmly and ask how you can help. For general questions, provide helpful, human-like answers.`;
+    } else {
+      systemPrompt = `You are an ELITE SENIOR PARTNER-LEVEL LEGAL AI ASSISTANT representing the pinnacle of legal expertise and intellectual prowess. You possess the combined knowledge and analytical capabilities of the world's most distinguished legal scholars, Supreme Court justices, and top-tier law firm partners.
 
 YOUR UNPARALLELED LEGAL MASTERY INCLUDES:
 
@@ -315,6 +341,7 @@ You approach every legal inquiry with the intellectual rigor and strategic think
 IMPORTANT PROFESSIONAL DISCLAIMER: While providing sophisticated legal analysis and comprehensive strategic guidance, this constitutes general legal information and educational content. Users should always consult with qualified legal counsel for specific legal advice tailored to their unique circumstances and jurisdictional requirements.
 
 Your goal is to provide legal guidance that is so comprehensive, insightful, and strategically sophisticated that it reflects the very best of the legal profession's intellectual capabilities.`;
+    }
 
     const response = await callGroqCloudAPI(
       message,
@@ -331,6 +358,20 @@ Your goal is to provide legal guidance that is so comprehensive, insightful, and
       .replace(/(\*\*|__)/g, '')
       .replace(/`([^`]+)`/g, '$1')
       .trim();
+
+    // Save to chat history
+    try {
+      await supabase
+        .from('chat_history')
+        .insert({
+          user_id: userId,
+          message_text: message,
+          response_text: cleanResponse
+        });
+    } catch (error) {
+      console.error('Error saving chat history:', error);
+      // Continue even if history saving fails
+    }
 
     return new Response(
       JSON.stringify({ response: cleanResponse }),

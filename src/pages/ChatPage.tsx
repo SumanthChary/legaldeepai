@@ -4,10 +4,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { ChatHeader } from "@/components/chat/ChatHeader";
 import { MessageList } from "@/components/chat/MessageList";
 import { ModernChatInput } from "@/components/chat/ModernChatInput";
-import { TeamChat } from "@/components/chat";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { History, Plus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 type Message = {
   id: string;
@@ -22,7 +22,7 @@ const ChatPage = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "welcome",
-      content: "Hello! I'm your AI legal assistant. I can help you analyze legal documents, answer questions about legal concepts, and provide detailed insights about your uploaded documents. How can I assist you today?",
+      content: "Hello! I'm your AI assistant. I can help you with legal questions, document analysis, general inquiries, and much more. How can I assist you today?",
       sender: "ai",
       timestamp: new Date(),
     },
@@ -31,9 +31,9 @@ const ChatPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [currentUser, setCurrentUser] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState("ai-chat");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadUser = async () => {
@@ -47,6 +47,38 @@ const ChatPage = () => {
         setCurrentUser({ ...user, profile });
       }
     };
+    
+    // Check if we should continue a chat from history
+    const continueChat = sessionStorage.getItem('continueChat');
+    if (continueChat) {
+      try {
+        const chatData = JSON.parse(continueChat);
+        setMessages([
+          {
+            id: "welcome",
+            content: "Hello! I'm your AI assistant. I can help you with legal questions, document analysis, general inquiries, and much more. How can I assist you today?",
+            sender: "ai",
+            timestamp: new Date(),
+          },
+          {
+            id: "previous-user",
+            content: chatData.message,
+            sender: "user",
+            timestamp: new Date(chatData.timestamp),
+          },
+          {
+            id: "previous-ai",
+            content: chatData.response,
+            sender: "ai",
+            timestamp: new Date(chatData.timestamp),
+          }
+        ]);
+        sessionStorage.removeItem('continueChat');
+      } catch (error) {
+        console.error('Error parsing continue chat data:', error);
+      }
+    }
+    
     loadUser();
   }, []);
 
@@ -148,106 +180,77 @@ const ChatPage = () => {
     }
   };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/20 to-purple-50/10">
-      <div className="container mx-auto px-4 py-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <div className="h-8 w-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                <span className="text-white text-sm font-bold">💬</span>
-              </div>
-              Chat Dashboard
-            </CardTitle>
-          </CardHeader>
-          <div className="px-6">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="ai-chat">AI Assistant</TabsTrigger>
-                <TabsTrigger value="team-chat" disabled={!currentUser?.profile?.organization_id}>
-                  Team Chat {!currentUser?.profile?.organization_id && "(Join Organization)"}
-                </TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="ai-chat" className="mt-6">
-                <div className="h-[600px] bg-gradient-to-br from-gray-50 via-blue-50/20 to-purple-50/10 rounded-lg border">
-                  <div className="flex flex-col h-full">
-                    <div className="flex-shrink-0 px-6 pt-6">
-                      <ChatHeader />
-                    </div>
-                    
-                    <div className="flex-1 flex flex-col min-h-0 px-6">
-                      <MessageList messages={messages} isLoading={isLoading} />
-                    </div>
-                    
-                    <ModernChatInput 
-                      input={input}
-                      setInput={setInput}
-                      onSend={handleSend}
-                      isLoading={isLoading}
-                      file={file}
-                      onFileChange={handleFileChange}
-                      onFileRemove={removeFile}
-                    />
-                  </div>
-                </div>
-              </TabsContent>
+  const startNewChat = () => {
+    setMessages([
+      {
+        id: "welcome",
+        content: "Hello! I'm your AI assistant. I can help you with legal questions, document analysis, general inquiries, and much more. How can I assist you today?",
+        sender: "ai",
+        timestamp: new Date(),
+      },
+    ]);
+  };
 
-              <TabsContent value="team-chat" className="mt-6">
-                {currentUser?.profile?.organization_id ? (
-                  <TeamChat />
-                ) : (
-                  <Card>
-                    <div className="p-8 text-center">
-                      <h3 className="text-lg font-semibold mb-4">Join an Organization</h3>
-                      <p className="text-muted-foreground mb-6">
-                        Team chat is available when you're part of an organization. 
-                        Create or join an organization to start collaborating with your team.
-                      </p>
-                      <div className="space-y-4">
-                        <Button 
-                          onClick={async () => {
-                            try {
-                              const { data, error } = await supabase.rpc('create_organization_with_owner', {
-                                org_name: `${currentUser?.profile?.username}'s Organization`,
-                                org_description: 'Demo organization for team collaboration'
-                              });
-                              
-                              if (error) throw error;
-                              
-                              // Reload user data to get updated organization_id
-                              const { data: updatedProfile } = await supabase
-                                .from('profiles')
-                                .select('*')
-                                .eq('id', currentUser.id)
-                                .single();
-                              
-                              setCurrentUser({ ...currentUser, profile: updatedProfile });
-                              
-                              toast({
-                                title: "Success",
-                                description: "Organization created successfully!"
-                              });
-                            } catch (error) {
-                              toast({
-                                title: "Error",
-                                description: "Failed to create organization",
-                                variant: "destructive"
-                              });
-                            }
-                          }}
-                        >
-                          Create Demo Organization
-                        </Button>
-                        <p className="text-sm text-muted-foreground">
-                          This will create a demo organization so you can test the team chat features.
-                        </p>
-                      </div>
-                    </div>
-                  </Card>
-                )}
-              </TabsContent>
-            </Tabs>
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/20 to-purple-50/10 p-2 sm:p-4 lg:p-6">
+      <div className="container mx-auto max-w-4xl">
+        <Card className="h-[calc(100vh-2rem)] sm:h-[calc(100vh-4rem)] lg:h-[calc(100vh-6rem)]">
+          <CardHeader className="flex-shrink-0 pb-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <CardTitle className="flex items-center gap-2">
+                <div className="h-8 w-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                  <span className="text-white text-sm font-bold">💬</span>
+                </div>
+                AI Assistant
+              </CardTitle>
+              
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => navigate('/chat-history')}
+                  className="flex items-center gap-2 flex-1 sm:flex-initial"
+                >
+                  <History className="h-4 w-4" />
+                  <span className="hidden sm:inline">History</span>
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={startNewChat}
+                  className="flex items-center gap-2 flex-1 sm:flex-initial"
+                >
+                  <Plus className="h-4 w-4" />
+                  <span className="hidden sm:inline">New Chat</span>
+                </Button>
+              </div>
+            </div>
+          </CardHeader>
+          
+          <div className="flex flex-col h-full pb-6 px-6">
+            <div className="flex-1 bg-gradient-to-br from-gray-50 via-blue-50/20 to-purple-50/10 rounded-lg border overflow-hidden">
+              <div className="flex flex-col h-full">
+                <div className="flex-shrink-0 px-4 sm:px-6 pt-4 sm:pt-6">
+                  <ChatHeader />
+                </div>
+                
+                <div className="flex-1 flex flex-col min-h-0 px-2 sm:px-6">
+                  <MessageList messages={messages} isLoading={isLoading} />
+                </div>
+                
+                <div className="flex-shrink-0">
+                  <ModernChatInput 
+                    input={input}
+                    setInput={setInput}
+                    onSend={handleSend}
+                    isLoading={isLoading}
+                    file={file}
+                    onFileChange={handleFileChange}
+                    onFileRemove={removeFile}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </Card>
       </div>

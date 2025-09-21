@@ -22,6 +22,7 @@ import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import Documentation from "./pages/Documentation";
 import ChatPage from "./pages/ChatPage";
+import ChatHistory from "./pages/ChatHistory";
 import { EnhancedDashboard } from "@/components/dashboard/EnhancedDashboard";
 import ESignatures from "./pages/ESignatures";
 import Support from "./pages/Support";
@@ -74,6 +75,7 @@ function App() {
               <Route path="/documentation" element={<Documentation />} />
               <Route path="/dashboard" element={<EnhancedDashboard />} />
               <Route path="/chat" element={<ChatPage />} />
+              <Route path="/chat-history" element={<ChatHistory />} />
               <Route path="/esignatures" element={<ESignatures />} />
               <Route path="/support" element={<Support />} />
               <Route path="/whop/callback" element={<WhopCallback />} />

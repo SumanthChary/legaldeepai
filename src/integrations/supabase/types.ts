@@ -212,6 +212,33 @@ export type Database = {
           },
         ]
       }
+      chat_history: {
+        Row: {
+          created_at: string
+          id: string
+          message_text: string
+          response_text: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message_text: string
+          response_text: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message_text?: string
+          response_text?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       code_redemptions: {
         Row: {
           code_id: string
