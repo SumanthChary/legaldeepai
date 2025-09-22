@@ -169,6 +169,62 @@ const Payment = () => {
     });
   };
 
+  const handleDodoPayment = async () => {
+    try {
+      setLoading(true);
+      
+      if (!user) {
+        throw new Error("User not authenticated");
+      }
+
+      const planType = plan.name.toLowerCase().replace(/\s+/g, '_') as SubscriptionTier;
+
+      // Simulate Dodo payment processing
+      // In a real implementation, this would integrate with Dodo Payments SDK/API
+      const transactionId = `dodo_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      
+      // Call our Supabase Edge Function to process the payment
+      const { data: processResult, error: processError } = await supabase.functions.invoke(
+        'process-dodo-payment',
+        {
+          body: {
+            transactionId: transactionId,
+            userId: user.id,
+            planType,
+            amount: amount
+          }
+        }
+      );
+
+      if (processError) {
+        throw new Error(processError.message || 'Payment processing failed');
+      }
+
+      if (!processResult.success) {
+        throw new Error(processResult.message || 'Payment processing failed');
+      }
+
+      toast({
+        title: "Payment Successful!",
+        description: `You are now subscribed to the ${plan.name} plan via Dodo Payments!`,
+        duration: 5000,
+      });
+      
+      // Redirect to success page with plan details
+      navigate(`/payment-success?plan=${encodeURIComponent(plan.name)}&amount=${amount}&method=dodo`);
+      
+    } catch (error: any) {
+      console.error("Dodo payment error:", error);
+      toast({
+        title: "Payment Error",
+        description: error.message || "There was an error with Dodo Payments. Please try again or contact support.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // PayPal configuration
   const paypalOptions = {
     clientId: "AZiHrC_GIm4eru7Ql0zgdwXuBv9tWhcL-WE1ZQyCIBIKGFvGWTt5r9IcPXrkVm8fWlDhzRuMF9IGBD0_",
@@ -294,17 +350,28 @@ const Payment = () => {
                     </div>
                   </div>
 
-                  <div className="border border-gray-200 rounded-xl p-6 opacity-50">
+                  <div className="border border-gray-200 rounded-xl p-6 hover:border-purple-300 transition-colors">
                     <h3 className="font-semibold text-gray-900 mb-4 flex items-center">
-                      <CreditCard className="h-5 w-5 mr-2 text-gray-400" />
-                      Razorpay - Coming Soon
+                      <CreditCard className="h-5 w-5 mr-2 text-purple-600" />
+                      Dodo Payments - Fast & Secure
                     </h3>
-                    <div className="flex items-center p-3 bg-yellow-50 rounded-lg">
-                      <AlertCircle className="h-5 w-5 text-yellow-600 mr-2" />
-                      <span className="text-sm text-yellow-800">
-                        Razorpay integration is coming soon! Use PayPal for now.
-                      </span>
-                    </div>
+                    
+                    <Button
+                      className="w-full h-12 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold"
+                      onClick={handleDodoPayment}
+                      disabled={loading}
+                    >
+                      {loading ? (
+                        <>
+                          <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                          Processing...
+                        </>
+                      ) : (
+                        <>
+                          Pay with Dodo Payments - {plan.price}
+                        </>
+                      )}
+                    </Button>
                   </div>
 
                   <div className="border border-gray-200 rounded-xl p-6 opacity-50">
@@ -343,7 +410,7 @@ const Payment = () => {
                     </div>
                     <div className="flex flex-col items-center">
                       <CreditCard className="h-4 w-4 text-green-600 mb-1" />
-                      <span className="text-gray-600">PayPal Protected</span>
+                      <span className="text-gray-600">Multi-Payment Options</span>
                     </div>
                   </div>
                 </div>

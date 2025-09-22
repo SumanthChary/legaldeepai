@@ -69,3 +69,15 @@ system_import = true
 [functions."google-config"]
 verify_jwt = false
 system_import = true
+
+[functions."process-paypal-payment"]
+verify_jwt = false
+system_import = true
+
+[functions."process-dodo-payment"]
+verify_jwt = false
+system_import = true
+
+[functions."ai-chat"]
+verify_jwt = false
+system_import = true
