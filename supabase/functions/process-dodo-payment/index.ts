@@ -14,20 +14,16 @@ const dodoApiKey = Deno.env.get('DODO_PAYMENTS_API_KEY')!;
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 // Verify Dodo payment
-async function verifyDodoPayment(transactionId: string): Promise<any> {
+async function verifyDodoPayment(transactionId: string, expectedAmount: string): Promise<any> {
   try {
     // For demo purposes, we'll simulate a successful payment verification
     // In a real implementation, this would call the actual Dodo Payments API
     if (transactionId.startsWith('dodo_')) {
-      // Simulate successful payment
-      const amount = transactionId.split('_')[1] ? 
-        (Date.now().toString().slice(-2) === transactionId.split('_')[1].slice(-2) ? '29.99' : '99.99') : 
-        '29.99';
-      
+      // Simulate successful payment with the expected amount
       return {
         id: transactionId,
         status: 'completed',
-        amount: amount,
+        amount: expectedAmount, // Use the expected amount from the request
         currency: 'USD',
         created_at: new Date().toISOString()
       };
@@ -103,7 +99,7 @@ serve(async (req) => {
     }
 
     // Verify the payment with Dodo Payments
-    const paymentDetails = await verifyDodoPayment(transactionId);
+    const paymentDetails = await verifyDodoPayment(transactionId, amount);
     
     if (!paymentDetails || paymentDetails.status !== 'completed') {
       return new Response(
