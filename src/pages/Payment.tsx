@@ -9,6 +9,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { CreditCard, Shield, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 import "./Payment.css";
 import { Database } from "@/integrations/supabase/types";
+import { Input } from "@/components/ui/input";
 
 type SubscriptionTier = Database["public"]["Enums"]["subscription_tier"];
 
@@ -28,7 +29,11 @@ const Payment = () => {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
-  const { plan } = (location.state as LocationState) || {};
+const { plan } = (location.state as LocationState) || {};
+
+  // Dodo manual confirmation state
+  const [transactionId, setTransactionId] = useState("");
+  const [confirming, setConfirming] = useState(false);
 
   // Check authentication status
   useEffect(() => {
@@ -172,56 +177,88 @@ const Payment = () => {
   const handleDodoPayment = async () => {
     try {
       setLoading(true);
-      
+
       if (!user) {
         throw new Error("User not authenticated");
       }
 
-      const planType = plan.name.toLowerCase().replace(/\s+/g, '_') as SubscriptionTier;
+      const normalized = plan.name.toLowerCase();
+      let key: 'free' | 'starter' | 'professional' | null = null;
+      if (normalized.includes('free')) key = 'free';
+      else if (normalized.includes('starter') || normalized.includes('basic')) key = 'starter';
+      else if (normalized.includes('pro')) key = 'professional';
 
-      // Simulate Dodo payment processing
-      // In a real implementation, this would integrate with Dodo Payments SDK/API
-      const transactionId = `dodo_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      
-      // Call our Supabase Edge Function to process the payment
-      const { data: processResult, error: processError } = await supabase.functions.invoke(
-        'process-dodo-payment',
-        {
-          body: {
-            transactionId: transactionId,
-            userId: user.id,
-            planType,
-            amount: amount
-          }
-        }
-      );
+      const links: Record<'free' | 'starter' | 'professional', string> = {
+        free: 'https://checkout.dodopayments.com/buy/pdt_TnYlrnizcTJnz9NfobZ4Q?quantity=1',
+        starter: 'https://checkout.dodopayments.com/buy/pdt_Jgmj7LlELZOYBqqn4ZyaV?quantity=1',
+        professional: 'https://checkout.dodopayments.com/buy/pdt_P897Pxm3ekfhjbdnwWVw1?quantity=1',
+      };
 
-      if (processError) {
-        throw new Error(processError.message || 'Payment processing failed');
+      const url = key ? links[key] : null;
+      if (!url) {
+        throw new Error('Unsupported plan for Dodo checkout. Please use PayPal or contact support.');
       }
 
-      if (!processResult.success) {
-        throw new Error(processResult.message || 'Payment processing failed');
-      }
+      window.open(url, '_blank', 'noopener,noreferrer');
 
       toast({
-        title: "Payment Successful!",
-        description: `You are now subscribed to the ${plan.name} plan via Dodo Payments!`,
-        duration: 5000,
+        title: 'Complete payment in Dodo',
+        description: 'After completing checkout, paste your Dodo transaction ID below and press Confirm to activate your plan.',
+        duration: 7000,
       });
-      
-      // Redirect to success page with plan details
-      navigate(`/payment-success?plan=${encodeURIComponent(plan.name)}&amount=${amount}&method=dodo`);
-      
     } catch (error: any) {
-      console.error("Dodo payment error:", error);
+      console.error("Dodo checkout error:", error);
       toast({
         title: "Payment Error",
-        description: error.message || "There was an error with Dodo Payments. Please try again or contact support.",
+        description: error.message || "There was an error opening Dodo checkout.",
         variant: "destructive",
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Dodo manual confirmation after redirect
+  const handleConfirmDodoPayment = async () => {
+    try {
+      setConfirming(true);
+
+      if (!user) throw new Error('User not authenticated');
+      if (!transactionId.trim()) throw new Error('Please paste your Dodo transaction ID');
+
+      const planType = plan.name.toLowerCase().replace(/\s+/g, '_') as SubscriptionTier;
+
+      const { data: processResult, error: processError } = await supabase.functions.invoke(
+        'process-dodo-payment',
+        {
+          body: {
+            transactionId: transactionId.trim(),
+            userId: user.id,
+            planType,
+            amount: amount,
+          }
+        }
+      );
+
+      if (processError) throw new Error(processError.message || 'Payment processing failed');
+      if (!processResult?.success) throw new Error(processResult?.error || 'Payment not verified');
+
+      toast({
+        title: 'Payment verified',
+        description: `You are now subscribed to the ${plan.name} plan!`,
+        duration: 5000,
+      });
+
+      navigate(`/payment-success?plan=${encodeURIComponent(plan.name)}&amount=${amount}&method=dodo`);
+    } catch (error: any) {
+      console.error('Confirm Dodo payment error:', error);
+      toast({
+        title: 'Verification failed',
+        description: error.message || 'We could not verify your Dodo payment. Please contact support.',
+        variant: 'destructive',
+      });
+    } finally {
+      setConfirming(false);
     }
   };
 
@@ -364,7 +401,7 @@ const Payment = () => {
                       {loading ? (
                         <>
                           <Loader2 className="h-5 w-5 animate-spin mr-2" />
-                          Processing...
+                          Opening checkout...
                         </>
                       ) : (
                         <>
@@ -372,6 +409,33 @@ const Payment = () => {
                         </>
                       )}
                     </Button>
+
+                    <div className="mt-4 grid gap-3 sm:grid-cols-[1fr,auto]">
+                      <Input
+                        placeholder="Paste Dodo transaction ID to confirm"
+                        value={transactionId}
+                        onChange={(e) => setTransactionId(e.target.value)}
+                        disabled={confirming}
+                      />
+                      <Button
+                        className="h-12"
+                        variant="secondary"
+                        onClick={handleConfirmDodoPayment}
+                        disabled={confirming || !transactionId.trim()}
+                      >
+                        {confirming ? (
+                          <>
+                            <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                            Confirming...
+                          </>
+                        ) : (
+                          'Confirm Dodo Payment'
+                        )}
+                      </Button>
+                    </div>
+                    <p className="text-sm text-gray-600 mt-2">
+                      We'll verify your payment with Dodo before activating your plan.
+                    </p>
                   </div>
 
                   <div className="border border-gray-200 rounded-xl p-6 opacity-50">

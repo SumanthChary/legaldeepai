@@ -16,20 +16,7 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey);
 // Verify Dodo payment
 async function verifyDodoPayment(transactionId: string, expectedAmount: string): Promise<any> {
   try {
-    // For demo purposes, we'll simulate a successful payment verification
-    // In a real implementation, this would call the actual Dodo Payments API
-    if (transactionId.startsWith('dodo_')) {
-      // Simulate successful payment with the expected amount
-      return {
-        id: transactionId,
-        status: 'completed',
-        amount: expectedAmount, // Use the expected amount from the request
-        currency: 'USD',
-        created_at: new Date().toISOString()
-      };
-    }
-    
-    // If not a demo transaction, attempt real API call
+    // Always verify with Dodo Payments API - no test shortcuts
     const response = await fetch(`https://api.dodopayments.com/v1/transactions/${transactionId}`, {
       method: 'GET',
       headers: {
@@ -39,7 +26,8 @@ async function verifyDodoPayment(transactionId: string, expectedAmount: string):
     });
 
     if (!response.ok) {
-      console.error('Dodo API error:', response.status, await response.text());
+      const body = await response.text();
+      console.error('Dodo API error:', response.status, body);
       throw new Error(`Dodo API error: ${response.status}`);
     }
 
