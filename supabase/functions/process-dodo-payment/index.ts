@@ -80,13 +80,19 @@ serve(async (req) => {
   try {
     const { transactionId, userId, planType: rawPlanType, amount } = await req.json();
     
-    // Normalize plan type against allowed values
-    const allowedPlans = new Set(['starter','professional','enterprise','pay_per_document','free']);
+    // Normalize plan type against database enum values
+    const allowedPlans = new Set(['basic','professional','enterprise','pay_per_document']);
     let planType = (rawPlanType || '').toString().toLowerCase();
+    
+    // Map starter to basic (database enum value)
+    if (planType === 'starter') {
+      planType = 'basic';
+    }
+    
     if (!allowedPlans.has(planType)) {
       // Fallback by amount heuristics
       const amt = parseFloat(amount);
-      planType = amt <= 49 ? 'starter' : amt <= 99 ? 'professional' : 'enterprise';
+      planType = amt <= 49 ? 'basic' : amt <= 99 ? 'professional' : 'enterprise';
     }
     
     console.log('Processing Dodo payment:', { transactionId, userId, planType, amount });
@@ -161,6 +167,9 @@ serve(async (req) => {
     // Update profile with document limits based on plan
     let documentLimit = 3; // Free tier default
     switch (planType) {
+      case 'basic':
+        documentLimit = 50;
+        break;
       case 'professional':
         documentLimit = 500;
         break;
