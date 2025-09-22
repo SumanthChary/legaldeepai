@@ -78,7 +78,16 @@ serve(async (req) => {
   }
 
   try {
-    const { transactionId, userId, planType, amount } = await req.json();
+    const { transactionId, userId, planType: rawPlanType, amount } = await req.json();
+    
+    // Normalize plan type against allowed values
+    const allowedPlans = new Set(['starter','professional','enterprise','pay_per_document','free']);
+    let planType = (rawPlanType || '').toString().toLowerCase();
+    if (!allowedPlans.has(planType)) {
+      // Fallback by amount heuristics
+      const amt = parseFloat(amount);
+      planType = amt <= 49 ? 'starter' : amt <= 99 ? 'professional' : 'enterprise';
+    }
     
     console.log('Processing Dodo payment:', { transactionId, userId, planType, amount });
 
