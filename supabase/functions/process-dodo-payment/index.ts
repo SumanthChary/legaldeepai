@@ -156,7 +156,7 @@ serve(async (req) => {
         status: 'active',
         current_period_start: currentPeriodStart.toISOString(),
         current_period_end: currentPeriodEnd.toISOString(),
-        source: 'dodo'
+        source: 'direct'
       });
 
     if (subscriptionError) {
@@ -185,7 +185,7 @@ serve(async (req) => {
       .from('profiles')
       .update({ 
         document_limit: documentLimit,
-        source: 'dodo'
+        source: 'direct'
       })
       .eq('id', userId);
 
