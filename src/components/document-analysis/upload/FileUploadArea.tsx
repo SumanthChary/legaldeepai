@@ -1,5 +1,5 @@
 
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Upload, FileText, Cloud } from "lucide-react";
 import { ScanButton } from './ScanButton';

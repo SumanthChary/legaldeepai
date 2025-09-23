@@ -4,6 +4,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useFileValidation } from "./hooks/useFileValidation";
 import { useFileUploadProgress } from "./hooks/useFileUploadProgress";
 import { uploadService } from "./services/uploadService";
+import { supabase } from "@/integrations/supabase/client";
 
 export const useFileUpload = (onSuccess?: () => void) => {
   const [file, setFile] = useState<File | null>(null);
@@ -36,6 +37,35 @@ export const useFileUpload = (onSuccess?: () => void) => {
 
   const handleUpload = async () => {
     if (!file) return;
+
+    // Check user limits before uploading
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      toast({
+        title: "Authentication required",
+        description: "Please log in to upload documents",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('email, document_count, document_limit')
+      .eq('id', user.id)
+      .single();
+
+    // Skip limit check for admin user
+    if (profile?.email !== 'enjoywithpandu@gmail.com') {
+      if (profile && profile.document_count >= profile.document_limit) {
+        toast({
+          title: "Document limit reached",
+          description: `You've reached your limit of ${profile.document_limit} documents. Upgrade your plan to continue.`,
+          variant: "destructive",
+        });
+        return;
+      }
+    }
 
     startUpload();
     

@@ -20,7 +20,7 @@ export const getPricingPlans = (isAnnual: boolean) => [
   {
     name: "Starter",
     price: "49",
-    originalPrice: "",
+    originalPrice: "79",
     period: "/month",
     description: "Ideal for solo practitioners",
     features: [
@@ -42,7 +42,7 @@ export const getPricingPlans = (isAnnual: boolean) => [
   {
     name: "Pro Plan",
     price: "149",
-    originalPrice: "",
+    originalPrice: "249",
     period: "/month",
     description: "Built for growing law firms",
     features: [

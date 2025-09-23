@@ -7,6 +7,7 @@ import { DashboardHeader } from "./dashboard/DashboardHeader";
 import { StatsCards } from "./dashboard/StatsCards";
 import { ActivitySummary } from "./dashboard/ActivitySummary";
 import { ContentTabs } from "./dashboard/ContentTabs";
+import { LimitNotification } from "./dashboard/LimitNotification";
 import { DonationDialog } from "./dashboard/DonationDialog";
 
 export const Dashboard = () => {
@@ -98,6 +99,8 @@ export const Dashboard = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <LimitNotification userProfile={userProfile} />
+      
       {showUpgradeBanner && !hasUnlimitedAccess && (
         <div className="mb-8">
           <UpgradeBanner
