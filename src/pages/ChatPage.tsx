@@ -6,7 +6,7 @@ import { MessageList } from "@/components/chat/MessageList";
 import { ModernChatInput } from "@/components/chat/ModernChatInput";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { History, Plus } from "lucide-react";
+import { History, Plus, Bot } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 type Message = {
   id: string;
@@ -174,48 +174,60 @@ const ChatPage = () => {
       timestamp: new Date()
     }]);
   };
-  return <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/20 to-purple-50/10 p-2 sm:p-4 lg:p-6">
-      <div className="container mx-auto max-w-4xl">
-        <Card className="h-[calc(100vh-2rem)] sm:h-[calc(100vh-4rem)] lg:h-[calc(100vh-6rem)]">
-          <CardHeader className="flex-shrink-0 pb-4">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <CardTitle className="flex items-center gap-2">
-                
-                AI Assistant
-              </CardTitle>
-              
-              <div className="flex items-center gap-2 w-full sm:w-auto">
-                <Button variant="outline" size="sm" onClick={() => navigate('/chat-history')} className="flex items-center gap-2 flex-1 sm:flex-initial">
-                  <History className="h-4 w-4" />
-                  <span className="hidden sm:inline">History</span>
-                </Button>
-                <Button variant="outline" size="sm" onClick={startNewChat} className="flex items-center gap-2 flex-1 sm:flex-initial">
-                  <Plus className="h-4 w-4" />
-                  <span className="hidden sm:inline">New Chat</span>
-                </Button>
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="mx-auto max-w-5xl h-screen flex flex-col">
+        {/* Header */}
+        <div className="flex-shrink-0 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+          <div className="flex items-center justify-between p-4 lg:px-8">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-primary rounded-lg">
+                <Bot className="h-5 w-5 text-primary-foreground" />
+              </div>
+              <div>
+                <h1 className="text-lg font-semibold">AI Assistant</h1>
+                <p className="text-sm text-muted-foreground">Legal AI Chat & Document Analysis</p>
               </div>
             </div>
-          </CardHeader>
-          
-          <div className="flex flex-col h-full pb-6 px-6">
-            <div className="flex-1 bg-gradient-to-br from-gray-50 via-blue-50/20 to-purple-50/10 rounded-lg border overflow-hidden">
-              <div className="flex flex-col h-full">
-                <div className="flex-shrink-0 px-4 sm:px-6 pt-4 sm:pt-6">
-                  <ChatHeader />
-                </div>
-                
-                <div className="flex-1 flex flex-col min-h-0 px-2 sm:px-6">
-                  <MessageList messages={messages} isLoading={isLoading} />
-                </div>
-                
-                <div className="flex-shrink-0">
-                  <ModernChatInput input={input} setInput={setInput} onSend={handleSend} isLoading={isLoading} file={file} onFileChange={handleFileChange} onFileRemove={removeFile} />
-                </div>
-              </div>
+            
+            <div className="flex items-center gap-2">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => navigate('/chat-history')} 
+                className="hidden sm:flex items-center gap-2"
+              >
+                <History className="h-4 w-4" />
+                History
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={startNewChat} 
+                className="flex items-center gap-2"
+              >
+                <Plus className="h-4 w-4" />
+                <span className="hidden sm:inline">New</span>
+              </Button>
             </div>
           </div>
-        </Card>
+        </div>
+
+        {/* Chat Area */}
+        <div className="flex-1 flex flex-col min-h-0">
+          <MessageList messages={messages} isLoading={isLoading} />
+          <ModernChatInput 
+            input={input} 
+            setInput={setInput} 
+            onSend={handleSend} 
+            isLoading={isLoading} 
+            file={file} 
+            onFileChange={handleFileChange} 
+            onFileRemove={removeFile} 
+          />
+        </div>
       </div>
-    </div>;
+    </div>
+  );
 };
 export default ChatPage;
