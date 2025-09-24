@@ -35,27 +35,27 @@ export const ModernChatInput = ({
   };
 
   return (
-    <div className="flex-shrink-0 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <div className="flex-shrink-0 border-t bg-gradient-to-r from-white/95 via-blue-50/50 to-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80 shadow-lg">
       <div className="max-w-4xl mx-auto p-4 lg:px-8">
         <PromptInput
           value={input}
           onValueChange={setInput}
           isLoading={isLoading}
           onSubmit={onSend}
-          className="w-full border rounded-2xl shadow-sm"
+          className="w-full border border-gray-200/60 rounded-2xl shadow-xl bg-white/90 backdrop-blur hover:shadow-2xl transition-all duration-300"
         >
           {file && (
-            <div className="flex flex-wrap gap-2 pb-2 sm:pb-3">
-              <div className="bg-blue-50 border border-blue-200 flex items-center gap-1.5 sm:gap-2 rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm">
-                <Paperclip className="h-3 w-3 sm:h-4 sm:w-4 text-blue-600 flex-shrink-0" />
-                <span className="max-w-[120px] sm:max-w-[200px] truncate text-blue-800 font-medium">{file.name}</span>
+            <div className="flex flex-wrap gap-2 pb-3">
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200/60 flex items-center gap-2 rounded-xl px-3 py-2 text-sm shadow-sm">
+                <Paperclip className="h-4 w-4 text-blue-600 flex-shrink-0" />
+                <span className="max-w-[150px] sm:max-w-[200px] truncate text-blue-800 font-medium">{file.name}</span>
                 <Button
                   variant="ghost"
                   size="icon-sm"
                   onClick={onFileRemove}
-                  className="h-4 w-4 sm:h-6 sm:w-6 text-blue-600 hover:bg-blue-100 flex-shrink-0"
+                  className="h-5 w-5 text-blue-600 hover:bg-blue-100 rounded-full flex-shrink-0"
                 >
-                  <X className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                  <X className="h-3 w-3" />
                 </Button>
               </div>
             </div>
@@ -72,7 +72,7 @@ export const ModernChatInput = ({
                 variant="ghost"
                 size="icon"
                 onClick={handleFileClick}
-                className="h-9 w-9 rounded-full hover:bg-muted"
+                className="h-9 w-9 rounded-full hover:bg-blue-50 text-blue-600 transition-all duration-200 hover:scale-105"
               >
                 <Paperclip className="h-4 w-4" />
               </Button>
@@ -84,11 +84,11 @@ export const ModernChatInput = ({
               <Button
                 variant="default"
                 size="icon"
-                className="h-9 w-9 rounded-full"
+                className="h-9 w-9 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
                 onClick={onSend}
                 disabled={isLoading || (!input.trim() && !file)}
               >
-                <ArrowUp className="h-4 w-4" />
+                <ArrowUp className="h-4 w-4 text-white" />
               </Button>
             </PromptInputAction>
           </PromptInputActions>

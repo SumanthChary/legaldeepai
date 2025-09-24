@@ -175,18 +175,25 @@ const ChatPage = () => {
     }]);
   };
   return (
-    <div className="min-h-screen bg-background">
-      <div className="mx-auto max-w-5xl h-screen flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/30 relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute inset-0">
+        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-gradient-to-br from-blue-400/10 to-purple-600/10 rounded-full filter blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/3 left-1/4 w-80 h-80 bg-gradient-to-br from-purple-400/8 to-pink-500/8 rounded-full filter blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+      </div>
+      
+      <div className="mx-auto max-w-5xl h-screen flex flex-col relative z-10">
         {/* Header */}
-        <div className="flex-shrink-0 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="flex-shrink-0 border-b bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 shadow-sm">
           <div className="flex items-center justify-between p-4 lg:px-8">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-primary rounded-lg">
-                <Bot className="h-5 w-5 text-primary-foreground" />
+              <div className="p-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg relative">
+                <Bot className="h-6 w-6 text-white" />
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-purple-400/20 rounded-xl blur animate-pulse"></div>
               </div>
               <div>
-                <h1 className="text-lg font-semibold">AI Assistant</h1>
-                <p className="text-sm text-muted-foreground">Legal AI Chat & Document Analysis</p>
+                <h1 className="text-xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-purple-700 bg-clip-text text-transparent">AI Legal Assistant</h1>
+                <p className="text-sm text-muted-foreground">Advanced Document Analysis & Legal AI Chat</p>
               </div>
             </div>
             
@@ -195,7 +202,7 @@ const ChatPage = () => {
                 variant="ghost" 
                 size="sm" 
                 onClick={() => navigate('/chat-history')} 
-                className="hidden sm:flex items-center gap-2"
+                className="hidden sm:flex items-center gap-2 hover:bg-blue-50 text-blue-700"
               >
                 <History className="h-4 w-4" />
                 History
@@ -204,10 +211,10 @@ const ChatPage = () => {
                 variant="ghost" 
                 size="sm" 
                 onClick={startNewChat} 
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 hover:bg-purple-50 text-purple-700"
               >
                 <Plus className="h-4 w-4" />
-                <span className="hidden sm:inline">New</span>
+                <span className="hidden sm:inline">New Chat</span>
               </Button>
             </div>
           </div>
