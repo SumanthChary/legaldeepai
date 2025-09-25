@@ -27,14 +27,14 @@ export const PricingPlans = ({ plans, isAnnual }: PricingPlansProps) => {
         {plans.map((plan) => (
           <div
             key={plan.name}
-            className={`relative bg-card rounded-2xl border transition-all duration-300 hover:shadow-[var(--hover-shadow)] hover:-translate-y-1
+            className={`relative bg-white rounded-2xl border transition-all duration-300 hover:shadow-lg hover:-translate-y-1
               ${plan.highlight 
-                ? 'border-accent/30 shadow-[var(--law-firm-shadow)] scale-105 ring-1 ring-accent/10' 
-                : 'border-border shadow-[var(--card-shadow)]'}`}
+                ? 'border-blue-200 shadow-lg scale-105' 
+                : 'border-gray-200 shadow-sm'}`}
           >
             {plan.popular && (
               <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10">
-                <span className="bg-accent text-accent-foreground px-4 py-2 rounded-full text-xs font-semibold font-aeonik shadow-[var(--accent-glow)] border border-accent/20">
+                <span className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-3 py-1 rounded-full text-xs font-medium shadow-sm">
                   Most Popular
                 </span>
               </div>
@@ -42,28 +42,28 @@ export const PricingPlans = ({ plans, isAnnual }: PricingPlansProps) => {
             
             <div className="p-8">
               <div className="text-center mb-8">
-                <h3 className="text-lg font-bold mb-4 text-primary font-aeonik tracking-tight">{plan.name}</h3>
+                <h3 className="text-lg font-semibold mb-4 text-gray-900">{plan.name}</h3>
                 <div className="mb-4">
                   {plan.originalPrice && (
-                    <div className="text-lg text-muted-foreground line-through mb-1">
+                    <div className="text-lg text-gray-400 line-through mb-1">
                       ${plan.originalPrice}{plan.period}
                     </div>
                   )}
                   <div className="flex items-baseline justify-center">
-                    {plan.price !== "0" && plan.price !== "Custom" && <span className="text-2xl font-semibold text-primary">$</span>}
-                    <span className="text-4xl font-bold text-primary font-aeonik tracking-tight">{plan.price}</span>
-                    {plan.price !== "Custom" && <span className="text-lg text-muted-foreground ml-1 font-aeonik">{plan.period}</span>}
+                    {plan.price !== "0" && plan.price !== "Custom" && <span className="text-2xl font-medium text-gray-900">$</span>}
+                    <span className="text-4xl font-bold text-gray-900">{plan.price}</span>
+                    {plan.price !== "Custom" && <span className="text-lg text-gray-600 ml-1">{plan.period}</span>}
                   </div>
                 </div>
-                <p className="text-sm text-muted-foreground font-aeonik">{plan.description}</p>
+                <p className="text-sm text-gray-600">{plan.description}</p>
               </div>
               
               <div className="mb-8">
                 <ul className="space-y-3 text-sm">
                   {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-start text-foreground">
-                      <Check className="h-4 w-4 text-accent mr-3 mt-0.5 flex-shrink-0" />
-                      <span className="font-aeonik">{feature}</span>
+                    <li key={feature} className="flex items-start text-gray-700">
+                      <Check className="h-4 w-4 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                      <span>{feature}</span>
                     </li>
                   ))}
                 </ul>

@@ -13,13 +13,20 @@ export const HeroSection = ({
   isWhopUser = false
 }: HeroProps) => {
   const navigate = useNavigate();
-  return <div className="relative overflow-hidden bg-background min-h-screen flex items-center">
-      {/* Clean, professional background */}
+  return <div className="relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-blue-50/30 min-h-screen flex items-center">
+      {/* Sophisticated background elements */}
       <div className="absolute inset-0">
-        {/* Minimal accent elements for depth */}
-        <div className="absolute top-1/4 right-1/4 w-32 h-32 md:w-48 md:h-48 bg-accent/5 rounded-full"></div>
-        <div className="absolute bottom-1/3 left-1/4 w-24 h-24 md:w-36 md:h-36 bg-secondary/5 rounded-full"></div>
+        <div className="absolute top-1/4 left-1/4 w-64 h-64 md:w-96 md:h-96 bg-gradient-to-br from-blue-400/20 to-purple-600/20 rounded-full filter blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/3 right-1/4 w-48 h-48 md:w-80 md:h-80 bg-gradient-to-br from-purple-400/15 to-pink-500/15 rounded-full filter blur-3xl animate-pulse" style={{
+        animationDelay: '1s'
+      }}></div>
+        <div className="absolute top-3/4 left-1/3 w-32 h-32 md:w-64 md:h-64 bg-gradient-to-br from-cyan-300/10 to-blue-500/10 rounded-full filter blur-2xl"></div>
+        <div className="absolute top-1/6 right-1/3 w-24 h-24 md:w-48 md:h-48 bg-gradient-to-br from-indigo-300/15 to-purple-400/15 rounded-full filter blur-2xl"></div>
       </div>
+      
+      {/* Subtle mesh gradient overlay */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(59,130,246,0.05),transparent_50%)] pointer-events-none"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(147,51,234,0.05),transparent_50%)] pointer-events-none"></div>
       
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 lg:py-20 relative z-10">
         <div className="grid lg:grid-cols-12 gap-6 lg:gap-8 xl:gap-16 items-center">
@@ -42,19 +49,19 @@ export const HeroSection = ({
                 {/* Premium badge - special for Whop users */}
                 <div className={`inline-flex items-center gap-1.5 md:gap-2 px-2.5 py-1.5 md:px-3 md:py-2 lg:px-4 lg:py-2 rounded-full ${
                   isWhopUser 
-                    ? 'bg-card border border-accent/20 shadow-[var(--card-shadow)]' 
-                    : 'bg-card border border-accent/20 shadow-[var(--card-shadow)]'
+                    ? 'bg-gradient-to-r from-blue-100 to-purple-100 border border-blue-200/50' 
+                    : 'bg-gradient-to-r from-green-100 to-emerald-100 border border-green-200/50'
                 } backdrop-blur-sm`}>
-                  <Users className={`h-3 w-3 md:h-4 md:w-4 ${isWhopUser ? 'text-accent' : 'text-accent'}`} />
-                  <span className={`text-xs md:text-sm font-medium font-aeonik ${
-                    isWhopUser ? 'text-primary' : 'text-primary'
+                  <Users className={`h-3 w-3 md:h-4 md:w-4 ${isWhopUser ? 'text-blue-600' : 'text-green-600'}`} />
+                  <span className={`text-xs md:text-sm font-medium ${
+                    isWhopUser ? 'text-blue-700' : 'text-green-700'
                   }`}>
                     {isWhopUser ? 'Welcome from Whop! 🎉' : 'PRO - Trusted by Professionals'}
                   </span>
                 </div>
                 
-                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-primary leading-tight font-aeonik tracking-tight">
-                  Review 30-Page <span className="font-editorial-new italic text-accent">Contracts</span> in 12 Minutes, <span className="text-secondary">Not 2 Hours</span>
+                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold bg-gradient-to-br from-gray-900 via-gray-800 to-gray-600 bg-clip-text text-transparent leading-tight">
+                  Review 30-Page <span className="font-editorial-new italic text-blue-600 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Contracts</span> in 12 Minutes, <span className="bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent">Not 2 Hours</span>
                 </h1>
               </div>
             </InView>
@@ -72,7 +79,7 @@ export const HeroSection = ({
             duration: 0.8,
             delay: 0.4
           }}>
-              <p className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-xl font-aeonik">
+              <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 leading-relaxed max-w-xl">
                 {isWhopUser 
                   ? 'You\'re all set! Access your premium LegalDeep AI subscription and transform your legal workflow today.' 
                   : 'Slash review time, catch hidden risks, and deliver clear answers your clients love. No setup, just upload and go.'
@@ -96,15 +103,14 @@ export const HeroSection = ({
               <div className="flex flex-col sm:flex-row gap-2 md:gap-3 lg:gap-4">
                 <Button 
                   size="lg" 
-                  variant="default"
-                  className="shadow-[var(--law-firm-shadow)] hover:shadow-[var(--hover-shadow)] transition-all duration-300 w-full sm:w-auto font-aeonik font-semibold" 
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300 border-0 w-full sm:w-auto" 
                   onClick={() => navigate("/dashboard")}
                 >
                   {isWhopUser ? 'Access Your Dashboard' : 'Get Started Free'}
                   <ArrowRight className="ml-1.5 h-3.5 w-3.5 md:ml-2 md:h-4 md:w-4" />
                 </Button>
                 {!isWhopUser && (
-                  <Button size="lg" variant="professional" className="transition-all duration-300 w-full sm:w-auto font-aeonik" onClick={() => navigate("/documentation")}>
+                  <Button size="lg" variant="outline" className="border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-all duration-300 w-full sm:w-auto" onClick={() => navigate("/documentation")}>
                     Watch Demo
                   </Button>
                 )}
@@ -124,11 +130,11 @@ export const HeroSection = ({
           }}>
               <div className="pt-4 md:pt-6 lg:pt-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3 lg:gap-4">
-                  {benefits.map((benefit, index) => <div key={index} className="flex items-center gap-2 md:gap-3 p-2.5 md:p-3 lg:p-4 rounded-xl bg-card border border-border hover:border-accent/30 transition-all duration-300 shadow-[var(--card-shadow)] hover:shadow-[var(--hover-shadow)]">
-                      <div className="flex-shrink-0 w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 rounded-full bg-accent flex items-center justify-center">
-                        <Check className="h-2.5 w-2.5 md:h-3 md:w-3 lg:h-3.5 lg:w-3.5 text-accent-foreground" />
+                  {benefits.map((benefit, index) => <div key={index} className="flex items-center gap-2 md:gap-3 p-2.5 md:p-3 lg:p-4 rounded-lg bg-white/50 backdrop-blur-sm border border-gray-200/50 hover:border-gray-300/50 transition-all duration-300">
+                      <div className="flex-shrink-0 w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center">
+                        <Check className="h-2.5 w-2.5 md:h-3 md:w-3 lg:h-3.5 lg:w-3.5 text-white" />
                       </div>
-                      <span className="text-xs md:text-sm lg:text-base text-foreground font-medium font-aeonik">{benefit}</span>
+                      <span className="text-xs md:text-sm lg:text-base text-gray-700 font-medium">{benefit}</span>
                     </div>)}
                 </div>
               </div>
