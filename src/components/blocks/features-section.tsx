@@ -56,7 +56,7 @@ export const FeaturesSection = () => {
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary mb-4 md:mb-6">
               Powerful Features for Legal Professionals
             </h2>
-            <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto font-aeonik">
               Our AI-powered platform provides comprehensive tools for efficient legal document analysis
             </p>
           </div>
@@ -72,14 +72,14 @@ export const FeaturesSection = () => {
               }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
-              <div className="bg-white p-6 md:p-8 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 hover:border-accent/50 group">
+              <div className="bg-card p-6 md:p-8 rounded-xl border border-border hover:border-accent/30 group transition-all duration-300 shadow-[var(--card-shadow)] hover:shadow-[var(--hover-shadow)]">
                 <div className="mb-4 md:mb-6 transform group-hover:scale-110 transition-transform duration-300">
                   {feature.icon}
                 </div>
                 <h3 className="text-lg md:text-xl font-semibold text-primary mb-3 md:mb-4">
                   {feature.title}
                 </h3>
-                <p className="text-sm md:text-base text-gray-600 leading-relaxed">
+                <p className="text-sm md:text-base text-muted-foreground leading-relaxed font-aeonik">
                   {feature.description}
                 </p>
               </div>
