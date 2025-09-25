@@ -152,14 +152,12 @@ export const HeroSection = ({
             }}>
               <div className="relative">
                 {/* Hero dashboard mockup */}
-                <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+                <div className="relative rounded-2xl overflow-hidden">
                   <img 
                     src={heroMockup} 
                     alt="LegalDeep AI contract analysis dashboard showing risk score, compliance metrics, and suggestions"
                     className="w-full h-auto object-cover"
                   />
-                  {/* Subtle overlay for depth */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent pointer-events-none"></div>
                 </div>
               </div>
             </InView>
