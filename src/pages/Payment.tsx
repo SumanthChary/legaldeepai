@@ -393,22 +393,26 @@ const { plan } = (location.state as LocationState) || {};
                       Dodo Payments - Fast & Secure
                     </h3>
                     
-                    <Button
-                      className="w-full h-12 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold"
+                    <button
+                      className={`w-full relative overflow-hidden rounded-lg transition-all duration-200 ${
+                        loading ? 'opacity-70 cursor-not-allowed' : 'hover:scale-[1.02] hover:shadow-lg'
+                      }`}
                       onClick={handleDodoPayment}
                       disabled={loading}
                     >
                       {loading ? (
-                        <>
-                          <Loader2 className="h-5 w-5 animate-spin mr-2" />
-                          Opening checkout...
-                        </>
+                        <div className="h-12 bg-[#9acd32] flex items-center justify-center rounded-lg">
+                          <Loader2 className="h-5 w-5 animate-spin text-black mr-2" />
+                          <span className="text-black font-semibold">Opening checkout...</span>
+                        </div>
                       ) : (
-                        <>
-                          Pay with Dodo Payments - {plan.price}
-                        </>
+                        <img 
+                          src="/dodo-payments-button.png" 
+                          alt="Pay with Dodo Payments" 
+                          className="w-full h-12 object-cover rounded-lg"
+                        />
                       )}
-                    </Button>
+                    </button>
 
                     <div className="mt-4 grid gap-3 sm:grid-cols-[1fr,auto]">
                       <Input
