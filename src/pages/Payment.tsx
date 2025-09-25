@@ -442,18 +442,6 @@ const { plan } = (location.state as LocationState) || {};
                     </p>
                   </div>
 
-                  <div className="border border-gray-200 rounded-xl p-6 opacity-50">
-                    <h3 className="font-semibold text-gray-900 mb-4 flex items-center">
-                      <CreditCard className="h-5 w-5 mr-2 text-gray-400" />
-                      Credit Card - Coming Soon
-                    </h3>
-                    <Button
-                      className="w-full h-12 bg-gray-100 text-gray-500 cursor-not-allowed"
-                      disabled
-                    >
-                      Credit Card Payment (Coming Soon)
-                    </Button>
-                  </div>
                 </div>
                 
                 <div className="mt-8 space-y-4">
