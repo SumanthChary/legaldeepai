@@ -1,6 +1,8 @@
 
 import { PageLayout } from "@/components/layout";
 import { HeroSection } from "@/components/blocks/hero-section";
+import { HighlightsSection } from "@/components/blocks/highlights-section";
+import { TrustedBySection } from "@/components/blocks/trusted-by-section";
 import { DemoSection } from "@/components/blocks/demo-section";
 import { TestimonialsSection } from "@/components/blocks/testimonials-with-marquee";
 import { AboutSection } from "@/components/blocks/about-section";
@@ -69,9 +71,11 @@ const Landing = () => {
   }, []);
 
   return (
-    <div className="bg-gradient-to-br from-slate-50 via-white to-blue-50/30">
+    <div className="bg-white">
       <PageLayout withBanner={!isWhopUser}>
         <HeroSection benefits={benefits} isWhopUser={isWhopUser} />
+        <HighlightsSection benefits={benefits} />
+        <TrustedBySection />
         <DemoSection />
         <FeaturedSection />
         <HowItWorksSection />
@@ -80,17 +84,17 @@ const Landing = () => {
         <TrustSection />
         {/* Show special Whop upsell for Whop users */}
         {isWhopUser && <WhopWelcomeUpsell />}
-        <div className="bg-gradient-to-br from-gray-50 to-blue-50/50">
+        <div className="bg-muted/30">
           <PricingSection />
         </div>
-        <div className="bg-white/90 backdrop-blur-sm">
+        <div className="bg-white">
           <TestimonialsSection />
         </div>
         <AboutAuthorSection />
-        <div className="bg-gradient-to-br from-slate-50 to-gray-100/50">
+        <div className="bg-muted/30">
           <AboutSection />
         </div>
-        <div className="bg-white/90 backdrop-blur-sm">
+        <div className="bg-white">
           <FAQSection faqs={faqs} />
         </div>
       </PageLayout>
