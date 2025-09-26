@@ -3,7 +3,7 @@ import { ArrowRight, Check, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { DemoVideo } from "@/components/blocks/demo-video";
 import { InView } from "@/components/ui/in-view";
-import heroMockup from "/lovable-uploads/hero-mockup-transparent.png";
+import heroMockup from "@/assets/hero-dashboard-mockup.png";
 interface HeroProps {
   benefits: string[];
   isWhopUser?: boolean;
