@@ -142,6 +142,38 @@ export const HeroSection = ({
             </InView>
           </div>
         </div>
+        
+        {/* Trusted By Section */}
+        <div className="mt-12 lg:mt-20">
+          <p className="text-center text-sm text-muted-foreground mb-6">Inspired and Improved</p>
+          <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12 lg:gap-16">
+            <img 
+              src="/logos/aba-logo.png" 
+              alt="ABA" 
+              className="h-10 md:h-12 w-auto opacity-50 grayscale hover:opacity-75 hover:grayscale-0 transition-all duration-300"
+            />
+            <img 
+              src="/logos/microsoft-azure-logo.png" 
+              alt="Microsoft Azure" 
+              className="h-10 md:h-12 w-auto opacity-50 grayscale hover:opacity-75 hover:grayscale-0 transition-all duration-300"
+            />
+            <img 
+              src="/logos/docusign-logo.png" 
+              alt="DocuSign" 
+              className="h-10 md:h-12 w-auto opacity-50 grayscale hover:opacity-75 hover:grayscale-0 transition-all duration-300"
+            />
+            <img 
+              src="/logos/adobe-sign-logo.png" 
+              alt="Adobe Sign" 
+              className="h-10 md:h-12 w-auto opacity-50 grayscale hover:opacity-75 hover:grayscale-0 transition-all duration-300"
+            />
+            <img 
+              src="/logos/iso-27001-logo.png" 
+              alt="ISO 27001 Certified" 
+              className="h-10 md:h-12 w-auto opacity-50 grayscale hover:opacity-75 hover:grayscale-0 transition-all duration-300"
+            />
+          </div>
+        </div>
       </div>
     </div>;
 };
