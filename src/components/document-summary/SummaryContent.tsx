@@ -1,12 +1,14 @@
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, FileText, RefreshCw, Download, Copy, BarChart3 } from "lucide-react";
+import { AlertTriangle, FileText, RefreshCw, Download, Copy, BarChart3, Sparkles } from "lucide-react";
 import { SummaryDisplay } from "./components/SummaryDisplay";
+import { StructuredAnalysis } from "./components/StructuredAnalysis";
 import { DocumentMetricsCharts } from "./components/DocumentMetricsCharts";
 import { useDocumentMetrics } from "./hooks/useDocumentMetrics";
 import { toast } from "@/hooks/use-toast";
 import { FeedbackModal } from "@/components/feedback/FeedbackModal";
 import { useFeedbackTrigger } from "@/hooks/useFeedbackTrigger";
 import { useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface SummaryContentProps {
   analysisStatus?: string;
@@ -149,10 +151,26 @@ export const SummaryContent = ({ analysisStatus, summary, originalName, analysis
 
         {/* Analysis Content */}
         <div className="p-6">
-          <SummaryDisplay 
-            summary={summary}
-            isEmergencyProcessing={isEmergencyProcessing}
-          />
+          <Tabs defaultValue="structured" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 mb-6">
+              <TabsTrigger value="structured" className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4" />
+                AI Analysis
+              </TabsTrigger>
+              <TabsTrigger value="full">Full Text</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="structured">
+              <StructuredAnalysis summary={summary} />
+            </TabsContent>
+            
+            <TabsContent value="full">
+              <SummaryDisplay 
+                summary={summary}
+                isEmergencyProcessing={isEmergencyProcessing}
+              />
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
 
