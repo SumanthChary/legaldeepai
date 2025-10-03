@@ -28,6 +28,7 @@ import ESignatures from "./pages/ESignatures";
 import Support from "./pages/Support";
 import WhopCallback from "./pages/WhopCallback";
 import AcceptInvitation from "./pages/AcceptInvitation";
+import MobileApp from "./pages/MobileApp";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -80,6 +81,7 @@ function App() {
               <Route path="/support" element={<Support />} />
               <Route path="/whop/callback" element={<WhopCallback />} />
               <Route path="/accept-invitation" element={<AcceptInvitation />} />
+              <Route path="/mobile-app" element={<MobileApp />} />
             </Routes>
             <ChatWidget />
           </BrowserRouter>
