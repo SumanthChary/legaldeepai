@@ -85,7 +85,7 @@ export const Footer = () => {
   return (
     <footer className="border-t bg-background w-full flex-shrink-0">
       <div className="max-w-full px-3 py-4 sm:px-4 sm:py-6 md:py-8 xl:px-8 xl:py-10">
-        <div className="grid gap-3 sm:gap-4 md:gap-6 xl:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-3 sm:gap-4 md:gap-6 xl:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
           <div>
             <h3 className="mb-2 sm:mb-3 md:mb-4 text-base sm:text-lg font-semibold">Stay Connected</h3>
             <p className="mb-2 sm:mb-3 md:mb-4 text-xs sm:text-sm text-muted-foreground">
@@ -131,6 +131,21 @@ export const Footer = () => {
           </div>
           
           <div>
+            <h3 className="mb-2 sm:mb-3 md:mb-4 text-base sm:text-lg font-semibold">Legal</h3>
+            <nav className="space-y-1 sm:space-y-2 text-xs sm:text-sm">
+              <a href="/terms" className="block text-muted-foreground hover:text-primary">
+                Terms & Conditions
+              </a>
+              <a href="/privacy" className="block text-muted-foreground hover:text-primary">
+                Privacy Policy
+              </a>
+              <a href="/security" className="block text-muted-foreground hover:text-primary">
+                Security
+              </a>
+            </nav>
+          </div>
+          
+          <div className="sm:col-span-2 lg:col-span-1">
             <h3 className="mb-2 sm:mb-3 md:mb-4 text-base sm:text-lg font-semibold">Contact</h3>
             <div className="space-y-1 sm:space-y-2 text-xs sm:text-sm text-muted-foreground">
               <p className="break-all sm:break-normal">sumanthchary.business@gmail.com</p>

@@ -407,9 +407,14 @@ const Auth = () => {
               </button>
             </div>
 
-            {/* Debug info for development */}
-            <div className="text-xs text-gray-400 text-center">
-              <p>Having trouble? Contact support</p>
+            {/* Legal links */}
+            <div className="text-xs text-gray-500 text-center space-y-1">
+              <p>
+                By continuing, you agree to our{" "}
+                <a href="/terms" className="text-blue-600 hover:underline">Terms & Conditions</a>
+                {" "}and{" "}
+                <a href="/privacy" className="text-blue-600 hover:underline">Privacy Policy</a>
+              </p>
             </div>
           </Card>
         </div>

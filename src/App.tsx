@@ -29,6 +29,9 @@ import Support from "./pages/Support";
 import WhopCallback from "./pages/WhopCallback";
 import AcceptInvitation from "./pages/AcceptInvitation";
 import MobileApp from "./pages/MobileApp";
+import TermsAndConditions from "./pages/TermsAndConditions";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import SecurityPolicy from "./pages/SecurityPolicy";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -82,6 +85,9 @@ function App() {
               <Route path="/whop/callback" element={<WhopCallback />} />
               <Route path="/accept-invitation" element={<AcceptInvitation />} />
               <Route path="/mobile-app" element={<MobileApp />} />
+              <Route path="/terms" element={<TermsAndConditions />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/security" element={<SecurityPolicy />} />
             </Routes>
             <ChatWidget />
           </BrowserRouter>
