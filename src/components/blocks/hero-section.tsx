@@ -35,15 +35,9 @@ export const HeroSection = ({
           }}>
               <div className="space-y-3 md:space-y-4 lg:space-y-6">
                 {/* Premium badge - special for Whop users */}
-                <div className={`inline-flex items-center gap-1.5 md:gap-2 px-2.5 py-1.5 md:px-3 md:py-2 lg:px-4 lg:py-2 rounded-full ${
-                  isWhopUser 
-                    ? 'bg-gradient-to-r from-blue-100 to-purple-100 border border-blue-200/50' 
-                    : 'bg-gradient-to-r from-green-100 to-emerald-100 border border-green-200/50'
-                } backdrop-blur-sm`}>
+                <div className={`inline-flex items-center gap-1.5 md:gap-2 px-2.5 py-1.5 md:px-3 md:py-2 lg:px-4 lg:py-2 rounded-full ${isWhopUser ? 'bg-gradient-to-r from-blue-100 to-purple-100 border border-blue-200/50' : 'bg-gradient-to-r from-green-100 to-emerald-100 border border-green-200/50'} backdrop-blur-sm`}>
                   <Users className={`h-3 w-3 md:h-4 md:w-4 ${isWhopUser ? 'text-blue-600' : 'text-green-600'}`} />
-                  <span className={`text-xs md:text-sm font-medium ${
-                    isWhopUser ? 'text-blue-700' : 'text-green-700'
-                  }`}>
+                  <span className={`text-xs md:text-sm font-medium ${isWhopUser ? 'text-blue-700' : 'text-green-700'}`}>
                     {isWhopUser ? 'Welcome from Whop! 🎉' : 'PRO - Trusted by Professionals'}
                   </span>
                 </div>
@@ -65,10 +59,7 @@ export const HeroSection = ({
             duration: 0.5
           }}>
               <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 leading-relaxed max-w-xl">
-                {isWhopUser 
-                  ? 'You\'re all set! Access your premium LegalDeep AI subscription and transform your legal workflow today.' 
-                  : 'Slash review time, catch hidden risks, and deliver clear answers your clients love. No setup, just upload and go.'
-                }
+                {isWhopUser ? 'You\'re all set! Access your premium LegalDeep AI subscription and transform your legal workflow today.' : 'Slash review time, catch hidden risks, and deliver clear answers your clients love. No setup, just upload and go.'}
               </p>
             </InView>
             
@@ -83,19 +74,13 @@ export const HeroSection = ({
             duration: 0.5
           }}>
               <div className="flex flex-col sm:flex-row gap-2 md:gap-3 lg:gap-4">
-                <Button 
-                  size="lg" 
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300 border-0 w-full sm:w-auto" 
-                  onClick={() => navigate("/dashboard")}
-                >
+                <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300 border-0 w-full sm:w-auto" onClick={() => navigate("/dashboard")}>
                   {isWhopUser ? 'Access Your Dashboard' : 'Get Started Free'}
                   <ArrowRight className="ml-1.5 h-3.5 w-3.5 md:ml-2 md:h-4 md:w-4" />
                 </Button>
-                {!isWhopUser && (
-                  <Button size="lg" variant="outline" className="border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-all duration-300 w-full sm:w-auto" onClick={() => navigate("/mobile-app")}>
+                {!isWhopUser && <Button size="lg" variant="outline" className="border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-all duration-300 w-full sm:w-auto" onClick={() => navigate("/mobile-app")}>
                     Download App
-                  </Button>
-                )}
+                  </Button>}
               </div>
             </InView>
             
@@ -124,19 +109,19 @@ export const HeroSection = ({
           
           <div className="lg:col-span-7 mt-6 lg:mt-0">
             <InView variants={{
-              hidden: { opacity: 0 },
-              visible: { opacity: 1 }
-            }} transition={{
-              duration: 0.5
-            }}>
+            hidden: {
+              opacity: 0
+            },
+            visible: {
+              opacity: 1
+            }
+          }} transition={{
+            duration: 0.5
+          }}>
               <div className="relative">
                 {/* Hero dashboard mockup */}
                 <div className="relative rounded-2xl overflow-hidden">
-                  <img 
-                    src={heroMockup} 
-                    alt="LegalDeep AI contract analysis dashboard showing risk score, compliance metrics, and suggestions"
-                    className="w-full h-auto object-cover"
-                  />
+                  <img src={heroMockup} alt="LegalDeep AI contract analysis dashboard showing risk score, compliance metrics, and suggestions" className="w-full h-auto object-cover" />
                 </div>
               </div>
             </InView>
@@ -145,33 +130,13 @@ export const HeroSection = ({
         
         {/* Trusted By Section */}
         <div className="mt-12 lg:mt-20">
-          <p className="text-center text-sm text-muted-foreground mb-6">Inspired and Improved</p>
+          <p className="text-center text-sm text-muted-foreground mb-6">Inspired and Improved by</p>
           <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12 lg:gap-16">
-            <img 
-              src="/logos/aba-logo.png" 
-              alt="ABA" 
-              className="h-10 md:h-12 w-auto opacity-50 grayscale hover:opacity-75 hover:grayscale-0 transition-all duration-300"
-            />
-            <img 
-              src="/logos/microsoft-azure-logo.png" 
-              alt="Microsoft Azure" 
-              className="h-10 md:h-12 w-auto opacity-50 grayscale hover:opacity-75 hover:grayscale-0 transition-all duration-300"
-            />
-            <img 
-              src="/logos/docusign-logo.png" 
-              alt="DocuSign" 
-              className="h-10 md:h-12 w-auto opacity-50 grayscale hover:opacity-75 hover:grayscale-0 transition-all duration-300"
-            />
-            <img 
-              src="/logos/adobe-sign-logo.png" 
-              alt="Adobe Sign" 
-              className="h-10 md:h-12 w-auto opacity-50 grayscale hover:opacity-75 hover:grayscale-0 transition-all duration-300"
-            />
-            <img 
-              src="/logos/iso-27001-logo.png" 
-              alt="ISO 27001 Certified" 
-              className="h-10 md:h-12 w-auto opacity-50 grayscale hover:opacity-75 hover:grayscale-0 transition-all duration-300"
-            />
+            <img src="/logos/aba-logo.png" alt="ABA" className="h-10 md:h-12 w-auto opacity-50 grayscale hover:opacity-75 hover:grayscale-0 transition-all duration-300" />
+            <img src="/logos/microsoft-azure-logo.png" alt="Microsoft Azure" className="h-10 md:h-12 w-auto opacity-50 grayscale hover:opacity-75 hover:grayscale-0 transition-all duration-300" />
+            <img src="/logos/docusign-logo.png" alt="DocuSign" className="h-10 md:h-12 w-auto opacity-50 grayscale hover:opacity-75 hover:grayscale-0 transition-all duration-300" />
+            <img src="/logos/adobe-sign-logo.png" alt="Adobe Sign" className="h-10 md:h-12 w-auto opacity-50 grayscale hover:opacity-75 hover:grayscale-0 transition-all duration-300" />
+            <img src="/logos/iso-27001-logo.png" alt="ISO 27001 Certified" className="h-10 md:h-12 w-auto opacity-50 grayscale hover:opacity-75 hover:grayscale-0 transition-all duration-300" />
           </div>
         </div>
       </div>
