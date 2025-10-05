@@ -8,7 +8,7 @@ import { TrustSection } from "@/components/blocks/trust-section";
 import { FAQSection } from "@/components/blocks/faq-section";
 import { PricingSection } from "@/components/blocks/pricing-section";
 import { HowItWorksSection } from "@/components/blocks/how-it-works-section";
-import { AboutAuthorSection } from "@/components/blocks/about-author-section";
+
 import { FeaturedSection } from "@/components/blocks/featured-section";
 import { PowerfulFeaturesSection } from "@/components/blocks/powerful-features-section";
 import { CompetitiveAdvantageSection } from "@/components/blocks/competitive-advantage-section";
@@ -86,7 +86,7 @@ const Landing = () => {
         <div className="bg-white/90 backdrop-blur-sm">
           <TestimonialsSection />
         </div>
-        <AboutAuthorSection />
+        
         <div className="bg-gradient-to-br from-slate-50 to-gray-100/50">
           <AboutSection />
         </div>
