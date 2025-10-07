@@ -43,24 +43,8 @@ export const HeroSection = ({
                 </div>
                 
                 <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold bg-gradient-to-br from-gray-900 via-gray-800 to-gray-600 bg-clip-text text-transparent leading-tight">
-                  Analyze Business <span className="font-editorial-new italic text-blue-600 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Contracts</span> Without Paying Lawyers <span className="bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent">$300+</span>
+                  Review 30-Page <span className="font-editorial-new italic text-blue-600 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Contracts</span> in 12 Minutes, <span className="bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent">Not 2 Hours</span>
                 </h1>
-                
-                {/* Social Proof Counter */}
-                <div className="flex flex-wrap gap-4 md:gap-6 lg:gap-8 pt-4">
-                  <div className="flex flex-col">
-                    <span className="text-xl md:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">1,247+</span>
-                    <span className="text-xs md:text-sm text-gray-600">Contracts Analyzed</span>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-xl md:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">$374,100+</span>
-                    <span className="text-xs md:text-sm text-gray-600">Saved in Legal Fees</span>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-xl md:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">1.8 min</span>
-                    <span className="text-xs md:text-sm text-gray-600">Avg Analysis Time</span>
-                  </div>
-                </div>
               </div>
             </InView>
             
@@ -75,7 +59,7 @@ export const HeroSection = ({
             duration: 0.5
           }}>
               <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 leading-relaxed max-w-xl">
-                {isWhopUser ? 'You\'re all set! Access your premium LegalDeep AI subscription and transform your legal workflow today.' : 'Get professional contract analysis in minutes, not days. Catch hidden risks, understand your obligations, and save thousands on legal fees.'}
+                {isWhopUser ? 'You\'re all set! Access your premium LegalDeep AI subscription and transform your legal workflow today.' : 'Slash review time, catch hidden risks, and deliver clear answers your clients love. No setup, just upload and go.'}
               </p>
             </InView>
             
@@ -91,11 +75,11 @@ export const HeroSection = ({
           }}>
               <div className="flex flex-col sm:flex-row gap-2 md:gap-3 lg:gap-4">
                 <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300 border-0 w-full sm:w-auto" onClick={() => navigate("/dashboard")}>
-                  {isWhopUser ? 'Access Your Dashboard' : 'Analyze One Contract - $24'}
+                  {isWhopUser ? 'Access Your Dashboard' : 'Get Started Free'}
                   <ArrowRight className="ml-1.5 h-3.5 w-3.5 md:ml-2 md:h-4 md:w-4" />
                 </Button>
-                {!isWhopUser && <Button size="lg" variant="outline" className="border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-all duration-300 w-full sm:w-auto" onClick={() => navigate("/pricing")}>
-                    Get Unlimited - $97/mo
+                {!isWhopUser && <Button size="lg" variant="outline" className="border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-all duration-300 w-full sm:w-auto" onClick={() => navigate("/mobile-app")}>
+                    Download App
                   </Button>}
               </div>
             </InView>
