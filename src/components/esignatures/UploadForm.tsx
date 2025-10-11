@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import type { User } from "@supabase/supabase-js";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,7 +10,7 @@ import { FancyFileInput } from "./FancyFileInput";
 import { supabase } from "@/integrations/supabase/client";
 
 type Props = {
-  user: any;
+  user: User | null;
   fetchRequests: () => void;
 };
 
@@ -66,19 +67,35 @@ export function UploadForm({ user, fetchRequests }: Props) {
         .from("signature_fields")
         .insert({
           request_id: requestData.id,
-          assigned_signer_email: signerEmail,
+          assigned_signer_email: signerEmail.toLowerCase(),
           field_type: "signature",
-          position: JSON.stringify({ page: 1, x: 100, y: 200, width: 200, height: 60 }),
+          position: { page: 1, x: 100, y: 200, width: 200, height: 60 },
           required: true,
-        });
+  });
 
       if (fieldError) {
         throw new Error(`Failed to add signer: ${fieldError.message}`);
       }
 
+      // Trigger edge function to create signing session and dispatch invite
+      const { data: sessionData, error: sessionError } = await supabase.functions.invoke(
+        "create-signing-session",
+        {
+          body: {
+            requestId: requestData.id,
+            signerEmail,
+          },
+        }
+      );
+
+      if (sessionError) {
+        console.error("Session creation error", sessionError);
+        throw new Error(sessionError.message || "Failed to initialize signing session");
+      }
+
       toast({ 
         title: "Success!", 
-        description: "Signature request created successfully" 
+        description: `Signature request created successfully and invite emailed to ${signerEmail}` 
       });
       
       // Reset form
@@ -86,11 +103,12 @@ export function UploadForm({ user, fetchRequests }: Props) {
       setSignerEmail("");
       fetchRequests();
       
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Upload error:", error);
+      const message = error instanceof Error ? error.message : "Failed to create signature request";
       toast({ 
         title: "Error", 
-        description: error.message || "Failed to create signature request", 
+        description: message, 
         variant: "destructive" 
       });
     } finally {

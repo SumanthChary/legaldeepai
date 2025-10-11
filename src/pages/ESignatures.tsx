@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
@@ -7,12 +7,15 @@ import { useToast } from "@/components/ui/use-toast";
 import { ESignaturesHeroSection } from "./ESignaturesHeroSection";
 import { UploadForm } from "@/components/esignatures/UploadForm";
 import { SignatureRequestsList } from "@/components/esignatures/SignatureRequestsList";
+import type { User } from "@supabase/supabase-js";
 
 // ESignature types
 type SignatureRequest = {
   id: string;
   document_name: string;
   document_path: string;
+  completed_document_path?: string | null;
+  document_hash?: string | null;
   status: string;
   created_at: string;
 };
@@ -22,17 +25,9 @@ export default function ESignatures() {
   const navigate = useNavigate();
   const [requests, setRequests] = useState<SignatureRequest[]>([]);
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
 
-  // Fetch current user's requests
-  useEffect(() => {
-    import("@/integrations/supabase/client").then(({ supabase }) =>
-      supabase.auth.getUser().then(({ data }) => setUser(data.user || null))
-    );
-    fetchRequests();
-  }, []);
-
-  const fetchRequests = async () => {
+  const fetchRequests = useCallback(async () => {
     setLoading(true);
     try {
       const { supabase } = await import("@/integrations/supabase/client");
@@ -56,7 +51,18 @@ export default function ESignatures() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast]);
+
+  // Fetch current user's requests
+  useEffect(() => {
+    import("@/integrations/supabase/client").then(({ supabase }) =>
+      supabase.auth.getUser().then(({ data }) => setUser(data.user || null))
+    );
+  }, []);
+
+  useEffect(() => {
+    fetchRequests();
+  }, [fetchRequests]);
 
   return (
     <div className="max-w-4xl mx-auto pb-10 px-2 md:px-6 animate-fade-in">

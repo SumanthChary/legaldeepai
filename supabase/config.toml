@@ -8,6 +8,7 @@ schemas = ["public", "storage", "graphql_public"]
 
 [db]
 port = 54322
+major_version = 15
 
 [studio]
 enabled = true
@@ -36,48 +37,48 @@ backend = "postgres"
 
 [functions."send-team-invitation"]
 verify_jwt = false
-system_import = true
 
 [functions."analyze-document"]
 verify_jwt = true
-system_import = true
 
 [functions."api-analyze-document"]
 verify_jwt = false
-system_import = true
 
 [functions."send-email"]
 verify_jwt = false
-system_import = true
 
 [functions."subscribe-email"]
 verify_jwt = false
-system_import = true
 
 [functions."check-expiring-trials"]
 verify_jwt = true
-system_import = true
 
 [functions."whop-webhooks"]
 verify_jwt = false
-system_import = true
 
 [functions."whop-auth"]
 verify_jwt = false
-system_import = true
 
 [functions."google-config"]
 verify_jwt = false
-system_import = true
 
 [functions."process-paypal-payment"]
 verify_jwt = false
-system_import = true
 
 [functions."process-dodo-payment"]
 verify_jwt = false
-system_import = true
 
 [functions."ai-chat"]
 verify_jwt = false
-system_import = true
+
+[functions."create-signing-session"]
+verify_jwt = true
+
+[functions."get-signing-session"]
+verify_jwt = false
+
+[functions."verify-signing-otp"]
+verify_jwt = false
+
+[functions."complete-signature"]
+verify_jwt = false

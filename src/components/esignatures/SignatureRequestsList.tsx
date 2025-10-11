@@ -7,6 +7,8 @@ type SignatureRequest = {
   id: string;
   document_name: string;
   document_path: string;
+  completed_document_path?: string | null;
+  document_hash?: string | null;
   status: string;
   created_at: string;
 };
@@ -87,6 +89,11 @@ export function SignatureRequestsList({ requests, loading, onRefresh }: Signatur
             <div className="text-xs text-gray-400 mt-2">
               Created: {new Date(r.created_at).toLocaleString()}
             </div>
+            {r.status === "completed" && (
+              <div className="text-[11px] text-gray-500 break-all bg-gray-50 border border-gray-100 rounded-md px-2 py-1">
+                Hash: {r.document_hash || "pending"}
+              </div>
+            )}
             <SignatureRequestActions request={r} onRefresh={onRefresh} />
           </div>
         ))}

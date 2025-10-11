@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { Download, Eye, Trash2 } from "lucide-react";
+import { Download, Trash2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -9,6 +9,7 @@ type SignatureRequestActionsProps = {
     id: string;
     document_name: string;
     document_path: string;
+    completed_document_path?: string | null;
     status: string;
   };
   onRefresh: () => void;
@@ -28,10 +29,11 @@ export function SignatureRequestActions({ request, onRefresh }: SignatureRequest
 
       toast({ title: "Request deleted successfully" });
       onRefresh();
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Failed to delete request";
       toast({
         title: "Error deleting request",
-        description: error.message,
+        description: message,
         variant: "destructive",
       });
     }
@@ -39,26 +41,33 @@ export function SignatureRequestActions({ request, onRefresh }: SignatureRequest
 
   const handleDownload = async () => {
     try {
+      const path = request.status === "completed" && request.completed_document_path
+        ? request.completed_document_path
+        : request.document_path;
+
       const { data, error } = await supabase.storage
         .from("esignatures")
-        .download(request.document_path);
+        .download(path);
 
       if (error) throw error;
 
       const url = URL.createObjectURL(data);
       const a = document.createElement("a");
       a.href = url;
-      a.download = request.document_name;
+      a.download = request.status === "completed"
+        ? `${request.document_name.replace(/\.pdf$/i, "")}-signed.pdf`
+        : request.document_name;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
-      toast({ title: "Document downloaded" });
-    } catch (error: any) {
+      toast({ title: request.status === "completed" ? "Signed document downloaded" : "Document downloaded" });
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Failed to download document";
       toast({
         title: "Error downloading document",
-        description: error.message,
+        description: message,
         variant: "destructive",
       });
     }

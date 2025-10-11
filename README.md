@@ -60,6 +60,32 @@ This project is built with .
 - shadcn-ui
 - Tailwind CSS
 
+## E-signature quickstart
+
+The e-signature workflow now mirrors commercial tools while remaining self-hosted. To test it locally:
+
+1. Set the following environment variables (in `.env` or your hosting provider):
+	- `RESEND_API_KEY` – transactional email provider for OTP delivery.
+	- `ESIGN_EMAIL_FROM` – from address, e.g. `LegalDeep AI <noreply@yourdomain.com>`.
+	- `ESIGN_SESSION_SECRET` – 32+ character secret for signer access tokens.
+	- `FRONTEND_URL` – base URL for deep links (e.g. `https://legaldeep.ai`).
+2. Deploy the new Supabase Edge Functions: `create-signing-session`, `get-signing-session`, `verify-signing-otp`, `complete-signature`.
+	```bash
+	supabase login                               # once per machine; provide your access token
+	supabase link --project-ref <project-ref>    # e.g. nhmhqhhxlcmhufxxifbn
+	supabase db push                             # applies migrations, including e-sign upgrades
+	supabase functions deploy create-signing-session
+	supabase functions deploy get-signing-session
+	supabase functions deploy verify-signing-otp
+	supabase functions deploy complete-signature
+	```
+3. Create a signature request from `/esignatures`, add a signer email, and Supabase will email a secure link.
+4. Signers visit `/sign/:token`, verify with OTP, draw a signature, and the stamped PDF plus audit trail is stored in the `esignatures` bucket.
+
+👉 Looking for a detailed QA script? Follow [`docs/esignature-manual-testing.md`](docs/esignature-manual-testing.md) for a step-by-step checklist covering owner actions, signer actions, and edge cases.
+
+More detail and architecture notes live in `docs/esignature-architecture.md`.
+
 ## How can I deploy this project?
 
 Simply open [Lovable](https://lovable.dev/projects/23c234e7-6ce5-45ea-922e-e53a2fe9f5fe) and click on Share -> Publish.

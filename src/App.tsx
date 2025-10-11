@@ -32,6 +32,7 @@ import MobileApp from "./pages/MobileApp";
 import TermsAndConditions from "./pages/TermsAndConditions";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import SecurityPolicy from "./pages/SecurityPolicy";
+import SignDocument from "./pages/SignDocument";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -88,6 +89,7 @@ function App() {
               <Route path="/terms" element={<TermsAndConditions />} />
               <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="/security" element={<SecurityPolicy />} />
+              <Route path="/sign/:token" element={<SignDocument />} />
             </Routes>
             <ChatWidget />
           </BrowserRouter>
