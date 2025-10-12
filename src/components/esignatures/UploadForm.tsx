@@ -4,7 +4,7 @@ import type { User } from "@supabase/supabase-js";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Upload, Pen, Loader2 } from "lucide-react";
+import { Upload, Pen, Loader2, Copy } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { FancyFileInput } from "./FancyFileInput";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,6 +19,7 @@ export function UploadForm({ user, fetchRequests }: Props) {
   const [uploading, setUploading] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [signerEmail, setSignerEmail] = useState("");
+  const [inviteLink, setInviteLink] = useState<string | null>(null);
 
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,6 +32,7 @@ export function UploadForm({ user, fetchRequests }: Props) {
       return;
     }
 
+    setInviteLink(null);
     setUploading(true);
 
     try {
@@ -101,6 +103,11 @@ export function UploadForm({ user, fetchRequests }: Props) {
       // Reset form
       setFile(null);
       setSignerEmail("");
+      const baseUrl = (import.meta.env.VITE_SIGN_BASE_URL as string | undefined) || window.location.origin;
+      const link = sessionData?.sessionToken
+        ? `${baseUrl.replace(/\/$/, "")}/sign/${sessionData.sessionToken}`
+        : null;
+      setInviteLink(link);
       fetchRequests();
       
     } catch (error: unknown) {
@@ -155,6 +162,34 @@ export function UploadForm({ user, fetchRequests }: Props) {
           )}
         </Button>
       </form>
+      {inviteLink && (
+        <div className="mt-6 p-4 bg-purple-50 border border-purple-100 rounded-xl space-y-3">
+          <div className="text-sm font-medium text-purple-900">Share signer link</div>
+          <p className="text-xs text-purple-700">
+            Copy this URL to send manually. It&apos;s also emailed to the signer automatically.
+          </p>
+          <div className="flex gap-2">
+            <Input value={inviteLink} readOnly className="bg-white text-purple-900" />
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(inviteLink);
+                  toast({ title: "Link copied" });
+                } catch (err) {
+                  console.error("Copy failed", err);
+                  toast({ title: "Unable to copy", variant: "destructive" });
+                }
+              }}
+              className="flex items-center gap-2 whitespace-nowrap"
+            >
+              <Copy className="w-4 h-4" />
+              Copy
+            </Button>
+          </div>
+        </div>
+      )}
     </Card>
   );
 }

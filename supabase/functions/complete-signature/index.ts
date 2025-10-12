@@ -150,6 +150,9 @@ const handler = async (req: Request): Promise<Response> => {
 		height: position.height ?? signatureImage.height,
 	});
 
+	const resolvedIp = forwardedIp || ipAddress;
+	const resolvedAgent = userAgent || userAgentHeader;
+
 	const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
 	const auditPage = pdfDoc.addPage();
 	auditPage.drawText("LegalDeep AI Signature Certificate", { x: 40, y: auditPage.getHeight() - 60, size: 18, font });
@@ -173,9 +176,6 @@ const handler = async (req: Request): Promise<Response> => {
 	if (uploadResult.error) {
 		return respond(500, { error: "Failed to upload signed document", details: uploadResult.error.message });
 	}
-
-	const resolvedIp = forwardedIp || ipAddress;
-	const resolvedAgent = userAgent || userAgentHeader;
 
 	await supabaseAdmin
 		.from("signatures")

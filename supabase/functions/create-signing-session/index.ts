@@ -8,7 +8,10 @@ import { respond, handleOptions, corsHeaders } from "../_shared/http.ts";
 import { randomToken, randomOtp, hashValue } from "../_shared/crypto.ts";
 
 const resendApiKey = (globalThis as any).Deno?.env.get("RESEND_API_KEY") || (globalThis as any).process?.env?.RESEND_API_KEY;
-const frontendUrl = (globalThis as any).Deno?.env.get("FRONTEND_URL") || (globalThis as any).process?.env?.FRONTEND_URL || "https://legaldeep.ai";
+const frontendUrl =
+	(globalThis as any).Deno?.env.get("FRONTEND_URL") ||
+	(globalThis as any).process?.env?.FRONTEND_URL ||
+	"https://legaldeepai.lovable.app";
 const fromEmail = (globalThis as any).Deno?.env.get("ESIGN_EMAIL_FROM") || "LegalDeep AI <noreply@resend.dev>";
 
 const resend = resendApiKey ? new Resend(resendApiKey) : null;
