@@ -1,6 +1,20 @@
 import { useEffect, useRef, useState } from "react";
 import SignaturePad from "signature_pad";
 
+type SignaturePoint = {
+  x: number;
+  y: number;
+  pressure: number;
+  time: number;
+  color?: string;
+};
+
+type SignatureStrokeGroup = SignaturePoint[];
+type SignatureData = SignatureStrokeGroup[];
+
+const cloneSignatureData = (data: SignatureData) =>
+  data.map((group) => group.map((point) => ({ ...point })));
+
 export type SignaturePadCanvasProps = {
   onChange?: (dataUrl: string | null) => void;
   disabled?: boolean;
@@ -13,39 +27,48 @@ export function SignaturePadCanvas({ onChange, disabled, className }: SignatureP
   const [isEmpty, setIsEmpty] = useState(true);
 
   useEffect(() => {
-    if (!canvasRef.current) return;
-
     const canvas = canvasRef.current;
-    const resizeCanvas = () => {
-      const ratio = Math.max(window.devicePixelRatio || 1, 1);
-      const width = canvas.offsetWidth;
-      const height = canvas.offsetHeight;
-      canvas.width = width * ratio;
-      canvas.height = height * ratio;
-      const context = canvas.getContext("2d");
-      if (context) {
-        context.scale(ratio, ratio);
-      }
-      signaturePadRef.current?.clear();
-      setIsEmpty(true);
-      onChange?.(null);
-    };
-
-    resizeCanvas();
+    if (!canvas) return;
 
     const signaturePad = new SignaturePad(canvas, {
       minWidth: 0.8,
       maxWidth: 2.5,
       penColor: "#1f2937",
-      onEnd: () => {
-        const empty = signaturePad.isEmpty();
-        setIsEmpty(empty);
-        onChange?.(empty ? null : signaturePad.toDataURL("image/png"));
-      },
-    });
+    }) as SignaturePad & { onEnd?: () => void };
 
+    const emitChange = () => {
+      const empty = signaturePad.isEmpty();
+      setIsEmpty(empty);
+      onChange?.(empty ? null : signaturePad.toDataURL("image/png"));
+    };
+
+  signaturePad.onEnd = emitChange;
     signaturePadRef.current = signaturePad;
 
+    const resizeCanvas = () => {
+      const ratio = Math.max(window.devicePixelRatio || 1, 1);
+      const width = canvas.offsetWidth || canvas.clientWidth;
+      const height = canvas.offsetHeight || canvas.clientHeight;
+
+  const existingData = signaturePad.isEmpty() ? null : cloneSignatureData(signaturePad.toData() as SignatureData);
+
+      canvas.width = Math.max(width, 1) * ratio;
+      canvas.height = Math.max(height, 1) * ratio;
+      const context = canvas.getContext("2d");
+      if (context) {
+        context.scale(ratio, ratio);
+      }
+
+      if (existingData && existingData.length > 0) {
+        signaturePad.fromData(existingData);
+      } else {
+        signaturePad.clear();
+      }
+
+      emitChange();
+    };
+
+    resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
 
     return () => {
