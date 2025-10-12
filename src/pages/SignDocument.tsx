@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
-import { Loader2, Lock, ShieldCheck, Smile } from "lucide-react";
+import { CheckCircle2, Circle, Info, Loader2, Lock, ShieldCheck, Smile } from "lucide-react";
 import { SignaturePadCanvas } from "@/components/esignatures/SignaturePadCanvas";
 
 interface SessionInfo {
@@ -66,6 +66,37 @@ export default function SignDocument() {
   }, [session]);
 
   const alreadyCompleted = session?.completed || session?.status === "completed";
+  const nameIsValid = Boolean(signerName.trim());
+  const signatureReady = Boolean(signatureData);
+  const canSign = Boolean(session?.otpVerified) && !sessionExpired && !alreadyCompleted && nameIsValid && signatureReady;
+
+  const requirements = [
+    {
+      id: "otp",
+      label: "Enter the 6-digit verification code",
+      met: Boolean(session?.otpVerified),
+    },
+    {
+      id: "name",
+      label: "Type your full legal name",
+      met: nameIsValid,
+    },
+    {
+      id: "signature",
+      label: "Draw your signature in the box",
+      met: signatureReady,
+    },
+    {
+      id: "session",
+      label: "Signing link is still valid",
+      met: !sessionExpired,
+    },
+    {
+      id: "completed",
+      label: "Document still requires your signature",
+      met: !alreadyCompleted,
+    },
+  ];
 
   const handleOtpSubmit = async () => {
     if (!token || otp.length !== 6) {
@@ -201,13 +232,34 @@ export default function SignDocument() {
               disabled={!session.otpVerified || submitting || sessionExpired || alreadyCompleted}
             />
 
+            <div className="rounded-xl border border-purple-100 bg-purple-50/80 p-4">
+              <div className="flex items-center gap-2 text-sm font-medium text-purple-900">
+                <Info className="h-4 w-4" />
+                <span>Complete the steps below to enable signing:</span>
+              </div>
+              <ul className="mt-3 space-y-2 text-sm text-purple-900/80">
+                {requirements.map(({ id, label, met }) => (
+                  <li
+                    key={id}
+                    data-testid={`requirement-${id}`}
+                    data-state={met ? "met" : "pending"}
+                    className="flex items-center gap-3 rounded-lg bg-white/60 px-3 py-2"
+                  >
+                    {met ? <CheckCircle2 className="h-4 w-4 text-green-600" aria-hidden /> : <Circle className="h-4 w-4 text-purple-300" aria-hidden />}
+                    <span className="flex-1">{label}</span>
+                    <span className="text-xs font-medium text-purple-500">{met ? "Done" : "Pending"}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
             <p className="text-xs text-muted-foreground bg-purple-50 border border-purple-100 rounded-lg p-4">
               By clicking <strong>Sign document</strong> you agree that this electronic signature is the legal equivalent of your handwritten signature and you consent to receive documents electronically.
             </p>
 
             <Button
               onClick={handleComplete}
-              disabled={!session.otpVerified || !signatureData || !signerName.trim() || submitting || sessionExpired || alreadyCompleted}
+              disabled={!canSign || submitting}
               className="w-full bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600"
             >
               {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Sign document"}

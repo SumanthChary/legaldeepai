@@ -48,6 +48,10 @@ describe("SignDocument", () => {
     );
   };
 
+  const expectRequirementState = (id: string, state: "met" | "pending") => {
+    expect(screen.getByTestId(`requirement-${id}`)).toHaveAttribute("data-state", state);
+  };
+
   it("verifies OTP and completes signing flow", async () => {
     const session = {
       requestId: "request-1",
@@ -83,6 +87,12 @@ describe("SignDocument", () => {
 
   await screen.findByRole("heading", { name: /sign document/i });
 
+    expectRequirementState("otp", "pending");
+    expectRequirementState("name", "pending");
+    expectRequirementState("signature", "met");
+    expectRequirementState("session", "met");
+    expectRequirementState("completed", "met");
+
     const verifyButton = screen.getByRole("button", { name: /verify code/i });
     expect(verifyButton).toBeDisabled();
 
@@ -92,10 +102,12 @@ describe("SignDocument", () => {
 
     await userEvent.click(verifyButton);
 
-    await waitFor(() => expect(toastSpy).toHaveBeenCalledWith(expect.objectContaining({ title: "Verified" })));
+  await waitFor(() => expect(toastSpy).toHaveBeenCalledWith(expect.objectContaining({ title: "Verified" })));
+  expectRequirementState("otp", "met");
 
-    const nameInput = screen.getByPlaceholderText("Full legal name");
-    await userEvent.type(nameInput, "Ada Lovelace");
+  const nameInput = screen.getByPlaceholderText("Full legal name");
+  await userEvent.type(nameInput, "Ada Lovelace");
+  expectRequirementState("name", "met");
 
     const signButton = screen.getByRole("button", { name: /sign document/i });
     await waitFor(() => expect(signButton).toBeEnabled());
@@ -144,7 +156,8 @@ describe("SignDocument", () => {
     const verifyButton = screen.getByRole("button", { name: /verify code/i });
     await userEvent.click(verifyButton);
 
-    await waitFor(() => expect(toastSpy).toHaveBeenCalledWith(expect.objectContaining({ title: "Verification failed" })));
+  await waitFor(() => expect(toastSpy).toHaveBeenCalledWith(expect.objectContaining({ title: "Verification failed" })));
+  expectRequirementState("otp", "pending");
     expect(invokeMock).not.toHaveBeenCalledWith("complete-signature", expect.anything());
   });
 });
