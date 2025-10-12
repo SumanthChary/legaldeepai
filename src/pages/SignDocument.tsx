@@ -217,14 +217,19 @@ export default function SignDocument() {
               )}
             </div>
 
-            <div className="grid gap-3">
-              <label className="text-sm font-medium text-purple-900">Printed name</label>
+            <div className="grid gap-2">
+              <label className="text-sm font-medium text-purple-900">
+                Printed name <span className="text-xs font-normal text-muted-foreground">(for the audit trail)</span>
+              </label>
               <Input
                 value={signerName}
                 onChange={(e) => setSignerName(e.target.value)}
                 placeholder="Full legal name"
                 disabled={!session.otpVerified || submitting || sessionExpired || alreadyCompleted}
               />
+              <p className="text-xs text-muted-foreground">
+                This is the readable name that shows on the certificate. Your drawn signature can be any mark—it doesn’t have to match these letters.
+              </p>
             </div>
 
             <SignaturePadCanvas

@@ -87,6 +87,8 @@ describe("SignDocument", () => {
 
   await screen.findByRole("heading", { name: /sign document/i });
 
+    expect(screen.getByText(/your drawn signature can be any mark/i)).toBeInTheDocument();
+
     expectRequirementState("otp", "pending");
     expectRequirementState("name", "pending");
     expectRequirementState("signature", "met");
