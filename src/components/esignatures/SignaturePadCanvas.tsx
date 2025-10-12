@@ -45,6 +45,11 @@ export function SignaturePadCanvas({ onChange, disabled, className }: SignatureP
   signaturePad.onEnd = emitChange;
     signaturePadRef.current = signaturePad;
 
+    const canvasEvents: Array<keyof HTMLElementEventMap> = ["mouseup", "mouseleave", "touchend", "pointerup"];
+    canvasEvents.forEach((eventName) => {
+      canvas.addEventListener(eventName, emitChange);
+    });
+
     const resizeCanvas = () => {
       const ratio = Math.max(window.devicePixelRatio || 1, 1);
       const width = canvas.offsetWidth || canvas.clientWidth;
@@ -73,6 +78,9 @@ export function SignaturePadCanvas({ onChange, disabled, className }: SignatureP
 
     return () => {
       window.removeEventListener("resize", resizeCanvas);
+      canvasEvents.forEach((eventName) => {
+        canvas.removeEventListener(eventName, emitChange);
+      });
       signaturePad.off();
       signaturePadRef.current = null;
     };
