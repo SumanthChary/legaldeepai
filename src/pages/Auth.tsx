@@ -30,7 +30,20 @@ const GoogleIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-const LAST_PROVIDER_KEY = "legaldeep:last-auth-provider";
+const LAST_PROVIDER_COOKIE = "legaldeep:last-auth-provider";
+const LAST_PROVIDER_MAX_AGE_DAYS = 30;
+
+const getCookie = (name: string) => {
+  if (typeof document === "undefined") return null;
+  const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
+  return match ? decodeURIComponent(match[1]) : null;
+};
+
+const setCookie = (name: string, value: string, days: number) => {
+  if (typeof document === "undefined") return;
+  const expires = new Date(Date.now() + days * 24 * 60 * 60 * 1000);
+  document.cookie = `${name}=${encodeURIComponent(value)}; path=/; expires=${expires.toUTCString()}; SameSite=Lax`;
+};
 
 type OAuthProvider = "google" | "github";
 
@@ -41,16 +54,17 @@ const Auth = () => {
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
   const [checkingSession, setCheckingSession] = useState(true);
-  const [lastUsedProvider, setLastUsedProvider] = useState<OAuthProvider | null>(null);
+  const [lastUsedProvider, setLastUsedProvider] = useState<OAuthProvider | null>(() => {
+    const stored = getCookie(LAST_PROVIDER_COOKIE);
+    return stored === "google" || stored === "github" ? stored : null;
+  });
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
 
   const rememberProvider = (provider: OAuthProvider) => {
     try {
-      if (typeof window !== "undefined") {
-        localStorage.setItem(LAST_PROVIDER_KEY, provider);
-      }
+      setCookie(LAST_PROVIDER_COOKIE, provider, LAST_PROVIDER_MAX_AGE_DAYS);
     } catch (error) {
       console.warn("Unable to persist last auth provider", error);
     }
@@ -59,8 +73,7 @@ const Auth = () => {
 
   useEffect(() => {
     try {
-      if (typeof window === "undefined") return;
-      const stored = localStorage.getItem(LAST_PROVIDER_KEY);
+      const stored = getCookie(LAST_PROVIDER_COOKIE);
       if (stored === "google" || stored === "github") {
         setLastUsedProvider(stored);
       }
