@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Github, FileText, Shield, Users, AlertCircle, CheckCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -29,6 +30,10 @@ const GoogleIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
+const LAST_PROVIDER_KEY = "legaldeep:last-auth-provider";
+
+type OAuthProvider = "google" | "github";
+
 const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState("");
@@ -36,9 +41,33 @@ const Auth = () => {
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
   const [checkingSession, setCheckingSession] = useState(true);
+  const [lastUsedProvider, setLastUsedProvider] = useState<OAuthProvider | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
+
+  const rememberProvider = (provider: OAuthProvider) => {
+    try {
+      if (typeof window !== "undefined") {
+        localStorage.setItem(LAST_PROVIDER_KEY, provider);
+      }
+    } catch (error) {
+      console.warn("Unable to persist last auth provider", error);
+    }
+    setLastUsedProvider(provider);
+  };
+
+  useEffect(() => {
+    try {
+      if (typeof window === "undefined") return;
+      const stored = localStorage.getItem(LAST_PROVIDER_KEY);
+      if (stored === "google" || stored === "github") {
+        setLastUsedProvider(stored);
+      }
+    } catch (error) {
+      console.warn("Unable to read last auth provider", error);
+    }
+  }, []);
 
   // Check if user is already authenticated
   useEffect(() => {
@@ -67,6 +96,10 @@ const Auth = () => {
         console.log("Auth state change:", event, session?.user?.email);
         
         if (event === 'SIGNED_IN' && session) {
+          const provider = session.user?.app_metadata?.provider;
+          if (provider === "google" || provider === "github") {
+            rememberProvider(provider);
+          }
           toast({
             title: "Success!",
             description: "You have been signed in successfully.",
@@ -176,11 +209,12 @@ const Auth = () => {
           console.log("Sign in successful for:", data.user.email);
         }
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Auth error:", error);
+      const message = error instanceof Error ? error.message : "An unexpected error occurred. Please try again.";
       toast({
         title: "Error",
-        description: error.message || "An unexpected error occurred. Please try again.",
+        description: message,
         variant: "destructive",
       });
     } finally {
@@ -192,6 +226,7 @@ const Auth = () => {
     try {
       const redirectUrl = `${window.location.origin}/dashboard`;
       
+      rememberProvider("github");
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "github",
         options: {
@@ -200,11 +235,12 @@ const Auth = () => {
       });
       
       if (error) throw error;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("GitHub auth error:", error);
+      const message = error instanceof Error ? error.message : "Failed to sign in with GitHub. Please try again.";
       toast({
         title: "Error",
-        description: error.message || "Failed to sign in with GitHub. Please try again.",
+        description: message,
         variant: "destructive",
       });
     }
@@ -214,6 +250,7 @@ const Auth = () => {
     try {
       const redirectUrl = `${window.location.origin}/dashboard`;
       
+      rememberProvider("google");
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
@@ -222,11 +259,12 @@ const Auth = () => {
       });
       
       if (error) throw error;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Google auth error:", error);
+      const message = error instanceof Error ? error.message : "Failed to sign in with Google. Please try again.";
       toast({
         title: "Error",
-        description: error.message || "Failed to sign in with Google. Please try again.",
+        description: message,
         variant: "destructive",
       });
     }
@@ -371,27 +409,47 @@ const Auth = () => {
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <Button
-                type="button"
-                variant="outline"
-                className="h-12 border-gray-200 hover:bg-gray-50 transition-all duration-200"
-                onClick={handleGoogleAuth}
-                disabled={loading}
-              >
-                <GoogleIcon className="mr-2 h-5 w-5" />
-                Google
-              </Button>
-              
-              <Button
-                type="button"
-                variant="outline"
-                className="h-12 border-gray-200 hover:bg-gray-50 transition-all duration-200"
-                onClick={handleGithubAuth}
-                disabled={loading}
-              >
-                <Github className="mr-2 h-5 w-5" />
-                GitHub
-              </Button>
+              <div className="relative">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="h-12 w-full border-gray-200 hover:bg-gray-50 transition-all duration-200"
+                  onClick={handleGoogleAuth}
+                  disabled={loading}
+                >
+                  <GoogleIcon className="mr-2 h-5 w-5" />
+                  Google
+                </Button>
+                {lastUsedProvider === "google" && (
+                  <Badge
+                    variant="secondary"
+                    className="absolute -top-2 right-2 border-transparent bg-blue-600 text-white text-[10px] font-semibold uppercase tracking-wide shadow-sm"
+                  >
+                    Last used
+                  </Badge>
+                )}
+              </div>
+
+              <div className="relative">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="h-12 w-full border-gray-200 hover:bg-gray-50 transition-all duration-200"
+                  onClick={handleGithubAuth}
+                  disabled={loading}
+                >
+                  <Github className="mr-2 h-5 w-5" />
+                  GitHub
+                </Button>
+                {lastUsedProvider === "github" && (
+                  <Badge
+                    variant="secondary"
+                    className="absolute -top-2 right-2 border-transparent bg-slate-900 text-white text-[10px] font-semibold uppercase tracking-wide shadow-sm"
+                  >
+                    Last used
+                  </Badge>
+                )}
+              </div>
             </div>
 
             <div className="text-center">
