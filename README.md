@@ -60,6 +60,40 @@ This project is built with .
 - shadcn-ui
 - Tailwind CSS
 
+## Firefox "LegalDeep AI Risk Inspector" extension
+
+The repository also ships a standalone Firefox browser extension that lets Legal, Sales, and RevOps teams highlight contract language and instantly surface risk signals.
+
+- **Source location:** `extension/firefox/`
+- **Key files:**
+	- `manifest.json` – WebExtension manifest (Firefox, Manifest V2)
+	- `background.js` – registers the "Analyze with LegalDeep AI" context-menu action
+	- `riskAnalyzer.js` – shared heuristic engine for scoring risk indicators
+	- `contentScript.js` – gathers selected text or full-page content and stores results
+	- `popup.html` / `popup.js` / `popup.css` – in-browser dashboard for results and custom text checks
+
+### Install for local testing (temporary load)
+
+1. Open Firefox and navigate to `about:debugging#/runtime/this-firefox`.
+2. Click **Load Temporary Add-on…** and choose any file inside `extension/firefox/` (for example `manifest.json`).
+3. Visit any page, select contract language, right-click, and choose **Analyze with LegalDeep AI**. The popup updates with the latest score and flagged issues.
+4. Use the popup buttons to rerun selection scans, analyze the full page, or paste custom text.
+
+### Package for distribution
+
+```bash
+cd extension/firefox
+zip -r ../legaldeep-ai-risk-inspector.zip .
+```
+
+Submit the generated ZIP through the [Firefox Add-on Developer Hub](https://addons.mozilla.org/developers/) when you're ready to ship.
+
+### Troubleshooting tips
+
+- If the popup shows "Analysis engine unavailable", ensure both `riskAnalyzer.js` and `contentScript.js` are loaded (Firefox logs appear under **about:debugging → Inspect**).
+- Large documents are truncated to the first 50k characters for performance; the popup will note when truncation occurs.
+- To clear highlighted spans from a previous scan, rerun an analysis or refresh the page.
+
 ## E-signature quickstart
 
 The e-signature workflow now mirrors commercial tools while remaining self-hosted. To test it locally:

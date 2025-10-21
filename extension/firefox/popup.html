@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>LegalDeep AI Risk Inspector</title>
+    <link rel="stylesheet" href="popup.css" />
+    <script src="riskAnalyzer.js" defer></script>
+    <script src="popup.js" defer></script>
+  </head>
+  <body>
+    <div class="popup-shell">
+      <header class="popup-header">
+        <div class="header-title">
+          <img src="icons/icon-48.svg" alt="LegalDeep AI" class="brand-icon" />
+          <div>
+            <h1>LegalDeep AI</h1>
+            <p class="subtitle">Risk Inspector</p>
+          </div>
+        </div>
+        <span id="risk-level" class="risk-badge risk-info">INFO</span>
+      </header>
+
+      <p id="status-message" class="status-message">Highlight contract text to begin.</p>
+
+      <section class="controls" aria-label="Actions">
+        <button id="analyze-selection" class="btn primary">Analyze Selection</button>
+        <button id="analyze-page" class="btn secondary">Analyze Page</button>
+      </section>
+
+      <section class="analysis" aria-live="polite">
+        <p id="analysis-summary" class="analysis-summary">
+          Select a clause or run a full-page scan to see risk insights here.
+        </p>
+        <dl class="metrics">
+          <div class="metric">
+            <dt>Source</dt>
+            <dd id="analysis-source">—</dd>
+          </div>
+          <div class="metric">
+            <dt>Score</dt>
+            <dd id="analysis-score">0</dd>
+          </div>
+          <div class="metric">
+            <dt>Words</dt>
+            <dd id="analysis-words">0</dd>
+          </div>
+          <div class="metric">
+            <dt>Updated</dt>
+            <dd id="analysis-updated">Never</dd>
+          </div>
+        </dl>
+        <div class="issues" id="issues-container">
+          <div class="issues-header">
+            <h2>Flagged Issues</h2>
+            <span id="issues-count" class="issues-count">0</span>
+          </div>
+          <ul id="issues-list" class="issues-list">
+            <li class="issues-empty">No issues flagged yet.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="custom" aria-label="Analyze pasted text">
+        <div class="custom-header">
+          <h2>Paste Custom Text</h2>
+          <span class="hint">Optional</span>
+        </div>
+        <textarea
+          id="custom-text"
+          rows="4"
+          placeholder="Paste a clause or paragraph to check without leaving this page."
+        ></textarea>
+        <button id="analyze-custom" class="btn tertiary">Analyze Pasted Text</button>
+      </section>
+
+      <footer class="footer">
+        <span id="status-badge" class="status-badge idle">Ready</span>
+        <a href="https://legaldeep.ai" target="_blank" rel="noreferrer">legaldeep.ai</a>
+      </footer>
+    </div>
+  </body>
+</html>
