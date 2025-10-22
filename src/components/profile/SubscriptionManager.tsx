@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
@@ -34,11 +34,7 @@ export const SubscriptionManager = () => {
   const [subscription, setSubscription] = useState<SubscriptionInfo | null>(null);
   const { toast } = useToast();
 
-  useEffect(() => {
-    fetchSubscriptionDetails();
-  }, []);
-
-  const fetchSubscriptionDetails = async () => {
+  const fetchSubscriptionDetails = useCallback(async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("No user found");
@@ -70,27 +66,31 @@ export const SubscriptionManager = () => {
 
       if (documentsError) throw documentsError;
 
+      if (!subscriptionData) {
+        setSubscription(null);
+        return;
+      }
+
       setSubscription({
-        ...(subscriptionData || {
-          plan_type: "free",
-          status: "active",
-          current_period_start: new Date().toISOString(),
-          current_period_end: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-        }),
-        document_limit: profileData?.document_limit || 3,
+        ...subscriptionData,
+        document_limit: profileData?.document_limit ?? 0,
         documents_used: documentsUsed || 0,
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error fetching subscription:", error);
       toast({
         title: "Error loading subscription",
-        description: error.message,
+        description: error instanceof Error ? error.message : "Unable to load subscription details.",
         variant: "destructive",
       });
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast]);
+
+  useEffect(() => {
+    fetchSubscriptionDetails();
+  }, [fetchSubscriptionDetails]);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -127,27 +127,38 @@ export const SubscriptionManager = () => {
             "60-day money-back guarantee",
           ],
         };
-      case "starter":
+      case "basic":
         return {
-          name: "Starter",
-          limit: 25,
+          name: "Business Starter",
+          limit: 50,
           features: [
-            "25 document analyses per month",
+            "50 document analyses per month",
             "Priority email support (24-hour response)",
             "Advanced clause highlights",
             "Document comparison tools",
-            "60-day money-back guarantee",
+            "30-day money-back guarantee",
+          ],
+        };
+      case "pay_per_document":
+        return {
+          name: "Pay Per Use",
+          limit: 0,
+          features: [
+            "$24 per contract analysis",
+            "Professional 8-section reporting",
+            "Risk scoring with recommendations",
+            "PDF export for every analysis",
+            "No ongoing commitment",
           ],
         };
       default:
         return {
-          name: "Free Trial",
-          limit: 3,
+          name: "Custom Plan",
+          limit: 0,
           features: [
-            "3 free document analyses",
-            "Basic document summarization",
-            "Risk identification highlights",
-            "Email support within 48 hours",
+            "Tailored document quotas",
+            "Dedicated support workflows",
+            "Custom security reviews",
           ],
         };
     }
@@ -176,7 +187,10 @@ export const SubscriptionManager = () => {
   }
 
   const planFeatures = getPlanFeatures(subscription.plan_type);
-  const usagePercentage = (subscription.documents_used / subscription.document_limit) * 100;
+  const hasLimit = subscription.document_limit > 0;
+  const usagePercentage = hasLimit
+    ? (subscription.documents_used / subscription.document_limit) * 100
+    : 0;
 
   return (
     <div className="space-y-6">
@@ -206,10 +220,13 @@ export const SubscriptionManager = () => {
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span>Document Usage</span>
-              <span>{subscription.documents_used} / {subscription.document_limit}</span>
+              <span>
+                {subscription.documents_used}
+                {hasLimit ? ` / ${subscription.document_limit}` : " used"}
+              </span>
             </div>
             <Progress value={usagePercentage} className="h-2" />
-            {usagePercentage > 80 && (
+            {hasLimit && usagePercentage > 80 && (
               <div className="flex items-center gap-2 text-amber-600 text-sm mt-2">
                 <AlertTriangle className="h-4 w-4" />
                 <span>Approaching document limit</span>

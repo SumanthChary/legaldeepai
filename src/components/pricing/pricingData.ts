@@ -2,10 +2,9 @@
 export const getPricingPlans = (isAnnual: boolean) => [
   {
     name: "Pay Per Use",
-    price: "24",
+    price: "$24",
     period: "/document",
-    originalPrice: "",
-    description: "Perfect for occasional contract reviews",
+    description: "Perfect for occasional reviews with immediate results.",
     features: [
       "Professional 8-section analysis",
       "Risk assessment with scoring",
@@ -13,24 +12,26 @@ export const getPricingPlans = (isAnnual: boolean) => [
       "Strategic recommendations",
       "PDF export of full report",
       "Results delivered in 2 minutes",
-      "No signup required",
       "Analyze any contract type"
     ],
     highlight: false,
-    badge: "Simple & Fast"
+    badge: "Simple & Fast",
+    ctaLabel: "Buy Contract Credit",
+    trialAvailable: false,
+    tier: "pay_per_document"
   },
   {
     name: "Pro Unlimited",
-    price: isAnnual ? "970" : "97",
-    originalPrice: isAnnual ? "$1,164" : "",
+    price: isAnnual ? "$970" : "$97",
+    originalPrice: isAnnual ? "$1,164" : undefined,
     period: isAnnual ? "/year" : "/month",
-    description: "For businesses with ongoing contract needs",
+    description: "Unlimited analyses with a 7-day free trial before billing.",
     features: [
+      "7-day free trial – cancel anytime",
       "UNLIMITED contract analyses",
-      "All Pay-Per-Use features included",
-      "Priority processing (under 1 minute)",
+      "Priority processing (< 1 minute)",
       "Team collaboration tools",
-      "Full API access for integrations",
+      "Full API access",
       "Advanced analytics dashboard",
       "Bulk document processing",
       "Document scanning with camera",
@@ -39,14 +40,17 @@ export const getPricingPlans = (isAnnual: boolean) => [
     ],
     highlight: true,
     popular: true,
-    badge: "Best Value"
+    badge: "Best Value",
+    ctaLabel: "Start 7-Day Free Trial",
+    trialAvailable: true,
+    trialLengthDays: 7,
+    tier: "professional"
   },
   {
     name: "Enterprise",
     price: "Custom",
     period: "",
-    originalPrice: "",
-    description: "Tailored solutions for large organizations",
+    description: "Tailored deployments with advanced compliance.",
     features: [
       "Everything in Pro Unlimited",
       "Dedicated account manager",
@@ -59,7 +63,10 @@ export const getPricingPlans = (isAnnual: boolean) => [
       "Custom integrations"
     ],
     highlight: false,
-    badge: "White Glove Service"
+    badge: "White Glove Service",
+    ctaLabel: "Book Strategy Call",
+    trialAvailable: false,
+    tier: "enterprise"
   }
 ];
 

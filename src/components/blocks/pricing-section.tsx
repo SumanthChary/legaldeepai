@@ -1,97 +1,21 @@
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Check, Ticket } from "lucide-react";
+import { Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { InView } from "@/components/ui/in-view";
 import { Card, CardContent } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
-import { RedeemCodeModal } from "@/components/pricing/RedeemCodeModal";
+import { PricingButton } from "@/components/pricing/PricingButton";
+import { getPricingPlans } from "@/components/pricing/pricingData";
+
+type PricingPlan = ReturnType<typeof getPricingPlans>[number];
 
 export const PricingSection = () => {
   const navigate = useNavigate();
   const [isAnnual, setIsAnnual] = useState(false);
-  const [isRedeemModalOpen, setIsRedeemModalOpen] = useState(false);
 
-  const plans = [
-    {
-      name: "Free Plan",
-      price: "0",
-      period: "",
-      description: "Perfect for trying out LegalDeep AI",
-      features: [
-        "3 free document analyses",
-        "Basic AI document summarization",
-        "Standard processing (24-48 hours)",
-        "Email support",
-        "Basic risk detection",
-        "PDF export of summaries",
-        "High Level Security & Safety"
-      ],
-      highlight: false,
-      badge: "Free"
-    },
-    {
-      name: "Starter",
-      price: "49",
-      period: "/month",
-      originalPrice: "",
-      description: "For solo practitioners and small firms",
-      features: [
-        "25 document analyses/month",
-        "Advanced AI clause analysis",
-        "Priority processing (1-4 hours)",
-        "Risk assessment & recommendations",
-        "Custom document templates",
-        "Chat support",
-        "Document version comparison",
-        "API access",
-        "Team Collaboration and Organization Settings",
-        "Security Settings",
-        "High Level Security & Safety"
-      ],
-      highlight: false,
-      popular: false,
-      badge: ""
-    },
-    {
-      name: "Pro Plan",
-      price: "149",
-      period: "/month",
-      originalPrice: "",
-      description: "For growing law firms and professionals",
-      features: [
-        "150 document analyses/month",
-        "Advanced AI with legal precedents",
-        "Instant processing (real-time)",
-        "Custom AI model training",
-        "Multi-user team collaboration",
-        "Priority support",
-        "Advanced analytics dashboard",
-        "Bulk document processing",
-        "Custom integrations",
-        "Dedicated account manager",
-        "Team Collaboration and Organization Settings",
-        "Security Settings",
-        "High Level Security & Safety"
-      ],
-      highlight: true,
-      popular: true,
-      badge: "Most Popular"
-    }
-  ];
-
-  const handleGetStarted = (plan: any) => {
-    navigate("/payment", { 
-      state: { 
-        plan: {
-          name: plan.name,
-          price: plan.name === "Free" ? "0" : `$${plan.price}`,
-          period: plan.period
-        }
-      }
-    });
-  };
+  const plans = useMemo(() => getPricingPlans(isAnnual), [isAnnual]);
 
   return (
     <div className="py-8 md:py-12 lg:py-16 xl:py-24 bg-gradient-to-b from-background to-secondary/20">
@@ -108,20 +32,11 @@ export const PricingSection = () => {
               Choose Your Legal AI Plan
             </h2>
             <p className="text-sm sm:text-base md:text-lg text-gray-600 max-w-3xl mx-auto mb-2">
-              From solo practitioners to enterprise firms - unlock the power of AI-driven legal document analysis. Start free, scale as you grow.
+              From solo practitioners to enterprise firms—unlock the power of AI-driven legal document analysis from day one.
             </p>
             <p className="text-sm md:text-base text-primary font-medium mb-4 md:mb-6">
-              Review 1000+ Documents in few minutes
+              Every subscription starts with a 7-day free trial. Cancel anytime before billing begins.
             </p>
-            <Button 
-              onClick={() => setIsRedeemModalOpen(true)}
-              variant="outline"
-              size="default"
-              className="flex items-center mx-auto"
-            >
-              <Ticket className="mr-1.5 h-3.5 w-3.5 md:mr-2 md:h-4 md:w-4" />
-              Redeem a Promotion Code
-            </Button>
           </div>
 
           <div className="flex justify-center items-center gap-2 md:gap-3 mb-6 md:mb-8 lg:mb-10">
@@ -137,7 +52,7 @@ export const PricingSection = () => {
           </div>
         </InView>
 
-        <div className="grid md:grid-cols-3 gap-4 md:gap-6 lg:gap-8 max-w-5xl mx-auto">
+  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 lg:gap-8 max-w-6xl mx-auto">
           {plans.map((plan, index) => (
             <InView
               key={plan.name}
@@ -170,8 +85,7 @@ export const PricingSection = () => {
                   <div className="text-center mb-6">
                     <h3 className="text-xl font-bold mb-2 text-gray-900">{plan.name}</h3>
                     <div className="flex items-baseline justify-center mb-2">
-                      {plan.price !== "0" && <span className="text-xl text-gray-600">$</span>}
-                      <span className="text-4xl font-bold text-gray-900">{plan.price}</span>
+                      <span className="text-4xl font-bold text-gray-900">{plan.price.startsWith("$") || plan.price === "Custom" ? plan.price : `$${plan.price}`}</span>
                       <span className="text-gray-600 ml-1">{plan.period}</span>
                     </div>
                     {plan.originalPrice && (
@@ -190,19 +104,10 @@ export const PricingSection = () => {
                       </li>
                     ))}
                   </ul>
-                  <Button
-                    className={`w-full mt-auto ${
-                      plan.highlight 
-                        ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white' 
-                        : ''
-                    }`}
-                    size="lg"
-                    variant={plan.name === "Starter" ? "outline" : "default"}
-                    onClick={() => handleGetStarted(plan)}
-                  >
-                    {plan.name === "Starter" ? "Start Free Trial" : 
-                     plan.name === "Enterprise" ? "Contact Sales" : "Get Started"}
-                  </Button>
+                  <PricingButton 
+                    plan={plan}
+                    className={plan.highlight ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0' : ''}
+                  />
                 </CardContent>
               </Card>
             </InView>
@@ -220,10 +125,6 @@ export const PricingSection = () => {
         </div>
       </div>
       
-      <RedeemCodeModal 
-        isOpen={isRedeemModalOpen} 
-        onClose={() => setIsRedeemModalOpen(false)} 
-      />
     </div>
   );
 };

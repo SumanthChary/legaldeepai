@@ -122,7 +122,7 @@ const enterpriseItems = [
     title: "API Access", 
     tab: "api",
     icon: Key,
-    badge: "FREE"
+    badge: "Included"
   },
 ];
 

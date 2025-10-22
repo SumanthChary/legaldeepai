@@ -84,12 +84,12 @@ export function WhopWelcomeUpsell() {
                   onClick={() => handleUpgrade(WHOP_PLANS.BUSINESS_GUARDIAN.id)}
                   className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-semibold py-3"
                 >
-                  Start Free Trial
+                  Start Subscription
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
                 
                 <p className="text-xs text-center text-gray-500">
-                  30-day free trial • Cancel anytime • Secure Whop checkout
+                  30-day money-back guarantee • Cancel anytime • Secure Whop checkout
                 </p>
               </CardContent>
             </Card>

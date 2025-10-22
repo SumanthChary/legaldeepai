@@ -126,11 +126,11 @@ export const WhopPricingPlans = () => {
                 }`}
                 variant={plan.popular ? 'default' : 'outline'}
               >
-                {'isLifetime' in plan && plan.isLifetime ? 'Get Lifetime Access' : 'Start Free Trial'}
+                {'isLifetime' in plan && plan.isLifetime ? 'Get Lifetime Access' : 'Start Subscription'}
               </Button>
 
               <p className="text-xs text-center text-muted-foreground">
-                Secure payment via Whop • Cancel anytime
+                Secure payment via Whop • 30-day money-back guarantee
               </p>
             </CardContent>
           </Card>

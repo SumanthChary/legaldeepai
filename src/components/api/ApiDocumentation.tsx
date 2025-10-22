@@ -179,19 +179,19 @@ print(result)`;
             <div className="space-y-4">
               <div className="grid gap-4 md:grid-cols-3">
                 <div className="p-4 border rounded-lg">
-                  <h4 className="font-semibold">Free Plan</h4>
-                  <p className="text-sm text-muted-foreground">3 requests/month</p>
-                  <Badge variant="secondary" className="mt-2">$0</Badge>
+                  <h4 className="font-semibold">Pay Per Use</h4>
+                  <p className="text-sm text-muted-foreground">$24 per contract</p>
+                  <Badge variant="secondary" className="mt-2">No minimums</Badge>
                 </div>
                 <div className="p-4 border rounded-lg">
-                  <h4 className="font-semibold">Starter</h4>
-                  <p className="text-sm text-muted-foreground">25 requests/month</p>
-                  <Badge variant="default" className="mt-2">$20/month</Badge>
+                  <h4 className="font-semibold">Pro Unlimited</h4>
+                  <p className="text-sm text-muted-foreground">Unlimited requests</p>
+                  <Badge variant="default" className="mt-2">$97/month</Badge>
                 </div>
                 <div className="p-4 border rounded-lg">
-                  <h4 className="font-semibold">Pro Plan</h4>
-                  <p className="text-sm text-muted-foreground">500 requests/month</p>
-                  <Badge variant="default" className="mt-2">$99/month</Badge>
+                  <h4 className="font-semibold">Enterprise</h4>
+                  <p className="text-sm text-muted-foreground">Custom SLAs & integrations</p>
+                  <Badge variant="default" className="mt-2">Starts at $299/month</Badge>
                 </div>
               </div>
             </div>

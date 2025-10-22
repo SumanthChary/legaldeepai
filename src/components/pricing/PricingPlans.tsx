@@ -12,18 +12,21 @@ interface PlanProps {
   highlight?: boolean;
   popular?: boolean;
   originalPrice?: string;
+  badge?: string;
+  ctaLabel?: string;
+  trialAvailable?: boolean;
+  trialLengthDays?: number;
 }
 
 interface PricingPlansProps {
   plans: PlanProps[];
-  isAnnual: boolean;
 }
 
-export const PricingPlans = ({ plans, isAnnual }: PricingPlansProps) => {
+export const PricingPlans = ({ plans }: PricingPlansProps) => {
   return (
     <div className="px-4 mb-12 md:mb-16">
       {/* Responsive grid that adapts to number of plans */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 max-w-6xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
         {plans.map((plan) => (
           <div
             key={plan.name}
@@ -32,10 +35,10 @@ export const PricingPlans = ({ plans, isAnnual }: PricingPlansProps) => {
                 ? 'border-blue-200 shadow-lg scale-105' 
                 : 'border-gray-200 shadow-sm'}`}
           >
-            {plan.popular && (
+            {(plan.popular || plan.badge) && (
               <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10">
-                <span className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-3 py-1 rounded-full text-xs font-medium shadow-sm">
-                  Most Popular
+                <span className={`px-3 py-1 rounded-full text-xs font-medium shadow-sm ${plan.popular ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white' : 'bg-gray-100 text-gray-700'}`}>
+                  {plan.badge || 'Most Popular'}
                 </span>
               </div>
             )}
@@ -46,11 +49,10 @@ export const PricingPlans = ({ plans, isAnnual }: PricingPlansProps) => {
                 <div className="mb-4">
                   {plan.originalPrice && (
                     <div className="text-lg text-gray-400 line-through mb-1">
-                      ${plan.originalPrice}{plan.period}
+                      {plan.originalPrice}{plan.period}
                     </div>
                   )}
                   <div className="flex items-baseline justify-center">
-                    {plan.price !== "0" && plan.price !== "Custom" && <span className="text-2xl font-medium text-gray-900">$</span>}
                     <span className="text-4xl font-bold text-gray-900">{plan.price}</span>
                     {plan.price !== "Custom" && <span className="text-lg text-gray-600 ml-1">{plan.period}</span>}
                   </div>
@@ -69,7 +71,10 @@ export const PricingPlans = ({ plans, isAnnual }: PricingPlansProps) => {
                 </ul>
               </div>
               
-              <PricingButton plan={plan} />
+              <PricingButton
+                plan={plan}
+                className={plan.highlight ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0' : undefined}
+              />
             </div>
           </div>
         ))}

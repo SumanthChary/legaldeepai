@@ -184,7 +184,7 @@ const MobileApp = () => {
                       className="group bg-gradient-to-r from-primary to-primary/80 hover:shadow-[0_0_40px_rgba(var(--primary),0.3)] w-full sm:w-auto px-8 py-6 text-base"
                     >
                       <Download className="w-5 h-5 mr-2" />
-                      Download Free App
+                      Download Companion App
                       <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                     </Button>
                     
@@ -229,9 +229,9 @@ const MobileApp = () => {
                 <span className="text-sm font-medium">4.9</span>
               </div>
               <div className="h-4 w-px bg-border"></div>
-              <span className="text-sm text-muted-foreground">Free to download</span>
+                <span className="text-sm text-muted-foreground">Included with active subscription</span>
               <div className="h-4 w-px bg-border"></div>
-              <span className="text-sm text-muted-foreground">No credit card</span>
+                <span className="text-sm text-muted-foreground">Secure mobile access</span>
             </div>
           </div>
         </DialogContent>

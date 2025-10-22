@@ -27,9 +27,9 @@ export const CTASection = () => {
             variant="secondary"
             size="lg"
             className="bg-white text-primary hover:bg-white/90 transition-all duration-300 shadow-lg hover:shadow-xl"
-            onClick={() => navigate("/dashboard")}
+            onClick={() => navigate("/pricing")}
           >
-            Start Free Trial
+            Choose a Plan
             <Users className="ml-1.5 h-3.5 w-3.5 md:ml-2 md:h-4 md:w-4" />
           </Button>
         </InView>

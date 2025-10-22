@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BarChart3, Clock, Key, TrendingUp, Globe } from 'lucide-react';
+import { BarChart3, Clock, Key, TrendingUp, Globe, type LucideIcon } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -62,7 +62,7 @@ export const ApiDashboard = () => {
   const StatCard = ({ title, value, icon: Icon, description, badge }: {
     title: string;
     value: string | number;
-    icon: any;
+    icon: LucideIcon;
     description: string;
     badge?: string;
   }) => (

@@ -82,8 +82,8 @@ export const FAQSection = ({
               Ready to Transform Your Legal Document Workflow?
             </h3>
             <p className="text-lg mb-6 opacity-90 max-w-2xl mx-auto">Join Legal professionals who trust our AI-powered solution</p>
-            <Button variant="secondary" size="lg" className="bg-white text-blue-600 hover:bg-white/90 transition-all duration-300 shadow-lg hover:shadow-xl" onClick={() => navigate("/dashboard")}>
-              Start Free Trial
+            <Button variant="secondary" size="lg" className="bg-white text-blue-600 hover:bg-white/90 transition-all duration-300 shadow-lg hover:shadow-xl" onClick={() => navigate("/pricing")}>
+              View Pricing
               <Users className="ml-2 h-4 w-4" />
             </Button>
           </div>

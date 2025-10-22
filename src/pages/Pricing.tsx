@@ -5,17 +5,13 @@ import { PageLayout } from "@/components/layout";
 import { PricingHeader } from "@/components/pricing/PricingHeader";
 import { PricingToggle } from "@/components/pricing/PricingToggle";
 import { PricingPlans } from "@/components/pricing/PricingPlans";
-import { AddOns } from "@/components/pricing/AddOns";
-import { RedeemCodeModal } from "@/components/pricing/RedeemCodeModal";
 import { getPricingPlans } from "@/components/pricing/pricingData";
 import { WhopPricingPlans } from "@/components/whop";
 import { WhopService } from "@/integrations/whop";
 const Pricing = () => {
   const [isAnnual, setIsAnnual] = useState(false);
-  const [isRedeemModalOpen, setIsRedeemModalOpen] = useState(false);
   const isWhopUser = WhopService.isWhopUser();
   const plans = getPricingPlans(isAnnual);
-  const addOns: any[] = [];
   return <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-grow py-8 md:py-12 lg:py-16 bg-gray-50">
@@ -25,15 +21,13 @@ const Pricing = () => {
                 💰 Annual billing: Save up to 40% — Limited time offer
               </div>
             </div>}
-          <PricingHeader onRedeemClick={() => setIsRedeemModalOpen(true)} />
+          <PricingHeader />
           
           {/* Show Whop pricing for Whop users, regular pricing for others */}
           {isWhopUser ? <WhopPricingPlans /> : <>
               <PricingToggle isAnnual={isAnnual} setIsAnnual={setIsAnnual} />
-              <PricingPlans plans={plans} isAnnual={isAnnual} />
+              <PricingPlans plans={plans} />
             </>}
-          
-          {addOns.length > 0 && <AddOns addOns={addOns} />}
           
           {/* Trust and Social Proof Section */}
           <div className="mt-16 text-center">
@@ -85,7 +79,6 @@ const Pricing = () => {
       </main>
       <Footer />
       
-      <RedeemCodeModal isOpen={isRedeemModalOpen} onClose={() => setIsRedeemModalOpen(false)} />
     </div>;
 };
 export default Pricing;

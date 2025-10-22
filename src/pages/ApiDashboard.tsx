@@ -32,7 +32,7 @@ export default function ApiDashboard() {
         <div>
           <h1 className="text-3xl font-bold">API Access</h1>
           <p className="text-muted-foreground">
-            Integrate LegalDeep AI into your applications - FREE tier available!
+            Integrate LegalDeep AI into your applications with reliable paid plans and enterprise support.
           </p>
         </div>
       </div>
@@ -42,13 +42,13 @@ export default function ApiDashboard() {
           <CardHeader>
             <CardTitle className="text-sm font-medium flex items-center gap-2">
               <Globe className="h-4 w-4" />
-              Free Tier
+              Pay Per Use
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">1,000</div>
-            <p className="text-xs text-muted-foreground">requests per month</p>
-            <Badge variant="secondary" className="mt-2">Free Forever</Badge>
+            <div className="text-2xl font-bold">$24</div>
+            <p className="text-xs text-muted-foreground">per contract analysis</p>
+            <Badge variant="secondary" className="mt-2">No long-term commitment</Badge>
           </CardContent>
         </Card>
 
@@ -61,8 +61,8 @@ export default function ApiDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">Unlimited</div>
-            <p className="text-xs text-muted-foreground">with $299/month plan</p>
-            <Badge className="mt-2">Premium Features</Badge>
+            <p className="text-xs text-muted-foreground">starting at $299/month</p>
+            <Badge className="mt-2">Includes dedicated support</Badge>
           </CardContent>
         </Card>
 
@@ -75,8 +75,8 @@ export default function ApiDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">60/min</div>
-            <p className="text-xs text-muted-foreground">requests per minute</p>
-            <Badge variant="outline" className="mt-2">Protected</Badge>
+            <p className="text-xs text-muted-foreground">requests per minute baseline</p>
+            <Badge variant="outline" className="mt-2">Higher limits available</Badge>
           </CardContent>
         </Card>
       </div>

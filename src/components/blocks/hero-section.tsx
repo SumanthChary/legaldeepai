@@ -74,8 +74,8 @@ export const HeroSection = ({
             duration: 0.5
           }}>
               <div className="flex flex-col sm:flex-row gap-2 md:gap-3 lg:gap-4">
-                <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300 border-0 w-full sm:w-auto" onClick={() => navigate("/dashboard")}>
-                  {isWhopUser ? 'Access Your Dashboard' : 'Get Started Free'}
+                <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300 border-0 w-full sm:w-auto" onClick={() => navigate(isWhopUser ? "/dashboard" : "/pricing")}>
+                  {isWhopUser ? 'Access Your Dashboard' : 'View Pricing'}
                   <ArrowRight className="ml-1.5 h-3.5 w-3.5 md:ml-2 md:h-4 md:w-4" />
                 </Button>
                 {!isWhopUser && <Button size="lg" variant="outline" className="border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-all duration-300 w-full sm:w-auto" onClick={() => navigate("/mobile-app")}>

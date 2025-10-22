@@ -10,6 +10,10 @@ interface PlanType {
   name: string;
   price: string;
   period: string;
+  ctaLabel?: string;
+  trialAvailable?: boolean;
+  trialLengthDays?: number;
+  tier?: string;
 }
 
 interface PricingButtonProps {
@@ -20,7 +24,6 @@ interface PricingButtonProps {
 export const PricingButton = ({ plan, className }: PricingButtonProps) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const isFree = plan.price === "0";
 
   const handleGetStarted = async () => {
     setLoading(true);
@@ -88,42 +91,27 @@ export const PricingButton = ({ plan, className }: PricingButtonProps) => {
           navigate("/dashboard");
           return;
         }
-
-        // For the free plan, check if the user is eligible
-        if (isFree && profile.document_limit > 3) {
-          // User already has more than the default free plan limit
-          toast({
-            title: "You already have an active plan",
-            description: "Your current plan includes more documents than the free plan",
-          });
-          navigate("/dashboard");
-          return;
-        }
       }
 
-      // Navigate to payment page for paid plans or dashboard for free plan
-      if (isFree) {
-        navigate("/dashboard");
-        toast({
-          title: "Free plan activated",
-          description: "You now have access to 3 free document analyses",
-        });
-      } else {
-        navigate("/payment", { 
-          state: { 
-            plan: {
-              name: plan.name,
-              price: plan.name === "Free" ? "0" : `$${plan.price}`,
-              period: plan.period
-            }
+      // Navigate to payment page for paid plans
+      const formattedPrice = plan.price.startsWith("$") ? plan.price : `$${plan.price}`;
+      navigate("/payment", { 
+        state: { 
+          plan: {
+            name: plan.name,
+            price: formattedPrice,
+            period: plan.period,
+            trialAvailable: plan.trialAvailable,
+            trialLengthDays: plan.trialLengthDays,
+            tier: plan.tier
           }
-        });
-      }
-    } catch (error: any) {
+        }
+      });
+    } catch (error: unknown) {
       console.error("Unexpected error:", error);
       toast({
         title: "Error",
-        description: error.message || "An unexpected error occurred. Please try again.",
+        description: error instanceof Error ? error.message : "An unexpected error occurred. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -133,8 +121,8 @@ export const PricingButton = ({ plan, className }: PricingButtonProps) => {
 
   return (
     <Button
-      className={`w-full text-sm md:text-base py-2 md:py-3 ${className}`}
-      variant={isFree ? "outline" : "default"}
+      className={`w-full text-sm md:text-base py-2 md:py-3 ${className ?? ''}`.trim()}
+      variant={plan.name === "Enterprise" ? "outline" : "default"}
       size="lg"
       onClick={handleGetStarted}
       disabled={loading}
@@ -145,7 +133,7 @@ export const PricingButton = ({ plan, className }: PricingButtonProps) => {
           Loading...
         </div>
       ) : (
-        plan.name === "Enterprise" ? "Contact Sales" : (isFree ? "Start Free Trial" : "Get Started")
+        plan.ctaLabel ?? (plan.name === "Enterprise" ? "Contact Sales" : "Choose Plan")
       )}
     </Button>
   );

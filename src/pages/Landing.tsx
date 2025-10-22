@@ -44,7 +44,7 @@ const Landing = () => {
     },
     {
       question: "Do you offer a free trial?",
-      answer: "Yes, we offer 3 free document analyses so you can experience our professional platform firsthand. This allows you to test our capabilities and see the quality of our AI-powered legal document analysis."
+      answer: "We do not offer a free tier. Every plan is billed from day one, backed by a 30-day money-back guarantee so you can evaluate LegalDeep AI with confidence."
     },
     {
       question: "How accurate is the AI analysis?",

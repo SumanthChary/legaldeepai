@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
+import { PayPalButtons, PayPalScriptProvider, type PayPalButtonsComponentProps } from "@paypal/react-paypal-js";
 import { supabase } from "@/integrations/supabase/client";
 import { PageLayout } from "@/components/layout";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,7 @@ import { CreditCard, Shield, CheckCircle, AlertCircle, Loader2 } from "lucide-re
 import "./Payment.css";
 import { Database } from "@/integrations/supabase/types";
 import { Input } from "@/components/ui/input";
+import type { User } from "@supabase/supabase-js";
 
 type SubscriptionTier = Database["public"]["Enums"]["subscription_tier"];
 
@@ -18,8 +19,46 @@ interface LocationState {
     name: string;
     price: string;
     period: string;
+    trialAvailable?: boolean;
+    trialLengthDays?: number;
+    tier?: string;
   };
 }
+
+const mapPlanToTier = (plan: LocationState["plan"]): SubscriptionTier | null => {
+  if (!plan) return null;
+
+  if (plan.tier) {
+    const normalizedTier = plan.tier.toLowerCase();
+    if (["pay_per_document", "pay-per-document", "payperdocument", "pay_per_use"].includes(normalizedTier)) {
+      return "pay_per_document";
+    }
+    if (["basic", "starter"].includes(normalizedTier)) {
+      return "basic";
+    }
+    if (["pro", "professional", "professional_monthly", "professional_annual", "pro_unlimited"].includes(normalizedTier)) {
+      return "professional";
+    }
+    if (normalizedTier === "enterprise") {
+      return "enterprise";
+    }
+  }
+
+  const normalizedName = plan.name.toLowerCase();
+  if (normalizedName.includes("pay per use") || normalizedName.includes("pay-per-use") || normalizedName.includes("pay per document")) {
+    return "pay_per_document";
+  }
+  if (normalizedName.includes("starter") || normalizedName.includes("basic")) {
+    return "basic";
+  }
+  if (normalizedName.includes("pro")) {
+    return "professional";
+  }
+  if (normalizedName.includes("enterprise")) {
+    return "enterprise";
+  }
+  return null;
+};
 
 
 const Payment = () => {
@@ -27,9 +66,9 @@ const Payment = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
-const { plan } = (location.state as LocationState) || {};
+  const { plan } = (location.state as LocationState) || {};
 
   // Dodo manual confirmation state
   const [transactionId, setTransactionId] = useState("");
@@ -102,10 +141,29 @@ const { plan } = (location.state as LocationState) || {};
   }
 
   const amount = plan.price.replace("$", "");
+  const displayTier = mapPlanToTier(plan);
+  const documentAllowanceLabel = (() => {
+    switch (displayTier) {
+      case "professional":
+        return "Unlimited document analyses";
+      case "basic":
+        return "Up to 50 document analyses per month";
+      case "pay_per_document":
+        return "One contract per purchase";
+      case "enterprise":
+        return "Custom enterprise quotas";
+      default:
+        return "Flexible document allowances";
+    }
+  })();
 
-  const handlePayPalApprove = async (data: any, actions: any) => {
+  const handlePayPalApprove: PayPalButtonsComponentProps["onApprove"] = async (_data, actions) => {
     try {
       setLoading(true);
+      if (!actions.order) {
+        throw new Error("PayPal order not available");
+      }
+
       const details = await actions.order.capture();
       console.log("PayPal transaction completed:", details);
       
@@ -113,7 +171,14 @@ const { plan } = (location.state as LocationState) || {};
         throw new Error("User not authenticated");
       }
 
-      const planType = plan.name.toLowerCase().replace(/\s+/g, '_') as SubscriptionTier;
+      if (!details?.id) {
+        throw new Error("Missing PayPal transaction ID");
+      }
+
+      const planTier = mapPlanToTier(plan);
+      if (!planTier) {
+        throw new Error("Unsupported plan selection. Please contact support.");
+      }
 
       // Call our Supabase Edge Function to process the payment
       const { data: processResult, error: processError } = await supabase.functions.invoke(
@@ -122,7 +187,7 @@ const { plan } = (location.state as LocationState) || {};
           body: {
             orderId: details.id,
             userId: user.id,
-            planType,
+            planType: planTier,
             amount: amount
           }
         }
@@ -145,11 +210,11 @@ const { plan } = (location.state as LocationState) || {};
       // Redirect to success page with plan details
       navigate(`/payment-success?plan=${encodeURIComponent(plan.name)}&amount=${amount}`);
       
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Payment processing error:", error);
       toast({
         title: "Payment Error",
-        description: error.message || "There was an error processing your payment. Please contact support.",
+        description: error instanceof Error ? error.message : "There was an error processing your payment. Please contact support.",
         variant: "destructive",
       });
     } finally {
@@ -157,9 +222,9 @@ const { plan } = (location.state as LocationState) || {};
     }
   };
 
-  const handlePayPalError = (err: any) => {
+  const handlePayPalError = (err: unknown) => {
     console.error("PayPal error:", err);
-    const errorMessage = err.message || "There was an error with PayPal.";
+    const errorMessage = err instanceof Error ? err.message : "There was an error with PayPal.";
     toast({
       title: "Payment Error",
       description: `${errorMessage} Please try again or contact support.`,
@@ -182,19 +247,18 @@ const { plan } = (location.state as LocationState) || {};
         throw new Error("User not authenticated");
       }
 
-      const normalized = plan.name.toLowerCase();
-      let key: 'free' | 'starter' | 'professional' | null = null;
-      if (normalized.includes('free')) key = 'free';
-      else if (normalized.includes('starter') || normalized.includes('basic')) key = 'starter';
-      else if (normalized.includes('pro')) key = 'professional';
+      const planTier = mapPlanToTier(plan);
+      if (!planTier || planTier === "enterprise") {
+        throw new Error('This plan requires a custom agreement. Please contact support to complete your purchase.');
+      }
 
-      const links: Record<'free' | 'starter' | 'professional', string> = {
-        free: 'https://checkout.dodopayments.com/buy/pdt_TnYlrnizcTJnz9NfobZ4Q?quantity=1',
-        starter: 'https://checkout.dodopayments.com/buy/pdt_Jgmj7LlELZOYBqqn4ZyaV?quantity=1',
+      const links: Partial<Record<SubscriptionTier, string>> = {
+        pay_per_document: 'https://checkout.dodopayments.com/buy/pdt_TnYlrnizcTJnz9NfobZ4Q?quantity=1',
+        basic: 'https://checkout.dodopayments.com/buy/pdt_Jgmj7LlELZOYBqqn4ZyaV?quantity=1',
         professional: 'https://checkout.dodopayments.com/buy/pdt_P897Pxm3ekfhjbdnwWVw1?quantity=1',
       };
 
-      const url = key ? links[key] : null;
+      const url = links[planTier];
       if (!url) {
         throw new Error('Unsupported plan for Dodo checkout. Please use PayPal or contact support.');
       }
@@ -206,11 +270,11 @@ const { plan } = (location.state as LocationState) || {};
         description: 'After completing checkout, paste your Dodo transaction ID below and press Confirm to activate your plan.',
         duration: 7000,
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Dodo checkout error:", error);
       toast({
         title: "Payment Error",
-        description: error.message || "There was an error opening Dodo checkout.",
+        description: error instanceof Error ? error.message : "There was an error opening Dodo checkout.",
         variant: "destructive",
       });
     } finally {
@@ -226,7 +290,10 @@ const { plan } = (location.state as LocationState) || {};
       if (!user) throw new Error('User not authenticated');
       if (!transactionId.trim()) throw new Error('Please paste your Dodo transaction ID');
 
-      const planType = plan.name.toLowerCase().replace(/\s+/g, '_') as SubscriptionTier;
+      const planTier = mapPlanToTier(plan);
+      if (!planTier) {
+        throw new Error('Unsupported plan type for verification. Please contact support.');
+      }
 
       const { data: processResult, error: processError } = await supabase.functions.invoke(
         'process-dodo-payment',
@@ -234,7 +301,7 @@ const { plan } = (location.state as LocationState) || {};
           body: {
             transactionId: transactionId.trim(),
             userId: user.id,
-            planType,
+            planType: planTier,
             amount: amount,
           }
         }
@@ -250,11 +317,11 @@ const { plan } = (location.state as LocationState) || {};
       });
 
       navigate(`/payment-success?plan=${encodeURIComponent(plan.name)}&amount=${amount}&method=dodo`);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Confirm Dodo payment error:', error);
       toast({
         title: 'Verification failed',
-        description: error.message || 'We could not verify your Dodo payment. Please contact support.',
+        description: error instanceof Error ? error.message : 'We could not verify your Dodo payment. Please contact support.',
         variant: 'destructive',
       });
     } finally {
@@ -306,7 +373,7 @@ const { plan } = (location.state as LocationState) || {};
                   <div className="space-y-3 py-4">
                     <div className="flex items-center text-green-600">
                       <CheckCircle className="h-5 w-5 mr-2" />
-                      <span>{plan.name === 'Professional' ? '500' : plan.name === 'Enterprise' ? 'Unlimited' : '25'} document analyses/month</span>
+                      <span>{documentAllowanceLabel}</span>
                     </div>
                     <div className="flex items-center text-green-600">
                       <CheckCircle className="h-5 w-5 mr-2" />
@@ -325,6 +392,18 @@ const { plan } = (location.state as LocationState) || {};
                       <span>Cancel anytime</span>
                     </div>
                   </div>
+
+                  {plan.trialAvailable && (
+                    <div className="mt-4 flex items-start gap-3 rounded-xl border border-blue-100 bg-blue-50/70 px-4 py-3">
+                      <AlertCircle className="h-5 w-5 text-blue-600 mt-0.5" />
+                      <div>
+                        <p className="text-sm font-semibold text-blue-700">{plan.trialLengthDays ?? 7}-day free trial activated</p>
+                        <p className="text-xs text-blue-600 leading-relaxed">
+                          Your card won&apos;t be charged until the trial ends. Cancel anytime from your dashboard before billing starts.
+                        </p>
+                      </div>
+                    </div>
+                  )}
                   
                   <div className="flex justify-between items-center pt-4 border-t border-gray-200">
                     <span className="text-xl font-bold text-gray-900">Total</span>
