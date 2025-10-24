@@ -178,8 +178,28 @@ export const StructuredAnalysis = ({ summary }: StructuredAnalysisProps) => {
   );
 };
 
+type StructuredSummarySections = {
+  executiveSummary: string | null;
+  classification: {
+    type?: string;
+    purpose?: string;
+    riskLevel?: string;
+  };
+  clauses: Array<{
+    name: string;
+    explanation: string;
+    risk: string | null;
+    impact: string | null;
+  }>;
+  financial: string | null;
+  risks: string[];
+  compliance: string | null;
+  recommendations: string[];
+  timeline: string | null;
+};
+
 function parseStructuredSummary(summary: string) {
-  const sections: any = {
+  const sections: StructuredSummarySections = {
     executiveSummary: null,
     classification: {},
     clauses: [],
@@ -232,7 +252,7 @@ function parseStructuredSummary(summary: string) {
   if (risksMatch) {
     const risksText = risksMatch[1];
     const riskLines = risksText.split(/\n/).filter(line => line.trim().startsWith('🚨') || line.trim().startsWith('•'));
-    sections.risks = riskLines.map(line => line.replace(/^[🚨•]\s*/, '').trim()).filter(Boolean);
+  sections.risks = riskLines.map(line => line.replace(/^[🚨•]\s*/u, '').trim()).filter(Boolean);
   }
 
   // Extract Compliance
@@ -244,7 +264,7 @@ function parseStructuredSummary(summary: string) {
   if (recsMatch) {
     const recsText = recsMatch[1];
     const recLines = recsText.split(/\n/).filter(line => line.trim().startsWith('✓') || line.trim().startsWith('•'));
-    sections.recommendations = recLines.map(line => line.replace(/^[✓•]\s*/, '').trim()).filter(Boolean);
+  sections.recommendations = recLines.map(line => line.replace(/^[✓•]\s*/u, '').trim()).filter(Boolean);
   }
 
   // Extract Timeline
@@ -254,7 +274,7 @@ function parseStructuredSummary(summary: string) {
   return sections;
 }
 
-function hasStructuredContent(sections: any): boolean {
+function hasStructuredContent(sections: StructuredSummarySections): boolean {
   return !!(
     sections.executiveSummary ||
     sections.classification.type ||

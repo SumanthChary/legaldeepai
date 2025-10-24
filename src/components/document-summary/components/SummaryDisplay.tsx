@@ -88,7 +88,7 @@ export const SummaryDisplay = ({ summary, isEmergencyProcessing }: SummaryDispla
 };
 
 function formatSummary(text: string): string {
-  let cleaned = text
+  const cleaned = text
     .replace(/^\s*---\s*$/gm, '')
     .replace(/^#+\s*/gm, '')
     .replace(/\*{1,3}([^*]+)\*{1,3}/g, '$1')

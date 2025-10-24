@@ -44,7 +44,7 @@ const Landing = () => {
     },
     {
       question: "Do you offer a free trial?",
-      answer: "We do not offer a free tier. Every plan is billed from day one, backed by a 30-day money-back guarantee so you can evaluate LegalDeep AI with confidence."
+      answer: "Every paid plan begins with a 7-day free trial. You can explore the full platform, and if it’s not a fit, cancel before the trial ends to avoid charges. After the trial, billing starts automatically with our 30-day money-back guarantee still in place."
     },
     {
       question: "How accurate is the AI analysis?",

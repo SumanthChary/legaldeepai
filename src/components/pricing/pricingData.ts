@@ -2,7 +2,7 @@
 export const getPricingPlans = (isAnnual: boolean) => [
   {
     name: "Pay Per Use",
-    price: "$24",
+    price: "$19",
     period: "/document",
     description: "Perfect for occasional reviews with immediate results.",
     features: [
@@ -22,8 +22,8 @@ export const getPricingPlans = (isAnnual: boolean) => [
   },
   {
     name: "Pro Unlimited",
-    price: isAnnual ? "$970" : "$97",
-    originalPrice: isAnnual ? "$1,164" : undefined,
+    price: isAnnual ? "$990" : "$99",
+    originalPrice: isAnnual ? "$1,188" : undefined,
     period: isAnnual ? "/year" : "/month",
     description: "Unlimited analyses with a 7-day free trial before billing.",
     features: [
