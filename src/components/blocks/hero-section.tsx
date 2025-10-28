@@ -121,7 +121,16 @@ export const HeroSection = ({
               <div className="relative">
                 {/* Hero dashboard mockup */}
                 <div className="relative rounded-2xl overflow-hidden">
-                  <img src={heroMockup} alt="LegalDeep AI contract analysis dashboard showing risk score, compliance metrics, and suggestions" className="w-full h-auto object-cover" />
+                    <img
+                      src={heroMockup}
+                      alt="LegalDeep AI contract analysis dashboard showing risk score, compliance metrics, and suggestions"
+                      className="w-full h-auto object-cover"
+                      loading="eager"
+                      decoding="async"
+                      fetchpriority="high"
+                      width={1536}
+                      height={1024}
+                    />
                 </div>
               </div>
             </InView>
@@ -131,12 +140,12 @@ export const HeroSection = ({
         {/* Trusted By Section */}
         <div className="mt-12 lg:mt-20">
           <p className="text-center text-sm text-muted-foreground mb-6">Inspired and Improved by</p>
-          <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12 lg:gap-16">
-            <img src="/logos/aba-logo.png" alt="ABA" className="h-10 md:h-12 w-auto opacity-50 grayscale hover:opacity-75 hover:grayscale-0 transition-all duration-300" />
-            <img src="/logos/microsoft-azure-logo.png" alt="Microsoft Azure" className="h-10 md:h-12 w-auto opacity-50 grayscale hover:opacity-75 hover:grayscale-0 transition-all duration-300" />
-            <img src="/logos/docusign-logo.png" alt="DocuSign" className="h-10 md:h-12 w-auto opacity-50 grayscale hover:opacity-75 hover:grayscale-0 transition-all duration-300" />
-            <img src="/logos/adobe-sign-logo.png" alt="Adobe Sign" className="h-10 md:h-12 w-auto opacity-50 grayscale hover:opacity-75 hover:grayscale-0 transition-all duration-300" />
-            <img src="/logos/iso-27001-logo.png" alt="ISO 27001 Certified" className="h-10 md:h-12 w-auto opacity-50 grayscale hover:opacity-75 hover:grayscale-0 transition-all duration-300" />
+            <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12 lg:gap-16">
+              <img src="/logos/aba-logo.png" alt="ABA" className="h-10 md:h-12 w-auto opacity-50 grayscale hover:opacity-75 hover:grayscale-0 transition-all duration-300" loading="lazy" decoding="async" width={384} height={256} />
+              <img src="/logos/microsoft-azure-logo.png" alt="Microsoft Azure" className="h-10 md:h-12 w-auto opacity-50 grayscale hover:opacity-75 hover:grayscale-0 transition-all duration-300" loading="lazy" decoding="async" width={384} height={256} />
+              <img src="/logos/docusign-logo.png" alt="DocuSign" className="h-10 md:h-12 w-auto opacity-50 grayscale hover:opacity-75 hover:grayscale-0 transition-all duration-300" loading="lazy" decoding="async" width={384} height={256} />
+              <img src="/logos/adobe-sign-logo.png" alt="Adobe Sign" className="h-10 md:h-12 w-auto opacity-50 grayscale hover:opacity-75 hover:grayscale-0 transition-all duration-300" loading="lazy" decoding="async" width={384} height={256} />
+              <img src="/logos/iso-27001-logo.png" alt="ISO 27001 Certified" className="h-10 md:h-12 w-auto opacity-50 grayscale hover:opacity-75 hover:grayscale-0 transition-all duration-300" loading="lazy" decoding="async" width={384} height={256} />
           </div>
         </div>
       </div>

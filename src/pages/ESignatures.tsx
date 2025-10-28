@@ -90,6 +90,10 @@ export default function ESignatures() {
             alt="Smiling person using e-signature"
             className="rounded-2xl shadow-lg max-w-xs md:max-w-sm ring-2 ring-purple-200 object-cover w-full transition-transform duration-300 hover:scale-105"
             style={{ aspectRatio: "4/3" }}
+            loading="lazy"
+            decoding="async"
+            width={720}
+            height={960}
           />
         </div>
         <UploadForm user={user} fetchRequests={fetchRequests} />

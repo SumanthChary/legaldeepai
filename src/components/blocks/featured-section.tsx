@@ -59,7 +59,15 @@ export const FeaturedSection = () => {
             }}>
                   <a href={feature.url} target="_blank" rel="noopener noreferrer" className="group flex flex-col items-center gap-2 p-4 rounded-lg hover:bg-gray-50 transition-all duration-300 hover:scale-105">
                     <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center group-hover:bg-purple-50 transition-colors shadow-sm border border-gray-100">
-                      <img src={feature.logo} alt={`${feature.name} logo`} className="w-8 h-8 object-contain" />
+                      <img
+                        src={feature.logo}
+                        alt={`${feature.name} logo`}
+                        className="w-8 h-8 object-contain"
+                        loading="lazy"
+                        decoding="async"
+                        width={256}
+                        height={256}
+                      />
                     </div>
                     <span className="text-sm font-medium text-gray-700 group-hover:text-purple-600 transition-colors">
                       {feature.name}

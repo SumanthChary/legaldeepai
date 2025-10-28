@@ -1,23 +1,28 @@
 
 import { PageLayout } from "@/components/layout";
 import { HeroSection } from "@/components/blocks/hero-section";
-import { DemoSection } from "@/components/blocks/demo-section";
-import { TestimonialsSection } from "@/components/blocks/testimonials-with-marquee";
-import { AboutSection } from "@/components/blocks/about-section";
-import { TrustSection } from "@/components/blocks/trust-section";
-import { FAQSection } from "@/components/blocks/faq-section";
-import { PricingSection } from "@/components/blocks/pricing-section";
-import { HowItWorksSection } from "@/components/blocks/how-it-works-section";
-
-import { FeaturedSection } from "@/components/blocks/featured-section";
-import { PowerfulFeaturesSection } from "@/components/blocks/powerful-features-section";
-import { CompetitiveAdvantageSection } from "@/components/blocks/competitive-advantage-section";
-import { WhopService } from "@/integrations/whop";
 import { WhopWelcomeUpsell } from "@/components/whop";
-import { useEffect, useState } from "react";
+import { WhopService } from "@/integrations/whop";
+import { Suspense, lazy, useEffect, useMemo, useState } from "react";
+
+const DemoSection = lazy(() => import("@/components/blocks/demo-section").then(module => ({ default: module.DemoSection })));
+const TestimonialsSection = lazy(() => import("@/components/blocks/testimonials-with-marquee").then(module => ({ default: module.TestimonialsSection })));
+const AboutSection = lazy(() => import("@/components/blocks/about-section").then(module => ({ default: module.AboutSection })));
+const TrustSection = lazy(() => import("@/components/blocks/trust-section").then(module => ({ default: module.TrustSection })));
+const FAQSection = lazy(() => import("@/components/blocks/faq-section").then(module => ({ default: module.FAQSection })));
+const PricingSection = lazy(() => import("@/components/blocks/pricing-section").then(module => ({ default: module.PricingSection })));
+const HowItWorksSection = lazy(() => import("@/components/blocks/how-it-works-section").then(module => ({ default: module.HowItWorksSection })));
+const FeaturedSection = lazy(() => import("@/components/blocks/featured-section").then(module => ({ default: module.FeaturedSection })));
+const PowerfulFeaturesSection = lazy(() => import("@/components/blocks/powerful-features-section").then(module => ({ default: module.PowerfulFeaturesSection })));
+const CompetitiveAdvantageSection = lazy(() => import("@/components/blocks/competitive-advantage-section").then(module => ({ default: module.CompetitiveAdvantageSection })));
 
 const Landing = () => {
   const [isWhopUser, setIsWhopUser] = useState(false);
+  const sectionFallback = useMemo(() => (
+    <div className="py-24 text-center text-sm text-muted-foreground">
+      Loading personalized experience…
+    </div>
+  ), []);
 
   useEffect(() => {
     setIsWhopUser(WhopService.isWhopUser());
@@ -72,27 +77,29 @@ const Landing = () => {
     <div className="bg-gradient-to-br from-slate-50 via-white to-blue-50/30">
       <PageLayout withBanner={!isWhopUser}>
         <HeroSection benefits={benefits} isWhopUser={isWhopUser} />
-        <DemoSection />
-        <FeaturedSection />
-        <HowItWorksSection />
-        <PowerfulFeaturesSection />
-        <CompetitiveAdvantageSection />
-        <TrustSection />
-        {/* Show special Whop upsell for Whop users */}
-        {isWhopUser && <WhopWelcomeUpsell />}
-        <div className="bg-gradient-to-br from-gray-50 to-blue-50/50">
-          <PricingSection />
-        </div>
-        <div className="bg-white/90 backdrop-blur-sm">
-          <TestimonialsSection />
-        </div>
-        
-        <div className="bg-gradient-to-br from-slate-50 to-gray-100/50">
-          <AboutSection />
-        </div>
-        <div className="bg-white/90 backdrop-blur-sm">
-          <FAQSection faqs={faqs} />
-        </div>
+        <Suspense fallback={sectionFallback}>
+          <DemoSection />
+          <FeaturedSection />
+          <HowItWorksSection />
+          <PowerfulFeaturesSection />
+          <CompetitiveAdvantageSection />
+          <TrustSection />
+          {/* Show special Whop upsell for Whop users */}
+          {isWhopUser && <WhopWelcomeUpsell />}
+          <div className="bg-gradient-to-br from-gray-50 to-blue-50/50">
+            <PricingSection />
+          </div>
+          <div className="bg-white/90 backdrop-blur-sm">
+            <TestimonialsSection />
+          </div>
+          
+          <div className="bg-gradient-to-br from-slate-50 to-gray-100/50">
+            <AboutSection />
+          </div>
+          <div className="bg-white/90 backdrop-blur-sm">
+            <FAQSection faqs={faqs} />
+          </div>
+        </Suspense>
       </PageLayout>
     </div>
   );

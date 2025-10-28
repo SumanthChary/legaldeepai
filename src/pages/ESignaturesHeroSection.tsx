@@ -28,6 +28,10 @@ export function ESignaturesHeroSection() {
             src="/lovable-uploads/a7e13ef3-e179-4732-982f-a6f8dcfb9600.png"
             alt="Stylus signing on tablet"
             className="max-h-48 sm:max-h-64 md:max-h-72 lg:max-h-96 w-auto rounded-xl shadow-lg ring-2 ring-white ring-offset-2 sm:ring-offset-4 ring-offset-purple-100 object-cover animate-fade-in"
+            loading="lazy"
+            decoding="async"
+            width={720}
+            height={960}
           />
         </div>
       </div>

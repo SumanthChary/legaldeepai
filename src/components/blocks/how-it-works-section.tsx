@@ -58,7 +58,15 @@ export const HowItWorksSection = () => {
                   {/* Premium Mobile Mockup */}
                   <div className="mb-8 relative">
                     <div className="relative mx-auto max-w-[280px]">
-                      <img src={step.image} alt={step.title} className="w-full h-auto rounded-2xl shadow-2xl transform group-hover:scale-105 transition-transform duration-300" />
+                      <img
+                        src={step.image}
+                        alt={step.title}
+                        className="w-full h-auto rounded-2xl shadow-2xl transform group-hover:scale-105 transition-transform duration-300"
+                        loading="lazy"
+                        decoding="async"
+                        width={1024}
+                        height={1536}
+                      />
                     </div>
                   </div>
                   

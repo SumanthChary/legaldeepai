@@ -1,6 +1,6 @@
 import { InView } from "@/components/ui/in-view";
-import { SkeumorphicIcon } from "@/components/ui/skeumorphic-icon";
-import { FileText, Cpu, Shield, Clock, Search, Users, Sparkles, Eye, Server } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import { Cpu, Shield, Users, Sparkles, Eye, Server } from "lucide-react";
 
 // Import feature images
 import aiPoweredAnalysis from "@/assets/features/ai-powered-analysis.png";
@@ -9,12 +9,23 @@ import contractRiskAssessment from "@/assets/features/contract-risk-assessment.p
 import teamCollaboration from "@/assets/features/team-collaboration.png";
 import cloudIntegration from "@/assets/features/cloud-integration.png";
 import documentSecurity from "@/assets/features/document-security.png";
+type Feature = {
+  icon: LucideIcon;
+  title: string;
+  description: string;
+  variant: "process" | "result" | "upload" | "action";
+  category: string;
+  image?: string;
+  details?: string[];
+  comingSoon?: boolean;
+};
+
 export const PowerfulFeaturesSection = () => {
-  const features = [{
+  const features: Feature[] = [{
     icon: Sparkles,
     title: "AI-Powered Dominance",
     description: "Make colleagues wonder how you analyze contracts so fast",
-    variant: "process" as const,
+    variant: "process",
     category: "AI Dominance",
     image: aiPoweredAnalysis,
     details: [
@@ -26,7 +37,7 @@ export const PowerfulFeaturesSection = () => {
     icon: Eye,
     title: "Executive Dashboard",
     description: "Present risk assessments that make clients trust your expertise",
-    variant: "result" as const,
+    variant: "result",
     category: "Executive Insights", 
     image: documentAnalysisDashboard,
     details: [
@@ -38,7 +49,7 @@ export const PowerfulFeaturesSection = () => {
     icon: Shield,
     title: "Reputation Protection",
     description: "Never miss critical contract risks that could destroy your career",
-    variant: "upload" as const,
+    variant: "upload",
     category: "Career Protection",
     image: contractRiskAssessment,
     details: [
@@ -50,7 +61,7 @@ export const PowerfulFeaturesSection = () => {
     icon: Users,
     title: "Team Collaboration",
     description: "Multi-user access with real-time collaboration and shared workspace.",
-    variant: "action" as const,
+    variant: "action",
     category: "Workflow",
     image: teamCollaboration,
     comingSoon: true,
@@ -63,7 +74,7 @@ export const PowerfulFeaturesSection = () => {
     icon: Cpu,
     title: "Cloud Integration",
     description: "Seamless Google Drive sync with automated document import and management.",
-    variant: "upload" as const,
+    variant: "upload",
     category: "Integration",
     image: cloudIntegration,
     comingSoon: true,
@@ -76,7 +87,7 @@ export const PowerfulFeaturesSection = () => {
     icon: Server,
     title: "Document Security",
     description: "Enterprise-grade security with end-to-end encryption and compliance verification.",
-    variant: "process" as const,
+    variant: "process",
     category: "Security",
     image: documentSecurity,
     details: [
@@ -129,12 +140,16 @@ export const PowerfulFeaturesSection = () => {
                 <div className="absolute inset-0 bg-gradient-to-br from-white/60 to-white/30 rounded-3xl backdrop-blur-sm"></div>
                 
                 {/* Feature Image */}
-                {(feature as any).image && (
+                {feature.image && (
                   <div className="relative z-10 mb-6 md:mb-8 overflow-hidden rounded-2xl">
-                    <img 
-                      src={(feature as any).image} 
+                    <img
+                      src={feature.image}
                       alt={feature.title}
                       className="block w-full h-auto rounded-2xl"
+                      loading="lazy"
+                      decoding="async"
+                      width={1536}
+                      height={1024}
                     />
                   </div>
                 )}
@@ -155,9 +170,9 @@ export const PowerfulFeaturesSection = () => {
                   <p className="text-gray-600 text-sm md:text-base lg:text-lg font-editorial font-light leading-relaxed mb-4">
                     {feature.description}
                   </p>
-                  {(feature as any).details && (
+                  {feature.details && (
                     <ul className="space-y-1.5 sm:space-y-2">
-                      {(feature as any).details.map((detail: string, detailIndex: number) => (
+                      {feature.details.map((detail, detailIndex) => (
                         <li key={detailIndex} className="text-gray-600 flex items-start text-xs sm:text-sm">
                           <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2 mt-1.5 sm:mt-2 flex-shrink-0" />
                           {detail}
