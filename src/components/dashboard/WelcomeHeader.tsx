@@ -68,15 +68,15 @@ export const WelcomeHeader = ({ session }: WelcomeHeaderProps) => {
             <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
           </div>
           <div className="min-w-0 flex-1">
-            <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold font-aeonik bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent leading-tight">
+            <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold font-instrument bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent leading-tight">
               Welcome back,
             </h1>
-            <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold font-aeonik bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent leading-tight">
+            <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold font-instrument bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent leading-tight">
               {userName}
             </h2>
           </div>
         </div>
-        <p className="text-xs sm:text-sm md:text-base text-gray-600 font-aeonik ml-8 sm:ml-11 break-words">
+        <p className="text-xs sm:text-sm md:text-base text-gray-600 font-instrument ml-8 sm:ml-11 break-words">
           Here's what's happening with your documents today.
           {userProfile?.organization_id && (
             <span className="block mt-1 text-xs text-primary font-medium">

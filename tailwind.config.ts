@@ -21,7 +21,8 @@ export default {
       fontFamily: {
         sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
         editorial: ["Editorial New", "serif"],
-        aeonik: ["Aeonik", "system-ui", "-apple-system", "sans-serif"],
+        instrument: ["Instrument Serif", "Times New Roman", "serif"],
+        serif: ["Instrument Serif", "Times New Roman", "serif"],
         'editorial-new': ['Editorial New', 'serif'],
       },
       colors: {

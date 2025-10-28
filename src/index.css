@@ -1,5 +1,6 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Instrument+Serif:ital@0;1&display=swap');
 
 @font-face {
   font-family: 'Editorial New';
@@ -13,50 +14,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Load Aeonik Grotesque fonts from Supabase storage */
-/* Load Aeonik Grotesque fonts from Supabase storage - optimized, no duplicates */
-@font-face {
-  font-family: 'Aeonik';
-  src: url('https://nhmhqhhxlcmhufxxifbn.supabase.co/storage/v1/object/public/fonts/AeonikTRIAL-Light.otf') format('opentype');
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Aeonik';
-  src: url('https://nhmhqhhxlcmhufxxifbn.supabase.co/storage/v1/object/public/fonts/AeonikTRIAL-LightItalic.otf') format('opentype');
-  font-weight: 300;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Aeonik';
-  src: url('https://nhmhqhhxlcmhufxxifbn.supabase.co/storage/v1/object/public/fonts/AeonikTRIAL-Regular.otf') format('opentype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Aeonik';
-  src: url('https://nhmhqhhxlcmhufxxifbn.supabase.co/storage/v1/object/public/fonts/AeonikTRIAL-RegularItalic.otf') format('opentype');
-  font-weight: 400;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Aeonik';
-  src: url('https://nhmhqhhxlcmhufxxifbn.supabase.co/storage/v1/object/public/fonts/AeonikTRIAL-Bold.otf') format('opentype');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Aeonik';
-  src: url('https://nhmhqhhxlcmhufxxifbn.supabase.co/storage/v1/object/public/fonts/AeonikTRIAL-BoldItalic.otf') format('opentype');
-  font-weight: 700;
-  font-style: italic;
-  font-display: swap;
-}
+/* Instrument Serif is loaded via Google Fonts (see index.html) */
 
 @font-face {
   font-family: 'Editorial New Italic';
@@ -133,11 +91,11 @@
 @layer base {
   * {
     @apply border-border;
-    font-family: "Aeonik", system-ui, -apple-system, sans-serif !important;
+    font-family: "Instrument Serif", "Times New Roman", serif !important;
   }
   body {
     @apply bg-background text-foreground;
-    font-family: "Aeonik", system-ui, -apple-system, sans-serif !important;
+    font-family: "Instrument Serif", "Times New Roman", serif !important;
   }
   /* Purple text selection styling like Perplexity */
   ::selection {
