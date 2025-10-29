@@ -37,6 +37,14 @@
   let hasAccess = false;
   let busy = false;
 
+  async function clearCachedAnalysis() {
+    try {
+      await browser.storage.local.remove(STORAGE_KEY);
+    } catch (error) {
+      console.warn("Unable to clear cached analysis", error);
+    }
+  }
+
   function setAuthError(message = "") {
     if (authError) {
       authError.textContent = message;
@@ -292,6 +300,7 @@
     hasAccess = false;
 
     if (!currentUser) {
+      await clearCachedAnalysis();
       updateAccessUI();
       return;
     }
@@ -397,6 +406,7 @@
     logoutButton.addEventListener("click", async () => {
       if (!supabaseClient) return;
       await supabaseClient.auth.signOut();
+      await clearCachedAnalysis();
       setAuthError("");
       if (statusMessage) {
         statusMessage.textContent = "Signed out. Sign in again to resume analysis.";
@@ -423,4 +433,8 @@
 
   initializeSupabase();
   loadLastAnalysis();
+
+  window.addEventListener("unload", () => {
+    void clearCachedAnalysis();
+  });
 })();
