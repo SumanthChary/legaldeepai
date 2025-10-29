@@ -2,32 +2,86 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>LegalDeep AI Risk Inspector</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="popup.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.48.1/dist/umd/supabase.min.js"></script>
     <script src="riskAnalyzer.js" defer></script>
     <script src="popup.js" defer></script>
   </head>
   <body>
     <div class="popup-shell">
-      <header class="popup-header">
-        <div class="header-title">
+      <header class="hero">
+        <div class="hero-details">
           <img src="icons/icon-48.svg" alt="LegalDeep AI" class="brand-icon" />
-          <div>
-            <h1>LegalDeep AI</h1>
-            <p class="subtitle">Risk Inspector</p>
+          <div class="hero-text">
+            <p class="eyebrow">LegalDeep AI</p>
+            <h1>Risk Inspector</h1>
+            <p class="subtitle">AI-assisted contract review, now in your browser.</p>
           </div>
         </div>
-        <span id="risk-level" class="risk-badge risk-info">INFO</span>
+        <div class="hero-meta">
+          <span id="plan-badge" class="plan-badge">Sign in required</span>
+          <span id="risk-level" class="risk-badge risk-info">INFO</span>
+        </div>
       </header>
 
-      <p id="status-message" class="status-message">Highlight contract text to begin.</p>
-
-      <section class="controls" aria-label="Actions">
-        <button id="analyze-selection" class="btn primary">Analyze Selection</button>
-        <button id="analyze-page" class="btn secondary">Analyze Page</button>
+      <section class="status-panel" aria-live="polite">
+        <p id="status-message" class="status-message">
+          Highlight contract text to begin.
+        </p>
+        <span id="status-badge" class="status-badge idle">Ready</span>
       </section>
 
-      <section class="analysis" aria-live="polite">
+      <section id="auth-panel" class="card auth-card" aria-label="Authenticate">
+        <div class="auth-copy">
+          <h2>Unlock with your LegalDeep account</h2>
+          <p>
+            Active subscriptions and trials can use the extension. Sign in below or open the
+            dashboard to manage your plan.
+          </p>
+        </div>
+        <form id="login-form" class="auth-form">
+          <label class="field">
+            <span>Email</span>
+            <input type="email" id="login-email" autocomplete="email" required />
+          </label>
+          <label class="field">
+            <span>Password</span>
+            <input type="password" id="login-password" autocomplete="current-password" required />
+          </label>
+          <button type="submit" id="login-button" class="btn primary">Sign in</button>
+          <button type="button" id="open-dashboard" class="btn ghost">
+            Open LegalDeep dashboard
+          </button>
+          <p id="auth-error" class="auth-error" role="alert" aria-live="assertive"></p>
+        </form>
+      </section>
+
+      <section id="subscription-warning" class="card warning-card hidden" aria-live="polite">
+        <h2>Subscription required</h2>
+        <p>
+          Your account is signed in, but an active subscription or trial wasn&apos;t detected. Please visit
+          the dashboard to manage billing and then return here.
+        </p>
+        <button type="button" id="manage-billing" class="btn secondary">Manage subscription</button>
+      </section>
+
+      <section class="card controls-card" aria-label="Actions">
+        <div class="controls">
+          <button id="analyze-selection" class="btn primary" disabled>Analyze selection</button>
+          <button id="analyze-page" class="btn secondary" disabled>Analyze full page</button>
+        </div>
+        <button id="logout-button" class="btn ghost" type="button">Sign out</button>
+      </section>
+
+      <section class="card analysis" aria-live="polite">
         <p id="analysis-summary" class="analysis-summary">
           Select a clause or run a full-page scan to see risk insights here.
         </p>
@@ -51,7 +105,7 @@
         </dl>
         <div class="issues" id="issues-container">
           <div class="issues-header">
-            <h2>Flagged Issues</h2>
+            <h2>Flagged issues</h2>
             <span id="issues-count" class="issues-count">0</span>
           </div>
           <ul id="issues-list" class="issues-list">
@@ -60,9 +114,9 @@
         </div>
       </section>
 
-      <section class="custom" aria-label="Analyze pasted text">
+      <section class="card custom" aria-label="Analyze pasted text">
         <div class="custom-header">
-          <h2>Paste Custom Text</h2>
+          <h2>Paste custom text</h2>
           <span class="hint">Optional</span>
         </div>
         <textarea
@@ -70,12 +124,12 @@
           rows="4"
           placeholder="Paste a clause or paragraph to check without leaving this page."
         ></textarea>
-        <button id="analyze-custom" class="btn tertiary">Analyze Pasted Text</button>
+        <button id="analyze-custom" class="btn tertiary" disabled>Analyze pasted text</button>
       </section>
 
       <footer class="footer">
-        <span id="status-badge" class="status-badge idle">Ready</span>
-        <a href="https://legaldeep.ai" target="_blank" rel="noreferrer">legaldeep.ai</a>
+        <a href="https://legaldeep.ai" target="_blank" rel="noreferrer">Visit dashboard</a>
+  <span class="footnote">Instrument Serif styling · v1.2.0</span>
       </footer>
     </div>
   </body>
