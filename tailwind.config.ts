@@ -19,10 +19,11 @@ export default {
         container: "1280px",
       },
       fontFamily: {
-        sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
+        sans: ["Host Grotesk", "Inter", "system-ui", "sans-serif"],
+        host: ["Host Grotesk", "Inter", "system-ui", "sans-serif"],
         editorial: ["Editorial New", "serif"],
-        instrument: ["Instrument Serif", "Times New Roman", "serif"],
-        serif: ["Instrument Serif", "Times New Roman", "serif"],
+        instrument: ["Host Grotesk", "Inter", "system-ui", "sans-serif"],
+        serif: ["Host Grotesk", "Inter", "system-ui", "sans-serif"],
         'editorial-new': ['Editorial New', 'serif'],
       },
       colors: {

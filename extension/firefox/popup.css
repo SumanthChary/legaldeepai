@@ -1,6 +1,6 @@
 :root {
   color-scheme: light;
-  font-family: "Instrument Serif", "Times New Roman", serif;
+  font-family: "Host Grotesk", "Inter", "system-ui", sans-serif;
   --bg: #fdf8f3;
   --fg: #1f1a17;
   --muted: rgba(66, 56, 52, 0.75);
@@ -36,6 +36,15 @@ body {
   color: var(--fg);
   display: flex;
   justify-content: center;
+  font-family: "Host Grotesk", "Inter", "system-ui", sans-serif;
+  font-optical-sizing: auto;
+}
+
+.host-grotesk {
+  font-family: "Host Grotesk", "Inter", "system-ui", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
 }
 
 .popup-shell {
