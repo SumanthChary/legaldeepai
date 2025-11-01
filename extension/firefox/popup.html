@@ -39,6 +39,23 @@
         <span id="status-badge" class="status-badge idle">Ready</span>
       </section>
 
+      <section id="account-card" class="card account-card hidden" aria-label="Account summary">
+        <div class="account-header">
+          <div>
+            <p class="account-label">Signed in as</p>
+            <p id="account-email" class="account-email">—</p>
+          </div>
+          <span id="account-plan" class="plan-pill">Plan</span>
+        </div>
+        <div class="account-meta">
+          <div class="account-meta-item">
+            <p class="meta-label">Last synced</p>
+            <p id="account-updated" class="meta-value">—</p>
+          </div>
+          <button type="button" id="manage-account" class="btn ghost small">Open dashboard</button>
+        </div>
+      </section>
+
       <section id="auth-panel" class="card auth-card" aria-label="Authenticate">
         <div class="auth-copy">
           <h2>Unlock with your LegalDeep account</h2>
@@ -128,8 +145,8 @@
       </section>
 
       <footer class="footer">
-        <a href="https://legaldeep.ai" target="_blank" rel="noreferrer">Visit dashboard</a>
-  <span class="footnote">Instrument Serif styling · v1.2.0</span>
+    <a href="https://legaldeep.ai" target="_blank" rel="noreferrer">Visit dashboard</a>
+  <span class="footnote">Instrument Serif styling · v1.2.1</span>
       </footer>
     </div>
   </body>

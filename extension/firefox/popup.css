@@ -114,6 +114,21 @@ h1 {
   color: #352b9d;
 }
 
+.plan-badge.success {
+  background: rgba(26, 157, 104, 0.18);
+  color: #166a47;
+}
+
+.plan-badge.warning {
+  background: rgba(249, 115, 22, 0.18);
+  color: #9a3412;
+}
+
+.plan-badge.idle {
+  background: rgba(66, 56, 52, 0.14);
+  color: var(--muted);
+}
+
 .status-panel {
   display: flex;
   justify-content: space-between;
@@ -210,6 +225,86 @@ h1 {
   gap: 10px;
 }
 
+.account-card {
+  gap: 14px;
+}
+
+.account-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.account-label {
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.account-email {
+  margin: 4px 0 0;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.plan-pill {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(91, 75, 255, 0.14);
+  color: #352b9d;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.plan-pill.success {
+  background: rgba(26, 157, 104, 0.16);
+  color: #166a47;
+}
+
+.plan-pill.warning {
+  background: rgba(249, 115, 22, 0.16);
+  color: #b45309;
+}
+
+.plan-pill.idle {
+  background: rgba(66, 56, 52, 0.12);
+  color: var(--muted);
+}
+
+.account-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.account-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.meta-label {
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.meta-value {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+}
+
 .btn {
   border: none;
   border-radius: var(--radius-sm);
@@ -243,6 +338,12 @@ h1 {
   background: transparent;
   color: var(--muted);
   border: 1px solid rgba(32, 23, 15, 0.1);
+}
+
+.btn.small {
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .btn:not(:disabled):hover {
