@@ -26,7 +26,13 @@ Follow these steps to generate a submission-ready archive for Mozilla Add-ons (A
    
    Visit the [Add-on Developer Hub](https://addons.mozilla.org/developers/addons) and upload the artifact from step 2. Validation should now succeed because the manifest sits at the archive root.
 
-   _If you want to double-check before uploading, run `unzip -l extension/dist/legaldeep-ai-firefox-v1.3.0.zip` and confirm you see `manifest.json` listed without any leading directories._
+   _Optional sanity check:_
+
+   ```bash
+   npm run validate:firefox-package -- extension/dist/legaldeep-ai-firefox-v1.3.0.zip
+   ```
+
+   The validator reports success only when `manifest.json` is located at the archive root. (If you prefer manual inspection, `unzip -l <file>` works too.)
 
 4. **Repeat for new releases**
    

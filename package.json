@@ -11,7 +11,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "package:firefox": "node scripts/package-firefox.mjs"
+    "package:firefox": "node scripts/package-firefox.mjs",
+    "validate:firefox-package": "node scripts/validate-firefox-package.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
