@@ -85,7 +85,7 @@ The repository also ships a standalone Firefox browser extension that lets Legal
 npm run package:firefox
 ```
 
-The script drops a submission-ready archive into `extension/dist/`. Upload that ZIP directly through the [Firefox Add-on Developer Hub](https://addons.mozilla.org/developers/)—no manual re-zipping required. See [`docs/firefox-extension-upload.md`](docs/firefox-extension-upload.md) if you need a refresher.
+The script emits a file named `extension/dist/legaldeep-ai-firefox-v<version>.zip`. Upload **that** ZIP directly through the [Firefox Add-on Developer Hub](https://addons.mozilla.org/developers/)—do **not** re-zip the repository or the `firefox/` folder, otherwise AMO won’t find `manifest.json`. See [`docs/firefox-extension-upload.md`](docs/firefox-extension-upload.md) if you need a refresher.
 
 ### Troubleshooting tips
 
