@@ -4,8 +4,14 @@
   const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5obWhxaGh4bGNtaHVmeHhpZmJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzc4ODYxMjYsImV4cCI6MjA1MzQ2MjEyNn0.IHb10FPooqBbe06KiR8eSHRlpkJmJtj_4iahFpRDu7M";
   const DASHBOARD_URL = "https://legaldeep.ai/dashboard";
   const BILLING_URL = "https://legaldeep.ai/payment";
+  const PRICING_URL = "https://legaldeep.ai/pricing";
+  const SUPPORT_URL = "https://legaldeep.ai/contact";
   const PROFILE_STORAGE_KEY = "legaldeepProfile";
   const AUTH_STORAGE_KEY = "legaldeepAuthState";
+  const RECENT_ANALYSES_KEY = "legaldeepRecentAnalyses";
+  const ANALYSIS_COUNT_KEY = "legaldeepAnalysisCount";
+  const RISK_COUNT_KEY = "legaldeepRiskCount";
+  const RECENT_LIMIT = 5;
   const hasExtensionStorage = typeof browser !== "undefined" && browser?.storage?.local;
 
   const statusMessage = document.getElementById("status-message");
@@ -22,11 +28,15 @@
   const updatedEl = document.getElementById("analysis-updated");
   const issuesCountEl = document.getElementById("issues-count");
   const issuesListEl = document.getElementById("issues-list");
+  const issuesEmptyEl = document.getElementById("issues-empty");
   const planBadge = document.getElementById("plan-badge");
   const accountCard = document.getElementById("account-card");
   const accountEmail = document.getElementById("account-email");
   const accountPlan = document.getElementById("account-plan");
   const accountUpdated = document.getElementById("account-updated");
+  const accountUsage = document.getElementById("account-usage");
+  const statContractsEl = document.getElementById("stat-contracts");
+  const statRisksEl = document.getElementById("stat-risks");
   const authPanel = document.getElementById("auth-panel");
   const loginForm = document.getElementById("login-form");
   const loginEmailInput = document.getElementById("login-email");
@@ -38,6 +48,17 @@
   const manageBillingBtn = document.getElementById("manage-billing");
   const logoutButton = document.getElementById("logout-button");
   const manageAccountBtn = document.getElementById("manage-account");
+  const uploadFileBtn = document.getElementById("upload-file");
+  const viewPricingBtn = document.getElementById("view-pricing");
+  const subscriptionHelpBtn = document.getElementById("subscription-help");
+  const recentListEl = document.getElementById("recent-analyses-list");
+  const recentEmptyEl = document.getElementById("recent-empty-state");
+
+  [accountPlan, planBadge].forEach((element) => {
+    if (element && !element.dataset.baseClass) {
+      element.dataset.baseClass = element.className;
+    }
+  });
 
   const supabaseStorage = hasExtensionStorage
     ? {
@@ -118,6 +139,69 @@
         },
       };
 
+  const numberFormat = new Intl.NumberFormat();
+
+  function toNumber(value, fallback = 0) {
+    if (typeof value === "number" && Number.isFinite(value)) return value;
+    if (typeof value === "string") {
+      const parsed = Number.parseInt(value, 10);
+      return Number.isFinite(parsed) ? parsed : fallback;
+    }
+    return fallback;
+  }
+
+  function formatCount(value) {
+    return numberFormat.format(toNumber(value, 0));
+  }
+
+  function describeSource(source) {
+    switch (source) {
+      case "page":
+        return "Page";
+      case "custom":
+        return "Custom";
+      case "selection":
+        return "Selection";
+      default:
+        return "Unknown";
+    }
+  }
+
+  function describeRisk(level) {
+    if (!level) return "INFO";
+    const normalized = level.toUpperCase();
+    return normalized;
+  }
+
+  async function getStoredNumber(key) {
+    const value = await objectStorage.get(key);
+    if (value === null || typeof value === "undefined") return 0;
+    return toNumber(value, 0);
+  }
+
+  function updateUsageIndicators() {
+    if (accountUsage) {
+      const limit = cachedProfile?.document_limit;
+      if (Number.isFinite(limit) && limit > 0) {
+        const used = Math.min(totalAnalyses, limit);
+        const remaining = Math.max(limit - used, 0);
+        accountUsage.textContent = `${formatCount(used)} / ${formatCount(limit)} analyses (${formatCount(remaining)} left)`;
+      } else {
+        accountUsage.textContent = `${formatCount(totalAnalyses)} analyses`;
+      }
+    }
+
+    if (statContractsEl) {
+      statContractsEl.textContent = formatCount(totalAnalyses);
+    }
+  }
+
+  function updateRiskMetric() {
+    if (statRisksEl) {
+      statRisksEl.textContent = formatCount(totalRiskFindings);
+    }
+  }
+
   let supabaseClient = null;
   let currentUser = null;
   let currentSubscription = null;
@@ -125,6 +209,9 @@
   let cachedProfile = null;
   let subscriptionFetched = false;
   let busy = false;
+  let totalAnalyses = 0;
+  let totalRiskFindings = 0;
+  let recentAnalyses = [];
 
   async function clearCachedAnalysis() {
     try {
@@ -185,6 +272,106 @@
     }
   }
 
+  async function loadUsageCounters() {
+    totalAnalyses = await getStoredNumber(ANALYSIS_COUNT_KEY);
+    totalRiskFindings = await getStoredNumber(RISK_COUNT_KEY);
+    updateUsageIndicators();
+    updateRiskMetric();
+  }
+
+  function renderRecentAnalyses(list) {
+    if (!recentListEl || !recentEmptyEl) return;
+    recentListEl.innerHTML = "";
+
+    if (!list.length) {
+      recentListEl.appendChild(recentEmptyEl);
+      recentEmptyEl.classList.remove("hidden");
+      return;
+    }
+
+    recentEmptyEl.classList.add("hidden");
+
+    list.forEach((item) => {
+      const entry = document.createElement("li");
+      entry.className = "recent-item";
+
+      const summary = document.createElement("p");
+      summary.className = "recent-summary";
+      summary.textContent = item.summary || "Analysis completed";
+      entry.appendChild(summary);
+
+      const meta = document.createElement("div");
+      meta.className = "recent-meta";
+
+      const source = document.createElement("span");
+      source.textContent = describeSource(item.source);
+      meta.appendChild(source);
+
+      const risk = document.createElement("span");
+      risk.textContent = describeRisk(item.level);
+      meta.appendChild(risk);
+
+      if (item.timestamp) {
+        const time = document.createElement("span");
+        time.textContent = formatRelativeTimestamp(item.timestamp);
+        meta.appendChild(time);
+      }
+
+      const issues = Array.isArray(item.issues) ? item.issues.length : 0;
+      const issueBadge = document.createElement("span");
+      issueBadge.textContent = `${issues} issue${issues === 1 ? "" : "s"}`;
+      meta.appendChild(issueBadge);
+
+      entry.appendChild(meta);
+      recentListEl.appendChild(entry);
+    });
+  }
+
+  async function loadRecentAnalysesFromStorage() {
+    const stored = await objectStorage.get(RECENT_ANALYSES_KEY);
+    recentAnalyses = Array.isArray(stored) ? stored : [];
+    renderRecentAnalyses(recentAnalyses);
+  }
+
+  async function persistRecentAnalysis(payload) {
+    if (!payload?.timestamp) {
+      return { isNew: false, list: recentAnalyses };
+    }
+
+    const existing = Array.isArray(recentAnalyses) ? recentAnalyses : [];
+    const alreadyExists = existing.some((item) => item.timestamp === payload.timestamp);
+    const filtered = existing.filter((item) => item.timestamp !== payload.timestamp);
+    const updated = [payload, ...filtered].slice(0, RECENT_LIMIT);
+    recentAnalyses = updated;
+    await objectStorage.set(RECENT_ANALYSES_KEY, updated);
+    renderRecentAnalyses(updated);
+    return { isNew: !alreadyExists, list: updated };
+  }
+
+  async function applyAnalysisResult(payload, { persistRecent = true } = {}) {
+    if (!payload) return;
+
+    await objectStorage.set(STORAGE_KEY, payload);
+
+    let isNew = false;
+    if (persistRecent) {
+      const result = await persistRecentAnalysis(payload);
+      isNew = result.isNew;
+    }
+
+    if (isNew) {
+      totalAnalyses += 1;
+      await objectStorage.set(ANALYSIS_COUNT_KEY, totalAnalyses);
+      const riskAddition = Array.isArray(payload.issues) ? payload.issues.length : 0;
+      totalRiskFindings += riskAddition;
+      await objectStorage.set(RISK_COUNT_KEY, totalRiskFindings);
+      updateUsageIndicators();
+      updateRiskMetric();
+    }
+
+    renderAnalysis(payload);
+  }
+
   function formatRelativeTimestamp(timestamp) {
     if (!timestamp) return "Just now";
     const value = typeof timestamp === "number" ? timestamp : Date.parse(timestamp);
@@ -210,7 +397,8 @@
 
   function setPlanPillState(element, variant) {
     if (!element) return;
-    element.className = "plan-pill";
+    const base = element.dataset.baseClass || element.className;
+    element.className = base;
     if (variant) {
       element.classList.add(variant);
     }
@@ -238,10 +426,19 @@
       setPlanPillState(accountPlan, variant);
     }
 
+    if (planBadge) {
+      planBadge.textContent = describeSubscription(subscription, {
+        whenMissing: currentUser ? "No active plan" : "Sign in required",
+      });
+      setPlanPillState(planBadge, variant);
+    }
+
     if (accountUpdated) {
       const timestamp = cachedProfile?.fetchedAt || cachedProfile?.updated_at || null;
       accountUpdated.textContent = timestamp ? formatRelativeTimestamp(timestamp) : "—";
     }
+
+    updateUsageIndicators();
   }
 
   function setAuthError(message = "") {
@@ -266,7 +463,7 @@
   function setBusy(message = "Analyzing...") {
     busy = true;
     statusBadge.textContent = "Working";
-    statusBadge.className = "status-badge busy";
+    statusBadge.className = "status-chip busy";
     statusMessage.textContent = message;
     refreshControls();
   }
@@ -274,42 +471,52 @@
   function setIdle(label = "Ready") {
     busy = false;
     statusBadge.textContent = label;
-    statusBadge.className = "status-badge idle";
+    statusBadge.className = "status-chip";
     refreshControls();
   }
 
   function setError(message) {
     busy = false;
     statusBadge.textContent = "Error";
-    statusBadge.className = "status-badge error";
+    statusBadge.className = "status-chip error";
     statusMessage.textContent = message;
     refreshControls();
   }
 
   function updateRiskBadge(level = "info") {
     const normalized = (level || "info").toLowerCase();
-    riskLevelBadge.textContent = normalized.toUpperCase();
-    riskLevelBadge.className = `risk-badge risk-${normalized}`;
+    const supported = new Set(["info", "low", "medium", "high"]);
+    const variant = supported.has(normalized) ? normalized : "info";
+    riskLevelBadge.textContent = describeRisk(variant);
+    riskLevelBadge.className = `risk-chip risk-${variant}`;
   }
 
   function updateIssues(issues = []) {
-    issuesListEl.innerHTML = "";
+    if (!issuesListEl || !issuesCountEl) return;
+
+    issuesListEl.querySelectorAll(".issues-item").forEach((node) => node.remove());
     issuesCountEl.textContent = issues.length.toString();
 
     if (!issues.length) {
-      const li = document.createElement("li");
-      li.className = "issues-empty";
-      li.textContent = "No issues flagged yet.";
-      issuesListEl.appendChild(li);
+      if (issuesEmptyEl) {
+        issuesEmptyEl.classList.remove("hidden");
+        if (!issuesEmptyEl.parentElement) {
+          issuesListEl.appendChild(issuesEmptyEl);
+        }
+      }
       return;
+    }
+
+    if (issuesEmptyEl) {
+      issuesEmptyEl.classList.add("hidden");
     }
 
     issues.forEach((issue, index) => {
       const li = document.createElement("li");
       li.className = "issues-item";
 
-      const title = document.createElement("h3");
-      title.textContent = `${index + 1}. ${issue.category}`;
+      const title = document.createElement("h4");
+      title.textContent = `${index + 1}. ${issue.category || "Issue"}`;
       li.appendChild(title);
 
       if (issue.snippet) {
@@ -378,7 +585,8 @@
   const normalized = nameSource.includes("@") ? nameSource.split("@")[0] : nameSource;
   const friendly = normalized.replace(/[._-]+/g, " ").trim();
   const greeting = friendly ? `Welcome back, ${titleCase(friendly)}.` : "";
-    return `${greeting ? `${greeting} ` : ""}Highlight contract text to begin.`.trim();
+    const prompt = "Highlight contract text to begin.";
+    return greeting ? `${greeting} ${prompt}` : prompt;
   }
 
   function updateAccessUI() {
@@ -391,14 +599,12 @@
       const subscription = currentSubscription || cachedProfile?.subscription || null;
       const whenMissing = currentUser ? "No active plan" : "Sign in required";
       planBadge.textContent = describeSubscription(subscription, { whenMissing });
-      planBadge.className = "plan-badge";
-      if (hasActiveAccess(subscription)) {
-        planBadge.classList.add("success");
-      } else if (subscription) {
-        planBadge.classList.add("warning");
-      } else {
-        planBadge.classList.add("idle");
-      }
+      const variant = hasActiveAccess(subscription)
+        ? "success"
+        : subscription
+          ? "warning"
+          : "idle";
+      setPlanPillState(planBadge, variant);
     }
 
     if (!busy && statusBadge && statusMessage) {
@@ -411,7 +617,16 @@
             : "Syncing"
           : "Sign in";
       statusBadge.textContent = statusLabel;
-      statusBadge.className = currentUser && !subscriptionFetched ? "status-badge busy" : "status-badge idle";
+      statusBadge.className = "status-chip";
+      if (hasAccess) {
+        statusBadge.classList.add("success");
+      } else if (currentUser && !subscriptionFetched) {
+        statusBadge.classList.add("busy");
+      } else if (currentUser) {
+        statusBadge.classList.add("warning");
+      } else {
+        statusBadge.classList.add("idle");
+      }
     }
 
     refreshControls();
@@ -420,14 +635,14 @@
   async function loadLastAnalysis() {
     const data = await objectStorage.get(STORAGE_KEY);
     if (!data) return;
-    renderAnalysis(data);
+    await applyAnalysisResult(data, { persistRecent: true });
   }
 
   function renderAnalysis(data) {
     summaryEl.textContent = data.summary || "No summary available.";
-    sourceEl.textContent = data.source === "page" ? "Page" : data.source === "custom" ? "Custom" : "Selection";
-    scoreEl.textContent = Math.round(data.score ?? 0).toString();
-    wordsEl.textContent = (data.wordCount ?? 0).toString();
+    sourceEl.textContent = describeSource(data.source);
+    scoreEl.textContent = formatCount(Math.round(data.score ?? 0));
+    wordsEl.textContent = formatCount(data.wordCount ?? 0);
     updatedEl.textContent = formatTime(data.timestamp);
 
     if (data.truncated) {
@@ -442,7 +657,7 @@
 
     updateRiskBadge(data.level || "info");
     updateIssues(data.issues || []);
-    setIdle("Updated");
+    setIdle("Ready");
   }
 
   async function triggerContentAnalysis(mode, text = "") {
@@ -497,8 +712,7 @@
       characterCount: text.length,
     };
 
-    await objectStorage.set(STORAGE_KEY, payload);
-    renderAnalysis(payload);
+    await applyAnalysisResult(payload);
   }
 
   async function fetchSubscription(userId) {
@@ -731,6 +945,18 @@
     manageBillingBtn.addEventListener("click", () => openTab(BILLING_URL));
   }
 
+  if (uploadFileBtn) {
+    uploadFileBtn.addEventListener("click", () => openTab(DASHBOARD_URL));
+  }
+
+  if (viewPricingBtn) {
+    viewPricingBtn.addEventListener("click", () => openTab(PRICING_URL));
+  }
+
+  if (subscriptionHelpBtn) {
+    subscriptionHelpBtn.addEventListener("click", () => openTab(SUPPORT_URL));
+  }
+
   browser.runtime.onMessage.addListener((message) => {
     if (message.type !== "LEGALDEEP_ANALYSIS_READY") return;
     void loadLastAnalysis();
@@ -741,6 +967,8 @@
   analyzeCustomBtn.addEventListener("click", analyzeCustomText);
 
   void initializeSupabase();
+  void loadRecentAnalysesFromStorage();
+  void loadUsageCounters();
   void loadLastAnalysis();
 
   window.addEventListener("unload", () => {
