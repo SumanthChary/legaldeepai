@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "package:firefox": "npx --yes web-ext build --source-dir extension/firefox --artifacts-dir extension/dist --overwrite-dest"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",

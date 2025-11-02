@@ -1,0 +1,31 @@
+# Firefox Extension Upload Guide
+
+Follow these steps to generate a submission-ready archive for Mozilla Add-ons (AMO).
+
+1. **Package the extension**
+   
+   From the project root run:
+   
+   ```bash
+   npm run package:firefox
+   ```
+   
+   This uses `web-ext build` to create a ZIP with `manifest.json` at the root, stored in `extension/dist/`.
+
+2. **Locate the artifact**
+   
+   After the command finishes you will find a file similar to:
+   
+   ```
+   extension/dist/legaldeep_ai_risk_inspector-1.3.0.zip
+   ```
+   
+   That archive is what you should upload to AMO. Do **not** re-zip the repository or the `firefox/` directory manually; doing so reintroduces the "manifest.json was not found" error.
+
+3. **Upload to AMO**
+   
+   Visit the [Add-on Developer Hub](https://addons.mozilla.org/developers/addons) and upload the artifact from step 2. Validation should now succeed because the manifest sits at the archive root.
+
+4. **Repeat for new releases**
+   
+   Whenever you change the extension, rerun `npm run package:firefox` to regenerate the artifact before uploading.

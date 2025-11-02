@@ -82,11 +82,10 @@ The repository also ships a standalone Firefox browser extension that lets Legal
 ### Package for distribution
 
 ```bash
-cd extension/firefox
-zip -r ../legaldeep-ai-risk-inspector.zip .
+npm run package:firefox
 ```
 
-Submit the generated ZIP through the [Firefox Add-on Developer Hub](https://addons.mozilla.org/developers/) when you're ready to ship.
+The script drops a submission-ready archive into `extension/dist/`. Upload that ZIP directly through the [Firefox Add-on Developer Hub](https://addons.mozilla.org/developers/)—no manual re-zipping required. See [`docs/firefox-extension-upload.md`](docs/firefox-extension-upload.md) if you need a refresher.
 
 ### Troubleshooting tips
 
