@@ -14,13 +14,14 @@ Follow these steps to generate a submission-ready archive for Mozilla Add-ons (A
 
 2. **Locate the artifact**
    
-   After the command finishes you will find a file similar to:
+   After the command finishes you will find files similar to:
    
    ```
    extension/dist/legaldeep-ai-firefox-v1.3.0.zip
+   extension/legaldeep-ai-1.3.0.zip
    ```
    
-   That archive is what you should upload to AMO. Do **not** re-zip the repository or the `firefox/` directory manually; doing so reintroduces the "manifest.json was not found" error. Likewise, avoid using GitHub's "Download ZIP" for commits—that bundle is the entire repo and will fail validation.
+   Either archive is AMO-ready (the second is kept for backwards compatibility). Do **not** re-zip the repository or the `firefox/` directory manually; doing so reintroduces the "manifest.json was not found" error. Likewise, avoid using GitHub's "Download ZIP" for commits—that bundle is the entire repo and will fail validation.
 
 3. **Upload to AMO**
    

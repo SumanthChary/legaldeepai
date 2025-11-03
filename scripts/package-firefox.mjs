@@ -15,6 +15,7 @@ async function packageFirefox() {
   const version = manifest.version || "dev";
   const fileName = `legaldeep-ai-firefox-v${version}.zip`;
   const legacyFileName = `legaldeep_ai_risk_inspector-${version}.zip`;
+  const legacyOutputName = `legaldeep-ai-${version}.zip`;
 
   await fs.mkdir(artifactsDir, { recursive: true });
 
@@ -40,6 +41,12 @@ async function packageFirefox() {
 
   console.log("\nFirefox extension packaged successfully.");
   console.log(`Artifact: ${path.join("extension", "dist", fileName)}`);
+
+  const distFilePath = path.join(artifactsDir, fileName);
+  const legacyOutputPath = path.join(rootDir, "extension", legacyOutputName);
+
+  await fs.copyFile(distFilePath, legacyOutputPath);
+  console.log(`Legacy-compatible copy: ${path.join("extension", legacyOutputName)}`);
 }
 
 packageFirefox().catch((error) => {
