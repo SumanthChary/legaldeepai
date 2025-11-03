@@ -17,8 +17,8 @@ Follow these steps to generate a submission-ready archive for Mozilla Add-ons (A
    After the command finishes you will find files similar to:
    
    ```
-   extension/dist/legaldeep-ai-firefox-v1.3.0.zip
-   extension/legaldeep-ai-1.3.0.zip
+   extension/dist/legaldeep-ai-firefox-v1.4.0.zip
+   extension/legaldeep-ai-1.4.0.zip
    ```
    
    Either archive is AMO-ready (the second is kept for backwards compatibility). Do **not** re-zip the repository or the `firefox/` directory manually; doing so reintroduces the "manifest.json was not found" error. Likewise, avoid using GitHub's "Download ZIP" for commits—that bundle is the entire repo and will fail validation.
@@ -30,7 +30,7 @@ Follow these steps to generate a submission-ready archive for Mozilla Add-ons (A
    _Optional sanity check:_
 
    ```bash
-   npm run validate:firefox-package -- extension/dist/legaldeep-ai-firefox-v1.3.0.zip
+   npm run validate:firefox-package -- extension/dist/legaldeep-ai-firefox-v1.4.0.zip
    ```
 
    The validator reports success only when `manifest.json` is located at the archive root. (If you prefer manual inspection, `unzip -l <file>` works too.)
