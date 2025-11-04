@@ -53,6 +53,12 @@
   const subscriptionHelpBtn = document.getElementById("subscription-help");
   const recentListEl = document.getElementById("recent-analyses-list");
   const recentEmptyEl = document.getElementById("recent-empty-state");
+  const gatedSections = Array.from(document.querySelectorAll(".gated"));
+  const bodyEl = document.body;
+
+  if (customTextArea && !customTextArea.dataset.defaultPlaceholder) {
+    customTextArea.dataset.defaultPlaceholder = customTextArea.getAttribute("placeholder") || "";
+  }
 
   [accountPlan, planBadge].forEach((element) => {
     if (element && !element.dataset.baseClass) {
@@ -458,6 +464,15 @@
     if (analyzePageBtn) analyzePageBtn.disabled = disabled;
     if (analyzeCustomBtn) analyzeCustomBtn.disabled = disabled;
     if (logoutButton) logoutButton.disabled = !currentUser;
+    if (uploadFileBtn) uploadFileBtn.disabled = disabled;
+    if (customTextArea) {
+      customTextArea.disabled = disabled;
+      const placeholder = customTextArea.dataset.defaultPlaceholder || "";
+      const lockedCopy = currentUser
+        ? "Activate your plan to unlock custom analysis"
+        : "Sign in to unlock custom analysis";
+      customTextArea.placeholder = disabled ? lockedCopy : placeholder;
+    }
   }
 
   function setBusy(message = "Analyzing...") {
@@ -542,23 +557,36 @@
       .replace(/\b\w/g, (c) => c.toUpperCase());
   }
 
+  const PAID_PLAN_TIERS = new Set(["basic", "professional", "enterprise", "pay_per_document"]);
+
   function hasActiveAccess(subscription) {
     if (!subscription) return false;
-    const { status, current_period_end: periodEnd } = subscription;
-    if (status === "active") return true;
-    if (status === "trialing") {
+    const { status, current_period_end: periodEnd, plan_type: planType } = subscription;
+    const normalizedStatus = typeof status === "string" ? status.toLowerCase() : "";
+    const normalizedPlanType = typeof planType === "string" ? planType.toLowerCase() : "";
+
+    if (normalizedStatus === "trialing") {
       if (!periodEnd) return true;
       const end = new Date(periodEnd).getTime();
       return Number.isFinite(end) ? end > Date.now() : true;
     }
+
+    if (normalizedStatus === "active") {
+      if (!normalizedPlanType) return false;
+      return PAID_PLAN_TIERS.has(normalizedPlanType);
+    }
+
     return false;
   }
 
   function describeSubscription(subscription, { whenMissing = "Sign in required" } = {}) {
     if (!subscription) return whenMissing;
     const readablePlan = subscription.plan_type ? titleCase(subscription.plan_type) : "Subscription";
+    const normalizedPlanType = subscription.plan_type?.toLowerCase?.() ?? "";
+    const isPaidTier = normalizedPlanType ? PAID_PLAN_TIERS.has(normalizedPlanType) : false;
+
     if (subscription.status === "active") {
-      return `${readablePlan} active`;
+      return isPaidTier ? `${readablePlan} active` : "Plan inactive for extension";
     }
     if (subscription.status === "trialing") {
       const end = subscription.current_period_end ? new Date(subscription.current_period_end) : null;
@@ -579,7 +607,7 @@
       return "Syncing your subscription details...";
     }
     if (!hasAccess) {
-      return "Active subscription or trial required. Manage billing from the dashboard.";
+      return "Extension access is limited to paid plans and active trials.";
     }
   const nameSource = (cachedProfile?.username || "").split(" ")[0] || (cachedProfile?.email || currentUser?.email || "");
   const normalized = nameSource.includes("@") ? nameSource.split("@")[0] : nameSource;
@@ -594,6 +622,12 @@
 
     toggleElement(authPanel, !currentUser);
     toggleElement(subscriptionWarning, Boolean(currentUser) && subscriptionFetched && !hasAccess);
+
+    if (bodyEl) {
+      const state = !currentUser ? "signedOut" : hasAccess ? "granted" : "locked";
+      bodyEl.dataset.accessState = state;
+      updateGatedOverlays(state);
+    }
 
     if (planBadge) {
       const subscription = currentSubscription || cachedProfile?.subscription || null;
@@ -630,6 +664,26 @@
     }
 
     refreshControls();
+  }
+
+  function updateGatedOverlays(state) {
+    if (!gatedSections.length) return;
+
+    gatedSections.forEach((element) => {
+      const signedOutMessage = element.dataset.signedoutLabel || "Sign in to unlock";
+      const lockedMessage = element.dataset.planLockedLabel || signedOutMessage;
+      const activeMessage = element.dataset.activeLabel || "";
+
+      let message = activeMessage;
+      if (state === "signedOut") {
+        message = signedOutMessage;
+      } else if (state === "locked") {
+        message = lockedMessage;
+      }
+
+      element.dataset.gateState = state;
+      element.dataset.gateLabel = message;
+    });
   }
 
   async function loadLastAnalysis() {

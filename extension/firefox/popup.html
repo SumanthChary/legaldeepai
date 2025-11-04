@@ -26,7 +26,12 @@
         </button>
       </header>
 
-      <section class="status-card" aria-live="polite">
+      <section
+  class="status-card gated"
+        data-signedout-label="Sign in to view status"
+  data-plan-locked-label="Requires paid plan or active trial"
+        aria-live="polite"
+      >
         <div class="status-content">
           <p id="status-message" class="status-message">Highlight contract text to begin.</p>
           <span id="status-badge" class="status-chip idle">Ready</span>
@@ -35,7 +40,12 @@
         <span id="risk-level" class="risk-chip risk-info">INFO</span>
       </section>
 
-      <section class="card upload-card" aria-label="Upload a contract">
+      <section
+  class="card upload-card gated"
+        data-signedout-label="Sign in to upload and analyze"
+  data-plan-locked-label="Paid plan or active trial required"
+        aria-label="Upload a contract"
+      >
         <div class="upload-illustration">
           <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false" class="icon-lg">
             <path
@@ -73,7 +83,12 @@
         </div>
       </section>
 
-      <section class="card action-card" aria-label="Quick actions">
+      <section
+  class="card action-card gated"
+        data-signedout-label="Sign in to run actions"
+  data-plan-locked-label="Only paid plans or trials can run actions"
+        aria-label="Quick actions"
+      >
         <div class="action-buttons">
           <button id="analyze-selection" class="btn secondary" type="button" disabled>
             Analyze highlighted text
@@ -91,7 +106,12 @@
         </div>
       </section>
 
-      <section class="card analysis-card" aria-live="polite">
+      <section
+  class="card analysis-card gated"
+        data-signedout-label="Unlock risk insights by signing in"
+  data-plan-locked-label="Trial or paid plan needed for insights"
+        aria-live="polite"
+      >
         <div class="analysis-header">
           <h2>Latest analysis</h2>
           <div class="analysis-meta">
@@ -175,7 +195,12 @@
         <button id="subscription-help" class="btn secondary" type="button">Talk to support</button>
       </section>
 
-      <section class="card recent-card" aria-label="Recent analyses">
+      <section
+  class="card recent-card gated"
+        data-signedout-label="History available after sign-in"
+  data-plan-locked-label="History unlocks with trial or paid plan"
+        aria-label="Recent analyses"
+      >
         <div class="recent-header">
           <h2>Recent analyses</h2>
           <span class="pill light">Last 5</span>
@@ -185,7 +210,12 @@
         </ul>
       </section>
 
-      <section class="card pricing-card" aria-label="Pricing">
+      <section
+  class="card pricing-card gated"
+        data-signedout-label="See pricing after sign-in"
+  data-plan-locked-label="Billing tools require a paid plan"
+        aria-label="Pricing"
+      >
         <div class="pricing-copy">
           <h2>Upgrade for deeper insights</h2>
           <p>Unlock automated redlines, unlimited analyses, and SOC 2 tooling with LegalDeep Pro.</p>
@@ -196,7 +226,12 @@
         </div>
       </section>
 
-      <section class="card stats-card" aria-label="Impact metrics">
+      <section
+  class="card stats-card gated"
+        data-signedout-label="Insights unlock after activation"
+  data-plan-locked-label="Analytics available to paid plans and trials"
+        aria-label="Impact metrics"
+      >
         <div class="stat">
           <p id="stat-contracts" class="stat-value">0</p>
           <p class="stat-label">Contracts analyzed</p>
