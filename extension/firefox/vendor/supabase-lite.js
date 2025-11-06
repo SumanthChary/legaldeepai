@@ -202,7 +202,7 @@
       const authOptions = options.auth || {};
       this.storage = authOptions.storage || noopStorage;
       this.storageKey = authOptions.storageKey || "supabase-auth-token";
-      this.persistSession = authOptions.persistSession !== false;
+      this.persistSessionEnabled = authOptions.persistSession !== false;
       this.autoRefreshToken = authOptions.autoRefreshToken !== false;
 
       this.fetchImpl = (options.global && typeof options.global.fetch === "function")
@@ -236,7 +236,7 @@
         return this.session;
       }
 
-      if (!this.persistSession) {
+      if (!this.persistSessionEnabled) {
         return null;
       }
 
@@ -372,7 +372,7 @@
     }
 
     async persistSession(session) {
-      if (!this.persistSession) {
+      if (!this.persistSessionEnabled) {
         this.session = session;
         this.scheduleRefresh(session);
         return;
