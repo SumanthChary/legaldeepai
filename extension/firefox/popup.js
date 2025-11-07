@@ -49,12 +49,24 @@
   const logoutButton = document.getElementById("logout-button");
   const manageAccountBtn = document.getElementById("manage-account");
   const uploadFileBtn = document.getElementById("upload-file");
+  const uploadFileInput = document.getElementById("upload-file-input");
   const viewPricingBtn = document.getElementById("view-pricing");
   const subscriptionHelpBtn = document.getElementById("subscription-help");
   const recentListEl = document.getElementById("recent-analyses-list");
   const recentEmptyEl = document.getElementById("recent-empty-state");
   const gatedSections = Array.from(document.querySelectorAll(".gated"));
   const bodyEl = document.body;
+
+  const MAX_UPLOAD_BYTES = 750 * 1024;
+  const MAX_UPLOAD_CHARACTERS = 50_000;
+  const SUPPORTED_TEXT_TYPES = new Set([
+    "text/plain",
+    "text/markdown",
+    "application/json",
+    "text/csv",
+    "text/html",
+  ]);
+  const SUPPORTED_TEXT_EXTENSIONS = new Set(["txt", "md", "markdown", "json", "csv", "html", "htm"]);
 
   if (customTextArea && !customTextArea.dataset.defaultPlaceholder) {
     customTextArea.dataset.defaultPlaceholder = customTextArea.getAttribute("placeholder") || "";
@@ -168,6 +180,8 @@
         return "Custom";
       case "selection":
         return "Selection";
+      case "upload":
+        return "File";
       default:
         return "Unknown";
     }
@@ -401,6 +415,32 @@
     });
   }
 
+  function getFileExtension(fileName = "") {
+    const parts = fileName.split(".");
+    if (parts.length <= 1) return "";
+    return parts.pop().toLowerCase();
+  }
+
+  function looksLikeTextFile(file) {
+    if (!file) return false;
+    const type = (file.type || "").toLowerCase();
+    if (type && (type.startsWith("text/") || SUPPORTED_TEXT_TYPES.has(type))) {
+      return true;
+    }
+    const extension = getFileExtension(file.name || "");
+    return SUPPORTED_TEXT_EXTENSIONS.has(extension);
+  }
+
+  function truncateForAnalysis(text) {
+    if (!text) {
+      return { text: "", truncated: false };
+    }
+    if (text.length <= MAX_UPLOAD_CHARACTERS) {
+      return { text, truncated: false };
+    }
+    return { text: text.slice(0, MAX_UPLOAD_CHARACTERS), truncated: true };
+  }
+
   function setPlanPillState(element, variant) {
     if (!element) return;
     const base = element.dataset.baseClass || element.className;
@@ -473,6 +513,7 @@
     if (analyzeCustomBtn) analyzeCustomBtn.disabled = disabled;
     if (logoutButton) logoutButton.disabled = !currentUser;
     if (uploadFileBtn) uploadFileBtn.disabled = disabled;
+    if (uploadFileInput) uploadFileInput.disabled = disabled;
     if (customTextArea) {
       customTextArea.disabled = disabled;
       const placeholder = customTextArea.dataset.defaultPlaceholder || "";
@@ -747,6 +788,9 @@
       statusMessage.textContent = "Page analyzed. Scroll to highlighted sections for context.";
     } else if (data.source === "selection") {
       statusMessage.textContent = "Selection analyzed. Highlight remains on page.";
+    } else if (data.source === "upload") {
+      const name = data.fileName ? `"${data.fileName}"` : "file";
+      statusMessage.textContent = `Uploaded ${name} analyzed in popup.`;
     } else {
       statusMessage.textContent = "Custom text analyzed in popup.";
     }
@@ -809,6 +853,73 @@
     };
 
     await applyAnalysisResult(payload);
+  }
+
+  async function handleUploadedFile(file) {
+    if (!hasAccess) {
+      setError("Activate your plan to upload and analyze documents.");
+      return;
+    }
+
+    if (!file) {
+      return;
+    }
+
+    if (file.size > MAX_UPLOAD_BYTES) {
+      setError("Files up to 750 KB are supported in the popup. Use the dashboard for larger documents.");
+      return;
+    }
+
+    if (!looksLikeTextFile(file)) {
+      setError("Upload text-based files (TXT, MD, CSV, JSON, HTML) in the popup. Use the dashboard for PDFs or Word docs.");
+      return;
+    }
+
+    let text = "";
+    try {
+      text = await file.text();
+    } catch (error) {
+      console.error("Unable to read uploaded file", error);
+      setError("Unable to read that file. Try saving it as plain text or upload via the dashboard.");
+      return;
+    }
+
+    const normalized = text.replace(/\r\n/g, "\n").trim();
+    if (!normalized) {
+      setError("Uploaded file was empty. Choose a document with readable text.");
+      return;
+    }
+
+    const { text: truncatedText, truncated } = truncateForAnalysis(normalized);
+
+    const originalLength = normalized.length;
+
+    const analyzer = window.LegalDeepRisk;
+    if (!analyzer?.analyzeText) {
+      setError("Analysis engine unavailable in popup. Reload and try again.");
+      return;
+    }
+
+    setBusy("Analyzing uploaded document...");
+
+    try {
+      const result = analyzer.analyzeText(truncatedText);
+      const summaryFromAnalyzer = typeof result.summary === "string" ? result.summary.trim() : "";
+      const payload = {
+        ...result,
+        summary: summaryFromAnalyzer || (file.name ? `Analysis for ${file.name}` : "Uploaded document analysis"),
+        source: "upload",
+        timestamp: Date.now(),
+        sample: truncatedText.slice(0, 500),
+        characterCount: originalLength,
+        truncated,
+        fileName: file.name || null,
+      };
+      await applyAnalysisResult(payload);
+    } catch (error) {
+      console.error("Failed to analyze uploaded file", error);
+      setError("Unable to analyze that file in the popup. Try again or use the dashboard.");
+    }
   }
 
   async function fetchSubscription(userId) {
@@ -1043,7 +1154,24 @@
     manageBillingBtn.addEventListener("click", () => openTab(BILLING_URL));
   }
 
-  if (uploadFileBtn) {
+  if (uploadFileBtn && uploadFileInput) {
+    uploadFileBtn.addEventListener("click", () => {
+      if (!hasAccess) {
+        setError("Activate your plan to upload and analyze documents.");
+        return;
+      }
+      uploadFileInput.click();
+    });
+
+    uploadFileInput.addEventListener("change", async (event) => {
+      const file = event?.target?.files?.[0];
+      try {
+        await handleUploadedFile(file);
+      } finally {
+        uploadFileInput.value = "";
+      }
+    });
+  } else if (uploadFileBtn) {
     uploadFileBtn.addEventListener("click", () => openTab(DASHBOARD_URL));
   }
 
