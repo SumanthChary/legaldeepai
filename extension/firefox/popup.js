@@ -417,25 +417,33 @@
     if (!shouldShow) return;
 
     const subscription = currentSubscription || cachedProfile?.subscription || null;
-    const variant = hasActiveAccess(subscription)
+    const allowanceDescription = describeProfileAllowance(cachedProfile);
+    const variant = hasAccess
       ? "success"
       : subscription
         ? "warning"
-        : "idle";
+        : allowanceDescription
+          ? "success"
+          : "idle";
 
     if (accountEmail) {
       accountEmail.textContent = cachedProfile?.email || currentUser?.email || "—";
     }
 
     if (accountPlan) {
-      accountPlan.textContent = describeSubscription(subscription, { whenMissing: "No active plan" });
+      const planLabel = subscription
+        ? describeSubscription(subscription, { whenMissing: "No active plan" })
+        : allowanceDescription || "No active plan";
+      accountPlan.textContent = planLabel;
       setPlanPillState(accountPlan, variant);
     }
 
     if (planBadge) {
-      planBadge.textContent = describeSubscription(subscription, {
-        whenMissing: currentUser ? "No active plan" : "Sign in required",
-      });
+      const whenMissing = currentUser ? "No active plan" : "Sign in required";
+      const badgeText = subscription
+        ? describeSubscription(subscription, { whenMissing })
+        : allowanceDescription || whenMissing;
+      planBadge.textContent = badgeText;
       setPlanPillState(planBadge, variant);
     }
 
@@ -572,11 +580,39 @@
     }
 
     if (normalizedStatus === "active") {
-      if (!normalizedPlanType) return false;
-      return PAID_PLAN_TIERS.has(normalizedPlanType);
+      if (!normalizedPlanType) return true;
+      if (PAID_PLAN_TIERS.has(normalizedPlanType)) {
+        return true;
+      }
+      return Array.from(PAID_PLAN_TIERS).some((tier) => normalizedPlanType.startsWith(tier));
     }
 
     return false;
+  }
+
+  function parseDocumentLimit(profile) {
+    if (!profile) return null;
+    const raw = profile.document_limit;
+    if (typeof raw === "number") {
+      return Number.isFinite(raw) ? raw : null;
+    }
+    if (typeof raw === "string" && raw.trim() !== "") {
+      const parsed = Number.parseInt(raw, 10);
+      return Number.isFinite(parsed) ? parsed : null;
+    }
+    return null;
+  }
+
+  function hasProfileAllowance(profile) {
+    const limit = parseDocumentLimit(profile);
+    return typeof limit === "number" && limit > 0;
+  }
+
+  function describeProfileAllowance(profile) {
+    const limit = parseDocumentLimit(profile);
+    if (limit === null || limit <= 0) return null;
+    if (limit >= 999_999) return "Unlimited analyses";
+    return `${formatCount(limit)} analyses available`;
   }
 
   function describeSubscription(subscription, { whenMissing = "Sign in required" } = {}) {
@@ -631,13 +667,19 @@
 
     if (planBadge) {
       const subscription = currentSubscription || cachedProfile?.subscription || null;
+      const allowanceDescription = describeProfileAllowance(cachedProfile);
       const whenMissing = currentUser ? "No active plan" : "Sign in required";
-      planBadge.textContent = describeSubscription(subscription, { whenMissing });
-      const variant = hasActiveAccess(subscription)
+      const label = subscription
+        ? describeSubscription(subscription, { whenMissing })
+        : allowanceDescription || whenMissing;
+      planBadge.textContent = label;
+      const variant = hasAccess
         ? "success"
         : subscription
           ? "warning"
-          : "idle";
+          : allowanceDescription
+            ? "success"
+            : "idle";
       setPlanPillState(planBadge, variant);
     }
 
@@ -858,14 +900,15 @@
 
     subscriptionFetched = true;
 
-    currentSubscription = fetchedSubscription || null;
-    const subscriptionSnapshot = currentSubscription
+    const resolvedSubscription = fetchedSubscription || cachedProfile?.subscription || null;
+    currentSubscription = resolvedSubscription;
+    const subscriptionSnapshot = resolvedSubscription
       ? {
-          status: currentSubscription.status,
-          plan_type: currentSubscription.plan_type,
-          current_period_end: currentSubscription.current_period_end,
-          current_period_start: currentSubscription.current_period_start,
-          cancel_at: currentSubscription.cancel_at,
+          status: resolvedSubscription.status,
+          plan_type: resolvedSubscription.plan_type,
+          current_period_end: resolvedSubscription.current_period_end,
+          current_period_start: resolvedSubscription.current_period_start,
+          cancel_at: resolvedSubscription.cancel_at,
         }
       : cachedProfile?.subscription || null;
 
@@ -880,7 +923,8 @@
       });
     }
 
-    hasAccess = hasActiveAccess(currentSubscription);
+    const subscriptionForAccess = currentSubscription || cachedProfile?.subscription || null;
+    hasAccess = hasActiveAccess(subscriptionForAccess) || hasProfileAllowance(cachedProfile);
     if (!hasAccess) {
       await clearCachedAnalysis();
     }
