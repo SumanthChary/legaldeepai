@@ -23,16 +23,15 @@
 
       <main class="upload-window-main">
         <section class="upload-window-card">
-          <div id="upload-window-dropzone" class="upload-window-dropzone" tabindex="0" aria-label="Drop a text file to analyze">
-            <img src="icons/icon-128.png" alt="LegalDeep AI shield logo" class="upload-window-logo" />
-            <p class="upload-window-drop-title">Drop a text-based contract</p>
-            <p class="upload-window-drop-subtitle">TXT, Markdown, CSV, JSON or HTML up to 750 KB</p>
+          <div id="upload-window-dropzone" class="upload-window-dropzone" tabindex="0" aria-label="Drop a contract file to analyze">
+            <p class="upload-window-drop-title">Drop a contract file</p>
+            <p class="upload-window-drop-subtitle">PDF, DOCX, text, or clear images up to 5 MB</p>
             <button id="upload-window-button" class="btn primary" type="button">Choose a file</button>
             <input
               id="upload-window-input"
               class="upload-window-input"
               type="file"
-              accept=".txt,.md,.markdown,.json,.csv,.html,.htm"
+              accept=".txt,.md,.markdown,.json,.csv,.html,.htm,.pdf,.doc,.docx,.png,.jpg,.jpeg"
             />
           </div>
           <p id="upload-window-status" class="upload-window-status">Select or drop a file to analyze it instantly.</p>
@@ -44,12 +43,15 @@
             <span id="upload-window-words" class="pill">0 words</span>
             <span id="upload-window-issues-count" class="pill">0 issues</span>
           </header>
+          <p id="upload-window-filemeta" class="upload-window-filemeta hidden"></p>
           <p id="upload-window-summary-text" class="upload-window-summary-text">Analysis summary will appear here.</p>
           <ul id="upload-window-issues" class="upload-window-issues"></ul>
         </section>
       </main>
     </div>
 
+    <script src="vendor/jszip.min.js"></script>
+    <script src="vendor/ocrad.js"></script>
     <script src="riskAnalyzer.js"></script>
     <script src="uploadWorker.js"></script>
     <script src="uploadWindow.js"></script>

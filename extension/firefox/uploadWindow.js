@@ -15,6 +15,7 @@
   const wordsBadge = document.getElementById("upload-window-words");
   const issuesBadge = document.getElementById("upload-window-issues-count");
   const summaryText = document.getElementById("upload-window-summary-text");
+  const fileMeta = document.getElementById("upload-window-filemeta");
   const issuesList = document.getElementById("upload-window-issues");
   const closeButton = document.getElementById("upload-window-close");
 
@@ -126,7 +127,7 @@
     }
   }
 
-  function renderResult(payload) {
+  function renderResult(payload, preparation = {}) {
     if (!payload) return;
     resultSection.classList.remove("hidden");
     levelBadge.textContent = describeRisk(payload.level);
@@ -134,6 +135,29 @@
     levelBadge.classList.add(payload.level ? `risk-${payload.level}` : "risk-info");
     wordsBadge.textContent = `${(payload.wordCount ?? 0).toLocaleString()} words`;
     issuesBadge.textContent = `${Array.isArray(payload.issues) ? payload.issues.length : 0} issues`;
+
+    if (fileMeta) {
+      const details = [];
+      if (payload.fileKind) {
+        details.push(payload.fileKind);
+      }
+      if (typeof payload.wordCount === "number" && Number.isFinite(payload.wordCount)) {
+        details.push(`${payload.wordCount.toLocaleString()} words analyzed`);
+      } else if (typeof payload.characterCount === "number" && Number.isFinite(payload.characterCount)) {
+        details.push(`${payload.characterCount.toLocaleString()} characters scanned`);
+      }
+      if (preparation?.truncated) {
+        details.push("Preview truncated for speed");
+      }
+
+      if (details.length) {
+        fileMeta.textContent = details.join(" • ");
+        fileMeta.classList.remove("hidden");
+      } else {
+        fileMeta.textContent = "";
+        fileMeta.classList.add("hidden");
+      }
+    }
 
     summaryText.textContent = payload.summary || "No summary available.";
 
@@ -168,7 +192,8 @@
       return;
     }
 
-    setStatus("Analyzing uploaded document...", "busy");
+    const kindLabel = preparation.kindLabel || "Document";
+    setStatus(`Analyzing ${kindLabel.toLowerCase()}...`, "busy");
 
     try {
       const result = analyzer.analyzeText(preparation.truncatedText);
@@ -182,11 +207,15 @@
         characterCount: preparation.originalLength,
         truncated: preparation.truncated,
         fileName: file.name || null,
+        fileKind: kindLabel,
       };
 
       await applyAnalysisResult(payload);
-      renderResult(payload);
-      setStatus("Analysis saved to the popup. You can close this window.", "success");
+      renderResult(payload, preparation);
+      const completionMessage = preparation.truncated
+        ? `${kindLabel} analyzed (preview truncated to keep things snappy).`
+        : `${kindLabel} analyzed. You can close this window.`;
+      setStatus(completionMessage, "success");
 
       try {
         await browser.runtime.sendMessage({ type: "LEGALDEEP_ANALYSIS_READY" });

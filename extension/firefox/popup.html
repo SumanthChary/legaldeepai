@@ -17,13 +17,7 @@
             <p class="brand-subtitle">Contract Risk Analysis</p>
           </div>
         </div>
-        <button id="open-dashboard" class="icon-button" type="button" title="Open dashboard">
-          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" class="icon">
-            <path
-              d="M12 1.5a2.25 2.25 0 0 1 2.138 1.5h6.112a.75.75 0 0 1 0 1.5h-6.112a2.251 2.251 0 0 1-4.376 0H3.75a.75.75 0 0 1 0-1.5h6.012A2.25 2.25 0 0 1 12 1.5Zm7.5 9a2.25 2.25 0 0 1-2.138 1.5h-12a2.251 2.251 0 0 1-4.376 0H1.5a.75.75 0 0 1 0-1.5h.487a2.251 2.251 0 0 1 4.376 0h12a2.25 2.25 0 0 1 2.137-1.5h.5a.75.75 0 0 1 0 1.5H19.5Zm-6 9a2.25 2.25 0 0 1 2.138 1.5h3.362a.75.75 0 0 1 0 1.5h-3.362a2.251 2.251 0 0 1-4.376 0H4.5a.75.75 0 0 1 0-1.5h6.762A2.25 2.25 0 0 1 13.5 19.5Z"
-            />
-          </svg>
-        </button>
+        <button id="open-dashboard" class="icon-button" type="button" title="Open dashboard">Dashboard</button>
       </header>
 
       <section
@@ -47,10 +41,9 @@
         aria-label="Upload a contract"
       >
         <div class="upload-illustration">
-          <img src="icons/icon-128.png" alt="LegalDeep AI shield logo" class="upload-logo" />
           <div class="upload-copy">
-            <p class="upload-title">Drag & Drop PDF or Browse</p>
-            <p class="upload-subtitle">Drop your contract here (.pdf, .docx)</p>
+            <p class="upload-title">Drag & Drop a Contract</p>
+            <p class="upload-subtitle">Supports PDF, DOCX, text, or image previews (PNG/JPG)</p>
           </div>
         </div>
         <div class="upload-actions">
@@ -58,7 +51,7 @@
             id="upload-file-input"
             class="file-input"
             type="file"
-            accept=".txt,.md,.markdown,.json,.csv,.html,.htm,.pdf,.docx"
+            accept=".txt,.md,.markdown,.json,.csv,.html,.htm,.pdf,.doc,.docx,.png,.jpg,.jpeg"
           />
           <button id="upload-file" class="btn outline" type="button">Upload file</button>
           <button id="analyze-page" class="btn primary" type="button" disabled>Analyze contract</button>
@@ -250,9 +243,11 @@
         <a href="https://legaldeep.ai/terms" target="_blank" rel="noreferrer">Terms</a>
       </footer>
     </div>
-    <script src="vendor/supabase-lite.js"></script>
-    <script src="riskAnalyzer.js"></script>
-    <script src="uploadWorker.js"></script>
+  <script src="vendor/supabase-lite.js"></script>
+  <script src="vendor/jszip.min.js"></script>
+  <script src="vendor/ocrad.js"></script>
+  <script src="riskAnalyzer.js"></script>
+  <script src="uploadWorker.js"></script>
     <script src="popup.js"></script>
   </body>
 </html>

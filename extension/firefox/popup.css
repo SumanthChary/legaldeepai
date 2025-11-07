@@ -210,10 +210,12 @@ body[data-access-state="locked"] .gated::after {
   border: none;
   background: rgba(19, 185, 165, 0.14);
   border-radius: var(--radius-sm);
-  padding: 10px;
+  padding: 10px 16px;
   cursor: pointer;
   color: var(--primary);
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  font-size: 13px;
+  font-weight: 600;
 }
 
 .icon-button:hover {
@@ -365,17 +367,8 @@ body[data-access-state="locked"] .gated::after {
 .upload-illustration {
   display: flex;
   gap: 18px;
-  align-items: center;
+  align-items: flex-start;
   transition: transform 0.3s ease;
-}
-
-.upload-logo {
-  width: 72px;
-  height: 72px;
-  border-radius: 20px;
-  box-shadow: 0 18px 32px rgba(19, 185, 165, 0.28);
-  background: linear-gradient(135deg, rgba(19, 185, 165, 0.18), rgba(37, 99, 235, 0.12));
-  padding: 12px;
 }
 
 .upload-copy {
