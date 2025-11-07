@@ -369,6 +369,15 @@ body[data-access-state="locked"] .gated::after {
   transition: transform 0.3s ease;
 }
 
+.upload-logo {
+  width: 72px;
+  height: 72px;
+  border-radius: 20px;
+  box-shadow: 0 18px 32px rgba(19, 185, 165, 0.28);
+  background: linear-gradient(135deg, rgba(19, 185, 165, 0.18), rgba(37, 99, 235, 0.12));
+  padding: 12px;
+}
+
 .upload-copy {
   display: flex;
   flex-direction: column;

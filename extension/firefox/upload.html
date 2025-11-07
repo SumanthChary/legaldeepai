@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LegalDeep AI Upload</title>
+    <link rel="stylesheet" href="popup.css" />
+    <link rel="stylesheet" href="uploadWindow.css" />
+  </head>
+  <body class="upload-window">
+    <div class="upload-window-root">
+      <header class="upload-window-header">
+        <div class="upload-window-brand">
+          <img src="icons/icon-48.png" alt="LegalDeep AI" class="upload-window-icon" />
+          <div class="upload-window-copy">
+            <p class="upload-window-title">LegalDeep AI</p>
+            <p class="upload-window-subtitle">Popup Document Analyzer</p>
+          </div>
+        </div>
+        <button id="upload-window-close" class="upload-window-close" type="button" title="Close">×</button>
+      </header>
+
+      <main class="upload-window-main">
+        <section class="upload-window-card">
+          <div id="upload-window-dropzone" class="upload-window-dropzone" tabindex="0" aria-label="Drop a text file to analyze">
+            <img src="icons/icon-128.png" alt="LegalDeep AI shield logo" class="upload-window-logo" />
+            <p class="upload-window-drop-title">Drop a text-based contract</p>
+            <p class="upload-window-drop-subtitle">TXT, Markdown, CSV, JSON or HTML up to 750 KB</p>
+            <button id="upload-window-button" class="btn primary" type="button">Choose a file</button>
+            <input
+              id="upload-window-input"
+              class="upload-window-input"
+              type="file"
+              accept=".txt,.md,.markdown,.json,.csv,.html,.htm"
+            />
+          </div>
+          <p id="upload-window-status" class="upload-window-status">Select or drop a file to analyze it instantly.</p>
+        </section>
+
+        <section id="upload-window-result" class="upload-window-card hidden" aria-live="polite">
+          <header class="upload-window-result-header">
+            <span id="upload-window-level" class="pill">—</span>
+            <span id="upload-window-words" class="pill">0 words</span>
+            <span id="upload-window-issues-count" class="pill">0 issues</span>
+          </header>
+          <p id="upload-window-summary-text" class="upload-window-summary-text">Analysis summary will appear here.</p>
+          <ul id="upload-window-issues" class="upload-window-issues"></ul>
+        </section>
+      </main>
+    </div>
+
+    <script src="riskAnalyzer.js"></script>
+    <script src="uploadWorker.js"></script>
+    <script src="uploadWindow.js"></script>
+  </body>
+</html>

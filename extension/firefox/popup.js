@@ -57,16 +57,18 @@
   const gatedSections = Array.from(document.querySelectorAll(".gated"));
   const bodyEl = document.body;
 
-  const MAX_UPLOAD_BYTES = 750 * 1024;
-  const MAX_UPLOAD_CHARACTERS = 50_000;
-  const SUPPORTED_TEXT_TYPES = new Set([
-    "text/plain",
-    "text/markdown",
-    "application/json",
-    "text/csv",
-    "text/html",
-  ]);
-  const SUPPORTED_TEXT_EXTENSIONS = new Set(["txt", "md", "markdown", "json", "csv", "html", "htm"]);
+  const uploadToolkit = window.LegalDeepUpload || null;
+  let inlineUploadSupported = true;
+
+  if (typeof browser?.runtime?.getBrowserInfo === "function") {
+    inlineUploadSupported = false;
+    if (uploadFileInput) {
+      uploadFileInput.classList.add("hidden");
+    }
+    if (uploadFileBtn) {
+      uploadFileBtn.classList.add("opens-window");
+    }
+  }
 
   if (customTextArea && !customTextArea.dataset.defaultPlaceholder) {
     customTextArea.dataset.defaultPlaceholder = customTextArea.getAttribute("placeholder") || "";
@@ -413,32 +415,6 @@
       hour: "2-digit",
       minute: "2-digit",
     });
-  }
-
-  function getFileExtension(fileName = "") {
-    const parts = fileName.split(".");
-    if (parts.length <= 1) return "";
-    return parts.pop().toLowerCase();
-  }
-
-  function looksLikeTextFile(file) {
-    if (!file) return false;
-    const type = (file.type || "").toLowerCase();
-    if (type && (type.startsWith("text/") || SUPPORTED_TEXT_TYPES.has(type))) {
-      return true;
-    }
-    const extension = getFileExtension(file.name || "");
-    return SUPPORTED_TEXT_EXTENSIONS.has(extension);
-  }
-
-  function truncateForAnalysis(text) {
-    if (!text) {
-      return { text: "", truncated: false };
-    }
-    if (text.length <= MAX_UPLOAD_CHARACTERS) {
-      return { text, truncated: false };
-    }
-    return { text: text.slice(0, MAX_UPLOAD_CHARACTERS), truncated: true };
   }
 
   function setPlanPillState(element, variant) {
@@ -865,34 +841,18 @@
       return;
     }
 
-    if (file.size > MAX_UPLOAD_BYTES) {
-      setError("Files up to 750 KB are supported in the popup. Use the dashboard for larger documents.");
+    if (!uploadToolkit?.prepareFileForAnalysis) {
+      setError("Upload helper unavailable. Reload and try again.");
       return;
     }
 
-    if (!looksLikeTextFile(file)) {
-      setError("Upload text-based files (TXT, MD, CSV, JSON, HTML) in the popup. Use the dashboard for PDFs or Word docs.");
+    const preparation = await uploadToolkit.prepareFileForAnalysis(file);
+    if (!preparation.ok) {
+      setError(preparation.message || "Unable to process that file in the popup.");
       return;
     }
 
-    let text = "";
-    try {
-      text = await file.text();
-    } catch (error) {
-      console.error("Unable to read uploaded file", error);
-      setError("Unable to read that file. Try saving it as plain text or upload via the dashboard.");
-      return;
-    }
-
-    const normalized = text.replace(/\r\n/g, "\n").trim();
-    if (!normalized) {
-      setError("Uploaded file was empty. Choose a document with readable text.");
-      return;
-    }
-
-    const { text: truncatedText, truncated } = truncateForAnalysis(normalized);
-
-    const originalLength = normalized.length;
+    const { truncatedText, truncated, originalLength } = preparation;
 
     const analyzer = window.LegalDeepRisk;
     if (!analyzer?.analyzeText) {
@@ -1154,15 +1114,35 @@
     manageBillingBtn.addEventListener("click", () => openTab(BILLING_URL));
   }
 
-  if (uploadFileBtn && uploadFileInput) {
-    uploadFileBtn.addEventListener("click", () => {
+  if (uploadFileBtn) {
+    uploadFileBtn.addEventListener("click", async () => {
       if (!hasAccess) {
         setError("Activate your plan to upload and analyze documents.");
         return;
       }
-      uploadFileInput.click();
-    });
 
+      if (!inlineUploadSupported) {
+        try {
+          await browser.runtime.sendMessage({ type: "LEGALDEEP_OPEN_UPLOAD_WINDOW" });
+          if (statusMessage) {
+            statusMessage.textContent = "Upload window opened. Analyze your file there.";
+          }
+        } catch (error) {
+          console.error("Unable to open upload window", error);
+          setError("Unable to open the upload window. Use the dashboard as a fallback.");
+        }
+        return;
+      }
+
+      if (uploadFileInput) {
+        uploadFileInput.click();
+      } else {
+        setError("Upload field unavailable. Reload and try again.");
+      }
+    });
+  }
+
+  if (uploadFileInput && inlineUploadSupported) {
     uploadFileInput.addEventListener("change", async (event) => {
       const file = event?.target?.files?.[0];
       try {
@@ -1171,8 +1151,6 @@
         uploadFileInput.value = "";
       }
     });
-  } else if (uploadFileBtn) {
-    uploadFileBtn.addEventListener("click", () => openTab(DASHBOARD_URL));
   }
 
   if (viewPricingBtn) {

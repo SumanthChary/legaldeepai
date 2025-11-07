@@ -1,0 +1,210 @@
+:root {
+  color-scheme: light;
+}
+
+body.upload-window {
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(160deg, rgba(19, 185, 165, 0.08), rgba(37, 99, 235, 0.08));
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--text, #0d1a1c);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.upload-window-root {
+  width: min(420px, calc(100vw - 32px));
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 32px 60px rgba(9, 23, 21, 0.18);
+  backdrop-filter: blur(16px);
+}
+
+.upload-window-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.upload-window-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.upload-window-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  box-shadow: 0 18px 32px rgba(19, 185, 165, 0.28);
+}
+
+.upload-window-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.upload-window-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.upload-window-subtitle {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted, #52727a);
+}
+
+.upload-window-close {
+  border: none;
+  background: rgba(13, 26, 28, 0.08);
+  color: var(--text, #0d1a1c);
+  border-radius: 999px;
+  width: 32px;
+  height: 32px;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.upload-window-close:hover {
+  transform: translateY(-1px);
+  background: rgba(13, 26, 28, 0.12);
+}
+
+.upload-window-main {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.upload-window-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  border-radius: 20px;
+  border: 1px solid rgba(19, 185, 165, 0.22);
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.upload-window-dropzone {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 28px 20px;
+  border: 2px dashed rgba(19, 185, 165, 0.4);
+  border-radius: 20px;
+  background: rgba(19, 185, 165, 0.04);
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.upload-window-dropzone:focus-visible {
+  outline: none;
+  border-color: rgba(37, 99, 235, 0.6);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.24);
+}
+
+.upload-window-dropzone.is-dragover {
+  border-color: rgba(37, 99, 235, 0.8);
+  background: rgba(37, 99, 235, 0.06);
+  transform: translateY(-2px);
+  box-shadow: 0 18px 36px rgba(13, 26, 28, 0.16);
+}
+
+.upload-window-logo {
+  width: 80px;
+  height: 80px;
+  border-radius: 24px;
+  padding: 14px;
+  background: linear-gradient(135deg, rgba(19, 185, 165, 0.18), rgba(37, 99, 235, 0.12));
+  box-shadow: 0 24px 46px rgba(19, 185, 165, 0.25);
+}
+
+.upload-window-drop-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.upload-window-drop-subtitle {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-muted, #52727a);
+}
+
+.upload-window-input {
+  display: none;
+}
+
+.upload-window-status {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-muted, #52727a);
+}
+
+.upload-window-status.busy {
+  color: var(--primary, #13b9a5);
+}
+
+.upload-window-status.error {
+  color: var(--danger, #e11d48);
+}
+
+.upload-window-status.success {
+  color: var(--success, #0f9f7b);
+}
+
+.upload-window-result-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.upload-window-summary-text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.upload-window-issues {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.upload-window-issues li {
+  color: var(--text-muted, #52727a);
+}
+
+.hidden {
+  display: none !important;
+}
+
+@media (max-width: 480px) {
+  .upload-window-root {
+    width: calc(100vw - 24px);
+    padding: 20px;
+  }
+}
