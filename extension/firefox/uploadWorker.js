@@ -34,6 +34,7 @@
   ]);
 
   let pdfModulePromise = null;
+  let tesseractWorkerPromise = null;
 
   function getFileExtension(fileName = "") {
     const parts = fileName.split(".");
@@ -123,6 +124,50 @@
     return pdfModulePromise;
   }
 
+  async function getTesseractWorker() {
+    if (!tesseractWorkerPromise) {
+      if (!globalThis.Tesseract?.createWorker) {
+        throw new Error("Tesseract library unavailable");
+      }
+
+      tesseractWorkerPromise = (async () => {
+        const worker = await globalThis.Tesseract.createWorker({
+          workerPath: getRuntimeUrl("vendor/tesseract/worker.min.js"),
+          corePath: getRuntimeUrl("vendor/tesseract/core/tesseract-core.wasm.js"),
+          langPath: getRuntimeUrl("vendor/tesseract/lang-data/"),
+        });
+
+        await worker.load();
+        await worker.loadLanguage("eng");
+        await worker.initialize("eng");
+        return worker;
+      })().catch((error) => {
+        tesseractWorkerPromise = null;
+        throw error;
+      });
+    }
+
+    return tesseractWorkerPromise;
+  }
+
+  async function recognizeWithTesseract(canvas) {
+    const worker = await getTesseractWorker();
+    const result = await worker.recognize(canvas);
+    return result?.data?.text ?? "";
+  }
+
+  if (typeof window !== "undefined") {
+    window.addEventListener("unload", () => {
+      if (tesseractWorkerPromise) {
+        const pendingWorker = tesseractWorkerPromise;
+        tesseractWorkerPromise = null;
+        pendingWorker
+          .then((worker) => worker.terminate?.())
+          .catch(() => {});
+      }
+    });
+  }
+
   async function extractTextFromTextFile(file) {
     const rawText = await file.text();
     return rawText.replace(/\r\n/g, "\n");
@@ -203,10 +248,6 @@
   }
 
   async function extractTextFromImage(file) {
-    if (typeof OCRAD !== "function") {
-      throw new Error("OCR engine unavailable");
-    }
-
     let bitmap;
     try {
       bitmap = await createImageBitmap(file);
@@ -223,14 +264,12 @@
         reader.readAsDataURL(file);
       });
       const { canvas } = createCanvasFromSource(image);
-      const imageData = canvas.getContext("2d").getImageData(0, 0, canvas.width, canvas.height);
-      return OCRAD(imageData);
+      return recognizeWithTesseract(canvas);
     }
 
-    const { canvas, context } = createCanvasFromSource(bitmap);
-    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+    const { canvas } = createCanvasFromSource(bitmap);
     bitmap.close?.();
-    return OCRAD(imageData);
+    return recognizeWithTesseract(canvas);
   }
 
   async function extractTextByKind(file, kind) {
