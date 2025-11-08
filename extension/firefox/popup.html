@@ -40,21 +40,30 @@
   data-plan-locked-label="Paid plan or active trial required"
         aria-label="Upload a contract"
       >
-        <div class="upload-illustration">
-          <div class="upload-copy">
-            <p class="upload-title">Drag & Drop a Contract</p>
-            <p class="upload-subtitle">Supports PDF, DOCX, text, or image previews (PNG/JPG)</p>
-          </div>
+        <div class="upload-copy">
+          <p class="upload-title">Upload a contract</p>
+          <p class="upload-subtitle">Drop PDFs, Word docs, text, or clear images up to 5 MB</p>
         </div>
-        <div class="upload-actions">
+        <div
+          id="upload-dropzone"
+          class="upload-dropzone"
+          tabindex="0"
+          role="button"
+          aria-label="Drop a contract file or choose one to analyze"
+        >
+          <p class="upload-drop-title">Drop a contract file</p>
+          <p class="upload-drop-subtitle">or click to choose from your computer</p>
+          <button id="upload-file" class="btn outline" type="button">Choose a file</button>
           <input
             id="upload-file-input"
             class="file-input"
             type="file"
             accept=".txt,.md,.markdown,.json,.csv,.html,.htm,.pdf,.doc,.docx,.png,.jpg,.jpeg"
           />
-          <button id="upload-file" class="btn outline" type="button">Upload file</button>
-          <button id="analyze-page" class="btn primary" type="button" disabled>Analyze contract</button>
+        </div>
+        <p id="upload-status" class="upload-status">Drop or choose a file to analyze it instantly.</p>
+        <div class="upload-actions">
+          <button id="analyze-page" class="btn primary" type="button" disabled>Analyze this page</button>
         </div>
         <div class="trust-badges">
           <div class="badge">
@@ -117,6 +126,10 @@
         <p id="analysis-summary" class="analysis-summary">
           Select a clause or run a full-page scan to see risk insights here.
         </p>
+        <div id="analysis-highlights" class="analysis-highlights hidden">
+          <p class="analysis-highlights-title">Key risk areas</p>
+          <div id="analysis-highlight-chips" class="highlight-chip-list"></div>
+        </div>
         <dl class="metrics">
           <div class="metric">
             <dt>Words</dt>

@@ -29,6 +29,8 @@
   const issuesCountEl = document.getElementById("issues-count");
   const issuesListEl = document.getElementById("issues-list");
   const issuesEmptyEl = document.getElementById("issues-empty");
+  const highlightsSection = document.getElementById("analysis-highlights");
+  const highlightChipsEl = document.getElementById("analysis-highlight-chips");
   const planBadge = document.getElementById("plan-badge");
   const accountCard = document.getElementById("account-card");
   const accountEmail = document.getElementById("account-email");
@@ -58,16 +60,11 @@
   const bodyEl = document.body;
 
   const uploadToolkit = window.LegalDeepUpload || null;
-  let inlineUploadSupported = true;
-
-  if (typeof browser?.runtime?.getBrowserInfo === "function") {
-    inlineUploadSupported = false;
-    if (uploadFileInput) {
-      uploadFileInput.classList.add("hidden");
-    }
-    if (uploadFileBtn) {
-      uploadFileBtn.classList.add("opens-window");
-    }
+  const uploadDropzone = document.getElementById("upload-dropzone");
+  const uploadStatusEl = document.getElementById("upload-status");
+  const defaultUploadStatus = uploadStatusEl?.textContent?.trim() || "Drop or choose a file to analyze it instantly.";
+  if (uploadStatusEl) {
+    uploadStatusEl.dataset.state = "idle";
   }
 
   if (customTextArea && !customTextArea.dataset.defaultPlaceholder) {
@@ -477,6 +474,17 @@
     }
   }
 
+  function setUploadStatus(message, variant = "idle") {
+    if (!uploadStatusEl) return;
+    const nextMessage = message || defaultUploadStatus;
+    uploadStatusEl.textContent = nextMessage;
+    uploadStatusEl.classList.remove("busy", "error", "success", "warning");
+    if (variant && variant !== "idle") {
+      uploadStatusEl.classList.add(variant);
+    }
+    uploadStatusEl.dataset.state = variant || "idle";
+  }
+
   function toggleElement(element, show) {
     if (!element) return;
     element.classList.toggle("hidden", !show);
@@ -500,6 +508,82 @@
     }
   }
 
+  function refreshUploadStatusForAccess() {
+    if (!uploadStatusEl || busy) return;
+    const state = uploadStatusEl.dataset.state || "idle";
+    if (state === "busy" || state === "success") {
+      return;
+    }
+
+    if (!currentUser) {
+      setUploadStatus("Sign in to upload and analyze files.", "warning");
+    } else if (!hasAccess) {
+      setUploadStatus("Activate your plan to unlock file uploads.", "warning");
+    } else {
+      setUploadStatus(defaultUploadStatus, "idle");
+    }
+  }
+
+  function setupUploadDropzone() {
+    if (!uploadDropzone) return;
+
+    const preventDefaults = (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+    };
+
+    ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+      uploadDropzone.addEventListener(eventName, preventDefaults, false);
+    });
+
+    ["dragenter", "dragover"].forEach((eventName) => {
+      uploadDropzone.addEventListener(
+        eventName,
+        () => {
+          uploadDropzone.classList.add("is-dragover");
+        },
+        false,
+      );
+    });
+
+    ["dragleave", "drop"].forEach((eventName) => {
+      uploadDropzone.addEventListener(
+        eventName,
+        () => {
+          uploadDropzone.classList.remove("is-dragover");
+        },
+        false,
+      );
+    });
+
+    uploadDropzone.addEventListener(
+      "drop",
+      (event) => {
+        const files = event.dataTransfer?.files;
+        const file = files?.[0];
+        if (file) {
+          void handleUploadedFile(file);
+        }
+      },
+      false,
+    );
+
+    uploadDropzone.addEventListener("click", () => {
+      if (uploadFileInput && !uploadFileInput.disabled) {
+        uploadFileInput.click();
+      }
+    });
+
+    uploadDropzone.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " " || event.key === "Spacebar") {
+        event.preventDefault();
+        if (uploadFileInput && !uploadFileInput.disabled) {
+          uploadFileInput.click();
+        }
+      }
+    });
+  }
+
   function setBusy(message = "Analyzing...") {
     busy = true;
     statusBadge.textContent = "Working";
@@ -513,6 +597,7 @@
     statusBadge.textContent = label;
     statusBadge.className = "status-chip";
     refreshControls();
+    refreshUploadStatusForAccess();
   }
 
   function setError(message) {
@@ -521,6 +606,7 @@
     statusBadge.className = "status-chip error";
     statusMessage.textContent = message;
     refreshControls();
+    refreshUploadStatusForAccess();
   }
 
   function updateRiskBadge(level = "info") {
@@ -536,6 +622,8 @@
 
     issuesListEl.querySelectorAll(".issues-item").forEach((node) => node.remove());
     issuesCountEl.textContent = issues.length.toString();
+
+    renderHighlights(issues);
 
     if (!issues.length) {
       if (issuesEmptyEl) {
@@ -722,6 +810,7 @@
       }
     }
 
+    refreshUploadStatusForAccess();
     refreshControls();
   }
 
@@ -752,14 +841,33 @@
   }
 
   function renderAnalysis(data) {
-    summaryEl.textContent = data.summary || "No summary available.";
-    sourceEl.textContent = describeSource(data.source);
+    const baseSummary = data.summary || "No summary available.";
+    const summaryNote = data.truncated
+      ? " Only the first 60k characters were processed inside the popup. Open the dashboard for a full scan."
+      : "";
+  const combinedSummary = `${baseSummary}${summaryNote}`;
+  summaryEl.textContent = combinedSummary;
+  summaryEl.title = combinedSummary;
+
+  const baseSource = describeSource(data.source);
+  const sourceLabel = data.source === "upload" && data.fileKind ? `${baseSource} · ${data.fileKind}` : baseSource;
+  sourceEl.textContent = sourceLabel;
+  sourceEl.title = sourceLabel;
+
     scoreEl.textContent = formatCount(Math.round(data.score ?? 0));
-    wordsEl.textContent = formatCount(data.wordCount ?? 0);
+
+    const resolvedWordCount = Number.isFinite(data.wordCount)
+      ? data.wordCount
+      : Math.round((data.characterCount || 0) / 5);
+    const wordLabel = data.truncated ? `${formatCount(resolvedWordCount)}+` : formatCount(resolvedWordCount);
+    wordsEl.textContent = wordLabel;
+    wordsEl.title = data.truncated
+      ? "Approximate word count shown. Open the dashboard to analyze the full document."
+      : `${formatCount(resolvedWordCount)} words`;
     updatedEl.textContent = formatTime(data.timestamp);
 
     if (data.truncated) {
-      statusMessage.textContent = "Large document truncated to first 50k characters.";
+      statusMessage.textContent = "Large document truncated to first 60k characters. Open the dashboard for the full report.";
     } else if (data.source === "page") {
       statusMessage.textContent = "Page analyzed. Scroll to highlighted sections for context.";
     } else if (data.source === "selection") {
@@ -833,6 +941,7 @@
 
   async function handleUploadedFile(file) {
     if (!hasAccess) {
+      setUploadStatus("Activate your plan to unlock file uploads.", "warning");
       setError("Activate your plan to upload and analyze documents.");
       return;
     }
@@ -842,25 +951,32 @@
     }
 
     if (!uploadToolkit?.prepareFileForAnalysis) {
+      setUploadStatus("Upload helper unavailable. Reload this popup and try again.", "error");
       setError("Upload helper unavailable. Reload and try again.");
       return;
     }
 
+    const nameLabel = file.name ? `"${file.name}"` : "your file";
+    setUploadStatus(`Preparing ${nameLabel}...`, "busy");
+
     const preparation = await uploadToolkit.prepareFileForAnalysis(file);
     if (!preparation.ok) {
+      setUploadStatus(preparation.message || "Unable to process that file.", "error");
       setError(preparation.message || "Unable to process that file in the popup.");
       return;
     }
 
-    const { truncatedText, truncated, originalLength } = preparation;
+    const { truncatedText, truncated, originalLength, kindLabel } = preparation;
+    const readableKind = kindLabel || "Document";
 
     const analyzer = window.LegalDeepRisk;
     if (!analyzer?.analyzeText) {
+      setUploadStatus("Analysis engine unavailable. Reload and try again.", "error");
       setError("Analysis engine unavailable in popup. Reload and try again.");
       return;
     }
 
-    setBusy("Analyzing uploaded document...");
+    setBusy(`Analyzing ${readableKind.toLowerCase()}...`);
 
     try {
       const result = analyzer.analyzeText(truncatedText);
@@ -874,10 +990,16 @@
         characterCount: originalLength,
         truncated,
         fileName: file.name || null,
+        fileKind: readableKind,
       };
       await applyAnalysisResult(payload);
+      const completionMessage = truncated
+        ? `${readableKind} analyzed (preview truncated to keep it fast).`
+        : `${readableKind} analyzed. Scroll down for insights.`;
+      setUploadStatus(completionMessage, truncated ? "warning" : "success");
     } catch (error) {
       console.error("Failed to analyze uploaded file", error);
+      setUploadStatus("Unable to analyze that file. Try again or use the dashboard.", "error");
       setError("Unable to analyze that file in the popup. Try again or use the dashboard.");
     }
   }
@@ -1115,34 +1237,23 @@
   }
 
   if (uploadFileBtn) {
-    uploadFileBtn.addEventListener("click", async () => {
+    uploadFileBtn.addEventListener("click", () => {
       if (!hasAccess) {
+        setUploadStatus("Activate your plan to unlock file uploads.", "warning");
         setError("Activate your plan to upload and analyze documents.");
-        return;
-      }
-
-      if (!inlineUploadSupported) {
-        try {
-          await browser.runtime.sendMessage({ type: "LEGALDEEP_OPEN_UPLOAD_WINDOW" });
-          if (statusMessage) {
-            statusMessage.textContent = "Upload window opened. Analyze your file there.";
-          }
-        } catch (error) {
-          console.error("Unable to open upload window", error);
-          setError("Unable to open the upload window. Use the dashboard as a fallback.");
-        }
         return;
       }
 
       if (uploadFileInput) {
         uploadFileInput.click();
       } else {
+        setUploadStatus("Upload field unavailable. Reload and try again.", "error");
         setError("Upload field unavailable. Reload and try again.");
       }
     });
   }
 
-  if (uploadFileInput && inlineUploadSupported) {
+  if (uploadFileInput) {
     uploadFileInput.addEventListener("change", async (event) => {
       const file = event?.target?.files?.[0];
       try {
@@ -1170,6 +1281,8 @@
   analyzePageBtn.addEventListener("click", () => triggerContentAnalysis("page"));
   analyzeCustomBtn.addEventListener("click", analyzeCustomText);
 
+  setupUploadDropzone();
+  refreshUploadStatusForAccess();
   void initializeSupabase();
   void loadRecentAnalysesFromStorage();
   void loadUsageCounters();

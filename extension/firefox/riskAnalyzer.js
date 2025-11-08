@@ -77,22 +77,48 @@
   }
 
   function buildSummary(level, issues, wordCount) {
+  const hasWordCount = Number.isFinite(wordCount) && wordCount > 0;
+  const wordCopy = hasWordCount ? `${wordCount.toLocaleString()} words` : "the scanned text";
+
     if (!issues.length) {
-      return "No obvious risk indicators detected. Review manually to confirm.";
+      return `No obvious risk indicators detected across ${safeWordCount} words. Give it a quick manual pass to confirm it matches your policies.`;
     }
 
-    const topCategories = Object.entries(
-      issues.reduce((acc, issue) => {
-        acc[issue.category] = (acc[issue.category] || 0) + issue.weight;
-        return acc;
-      }, {})
-    )
+    const categoryScores = issues.reduce((acc, issue) => {
+      const category = issue.category || "General";
+      const weight = Number.isFinite(issue.weight) ? issue.weight : 1;
+      acc[category] = (acc[category] || 0) + weight;
+      return acc;
+    }, {});
+
+    const topCategories = Object.entries(categoryScores)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 3)
       .map(([category]) => category)
       .join(", ");
 
-    return `Detected ${issues.length} risk indicators across ${wordCount} words. Focus on: ${topCategories}. Overall risk level is ${level.toUpperCase()}.`;
+    const severityCopy = {
+      high: "High-risk clauses dominate this contract.",
+      medium: "Medium-level risk language needs careful review.",
+      low: "Low-level risk language is present but manageable.",
+      info: "Only informational signals were detected.",
+    };
+
+    const headline = severityCopy[level] || "Risk indicators detected.";
+    const coverage = topCategories ? `Focus on ${topCategories}.` : "Risks are spread across multiple categories.";
+  const countCopy = `We flagged ${issues.length} item${issues.length === 1 ? "" : "s"} across ${wordCopy}.`;
+
+    const topIssue = issues
+      .slice()
+      .sort((a, b) => (Number.isFinite(b.weight) ? b.weight : 1) - (Number.isFinite(a.weight) ? a.weight : 1))[0];
+
+    const trimmedSnippet = topIssue?.snippet ? topIssue.snippet.slice(0, 160) : "";
+    const sanitizedSnippet = trimmedSnippet.replace(/\s+/g, " ");
+    const snippetCopy = sanitizedSnippet
+      ? `Highlighted clause: “${sanitizedSnippet}${topIssue.snippet.length > 160 ? "…" : ""}."`
+      : "";
+
+    return `${headline} ${countCopy} ${coverage}${snippetCopy ? ` ${snippetCopy}` : ""}`.trim();
   }
 
   const api = { analyzeText };
