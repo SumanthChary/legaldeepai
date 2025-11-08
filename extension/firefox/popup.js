@@ -617,11 +617,78 @@
     riskLevelBadge.className = `risk-chip risk-${variant}`;
   }
 
+  function describeIssueSeverity(weight = 0) {
+    if (!Number.isFinite(weight)) return "Info";
+    if (weight >= 8) return "High";
+    if (weight >= 4) return "Medium";
+    return "Low";
+  }
+
+  function formatIssueSnippet(snippet = "") {
+    if (!snippet) return "";
+    const normalized = snippet.replace(/\s+/g, " ").trim();
+    if (!normalized) return "";
+    if (normalized.length <= 140) {
+      return normalized;
+    }
+    return `${normalized.slice(0, 137)}…`;
+  }
+
+  function formatSummaryText(summary = "", limit = 260) {
+    const normalized = summary.replace(/\s+/g, " ").trim();
+    if (!normalized) {
+      return "Analysis complete. Review the findings below.";
+    }
+    if (normalized.length <= limit) {
+      return normalized;
+    }
+    return `${normalized.slice(0, Math.max(0, limit - 1))}…`;
+  }
+
+  function renderHighlights(issues = []) {
+    if (!highlightsSection || !highlightChipsEl) return;
+
+    highlightChipsEl.innerHTML = "";
+
+    if (!issues.length) {
+      highlightsSection.classList.add("hidden");
+      return;
+    }
+
+    const categoryScores = issues.reduce((acc, issue) => {
+      const category = issue.category || "General";
+      const weight = Number.isFinite(issue.weight) ? issue.weight : 1;
+      acc[category] = (acc[category] || 0) + weight;
+      return acc;
+    }, {});
+
+    const topCategories = Object.entries(categoryScores)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3);
+
+    if (!topCategories.length) {
+      highlightsSection.classList.add("hidden");
+      return;
+    }
+
+    topCategories.forEach(([category, score]) => {
+      const chip = document.createElement("span");
+      chip.className = "highlight-chip";
+      const severity = describeIssueSeverity(score);
+      chip.textContent = `${category} · ${severity}`;
+      highlightChipsEl.appendChild(chip);
+    });
+
+    highlightsSection.classList.remove("hidden");
+  }
+
   function updateIssues(issues = []) {
     if (!issuesListEl || !issuesCountEl) return;
 
     issuesListEl.querySelectorAll(".issues-item").forEach((node) => node.remove());
-    issuesCountEl.textContent = issues.length.toString();
+    const issueCountLabel = issues.length ? `${issues.length}` : "0";
+    issuesCountEl.textContent = issueCountLabel;
+    issuesCountEl.title = issues.length ? `${issues.length} flagged item${issues.length === 1 ? "" : "s"}` : "No issues flagged";
 
     renderHighlights(issues);
 
@@ -649,7 +716,11 @@
 
       if (issue.snippet) {
         const snippet = document.createElement("p");
-        snippet.textContent = issue.snippet;
+        const severity = describeIssueSeverity(issue.weight);
+        const snippetText = formatIssueSnippet(issue.snippet);
+        const detail = snippetText ? `${severity} impact — ${snippetText}` : `${severity} impact`;
+        snippet.textContent = detail;
+        snippet.title = issue.snippet;
         li.appendChild(snippet);
       }
 
@@ -841,18 +912,18 @@
   }
 
   function renderAnalysis(data) {
-    const baseSummary = data.summary || "No summary available.";
+    const formattedSummary = formatSummaryText(data.summary || "");
     const summaryNote = data.truncated
-      ? " Only the first 60k characters were processed inside the popup. Open the dashboard for a full scan."
+      ? " Popup preview capped at 60k characters—open the dashboard for the full report."
       : "";
-  const combinedSummary = `${baseSummary}${summaryNote}`;
-  summaryEl.textContent = combinedSummary;
-  summaryEl.title = combinedSummary;
+    const combinedSummary = `${formattedSummary}${summaryNote}`.trim();
+    summaryEl.textContent = combinedSummary;
+    summaryEl.title = combinedSummary;
 
-  const baseSource = describeSource(data.source);
-  const sourceLabel = data.source === "upload" && data.fileKind ? `${baseSource} · ${data.fileKind}` : baseSource;
-  sourceEl.textContent = sourceLabel;
-  sourceEl.title = sourceLabel;
+    const baseSource = describeSource(data.source);
+    const sourceLabel = data.source === "upload" && data.fileKind ? `${baseSource} · ${data.fileKind}` : baseSource;
+    sourceEl.textContent = sourceLabel;
+    sourceEl.title = sourceLabel;
 
     scoreEl.textContent = formatCount(Math.round(data.score ?? 0));
 
@@ -867,16 +938,16 @@
     updatedEl.textContent = formatTime(data.timestamp);
 
     if (data.truncated) {
-      statusMessage.textContent = "Large document truncated to first 60k characters. Open the dashboard for the full report.";
+      statusMessage.textContent = "Popup preview trimmed to keep things fast. Open the dashboard for the full document.";
     } else if (data.source === "page") {
-      statusMessage.textContent = "Page analyzed. Scroll to highlighted sections for context.";
+      statusMessage.textContent = "Page scan complete—scroll for the highlighted clauses.";
     } else if (data.source === "selection") {
-      statusMessage.textContent = "Selection analyzed. Highlight remains on page.";
+      statusMessage.textContent = "Selection analyzed—your highlight stays on the page.";
     } else if (data.source === "upload") {
-      const name = data.fileName ? `"${data.fileName}"` : "file";
-      statusMessage.textContent = `Uploaded ${name} analyzed in popup.`;
+      const name = data.fileName ? `"${data.fileName}"` : "your file";
+      statusMessage.textContent = `Analyzed ${name}. Review the quick takeaways below.`;
     } else {
-      statusMessage.textContent = "Custom text analyzed in popup.";
+      statusMessage.textContent = "Custom text analyzed—summary updated below.";
     }
 
     updateRiskBadge(data.level || "info");
@@ -994,7 +1065,7 @@
       };
       await applyAnalysisResult(payload);
       const completionMessage = truncated
-        ? `${readableKind} analyzed (preview truncated to keep it fast).`
+        ? `${readableKind} analyzed. Popup preview trimmed—open the dashboard for the full report.`
         : `${readableKind} analyzed. Scroll down for insights.`;
       setUploadStatus(completionMessage, truncated ? "warning" : "success");
     } catch (error) {

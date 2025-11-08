@@ -21,6 +21,25 @@
       .filter(Boolean);
   }
 
+  const listFormatter = (() => {
+    try {
+      return new Intl.ListFormat("en", { style: "long", type: "conjunction" });
+    } catch (error) {
+      return null;
+    }
+  })();
+
+  function formatCategoryList(items = []) {
+    const list = Array.isArray(items) ? items.filter(Boolean) : [];
+    if (!list.length) return "";
+    if (listFormatter) {
+      return listFormatter.format(list);
+    }
+    if (list.length === 1) return list[0];
+    if (list.length === 2) return `${list[0]} and ${list[1]}`;
+    return `${list.slice(0, -1).join(", ")}, and ${list[list.length - 1]}`;
+  }
+
   function analyzeText(rawText = "") {
     const text = rawText.trim();
     if (!text) {
@@ -77,11 +96,11 @@
   }
 
   function buildSummary(level, issues, wordCount) {
-  const hasWordCount = Number.isFinite(wordCount) && wordCount > 0;
-  const wordCopy = hasWordCount ? `${wordCount.toLocaleString()} words` : "the scanned text";
+    const hasWordCount = Number.isFinite(wordCount) && wordCount > 0;
+    const wordCopy = hasWordCount ? `${wordCount.toLocaleString()} words` : "this excerpt";
 
     if (!issues.length) {
-      return `No obvious risk indicators detected across ${safeWordCount} words. Give it a quick manual pass to confirm it matches your policies.`;
+      return `No red flags detected across ${wordCopy}. Give it a quick manual check to confirm.`;
     }
 
     const categoryScores = issues.reduce((acc, issue) => {
@@ -94,8 +113,7 @@
     const topCategories = Object.entries(categoryScores)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 3)
-      .map(([category]) => category)
-      .join(", ");
+      .map(([category]) => category);
 
     const severityCopy = {
       high: "High-risk clauses dominate this contract.",
@@ -105,20 +123,20 @@
     };
 
     const headline = severityCopy[level] || "Risk indicators detected.";
-    const coverage = topCategories ? `Focus on ${topCategories}.` : "Risks are spread across multiple categories.";
-  const countCopy = `We flagged ${issues.length} item${issues.length === 1 ? "" : "s"} across ${wordCopy}.`;
+    const focusCopy = topCategories.length
+      ? `Focus on ${formatCategoryList(topCategories)}.`
+      : "Risks are spread across multiple areas.";
+    const countCopy = `${issues.length} flagged item${issues.length === 1 ? "" : "s"} in ${wordCopy}.`;
 
     const topIssue = issues
       .slice()
       .sort((a, b) => (Number.isFinite(b.weight) ? b.weight : 1) - (Number.isFinite(a.weight) ? a.weight : 1))[0];
 
-    const trimmedSnippet = topIssue?.snippet ? topIssue.snippet.slice(0, 160) : "";
-    const sanitizedSnippet = trimmedSnippet.replace(/\s+/g, " ");
-    const snippetCopy = sanitizedSnippet
-      ? `Highlighted clause: “${sanitizedSnippet}${topIssue.snippet.length > 160 ? "…" : ""}."`
-      : "";
+    const rawSnippet = topIssue?.snippet ? topIssue.snippet.replace(/\s+/g, " ").trim() : "";
+    const snippet = rawSnippet.length > 140 ? `${rawSnippet.slice(0, 137)}…` : rawSnippet;
+    const snippetCopy = snippet ? `Example: “${snippet}”` : "";
 
-    return `${headline} ${countCopy} ${coverage}${snippetCopy ? ` ${snippetCopy}` : ""}`.trim();
+    return [headline, countCopy, focusCopy, snippetCopy].filter(Boolean).join(" ");
   }
 
   const api = { analyzeText };
