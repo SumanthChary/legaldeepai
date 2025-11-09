@@ -62,9 +62,34 @@
   const uploadToolkit = window.LegalDeepUpload || null;
   const uploadDropzone = document.getElementById("upload-dropzone");
   const uploadStatusEl = document.getElementById("upload-status");
-  const defaultUploadStatus = uploadStatusEl?.textContent?.trim() || "Drop or choose a file to analyze it instantly.";
+  const uploadHandoffHintEl = document.getElementById("upload-handoff-hint");
+  const uploadSubtitleEl = document.querySelector(".upload-drop-subtitle");
+  let defaultUploadStatus =
+    uploadStatusEl?.textContent?.trim() || "Drop or choose a file to analyze it instantly.";
+  const isFirefox = typeof navigator !== "undefined" && /firefox/i.test(navigator.userAgent || "");
+  const uploadWorkspaceUrl =
+    typeof browser !== "undefined" && browser?.runtime?.getURL ? browser.runtime.getURL("upload.html") : "upload.html";
   if (uploadStatusEl) {
     uploadStatusEl.dataset.state = "idle";
+  }
+
+  if (isFirefox) {
+    if (uploadSubtitleEl) {
+      uploadSubtitleEl.textContent = "Opens the upload workspace in a separate window";
+    }
+    defaultUploadStatus =
+      "Open the upload workspace to analyze files without closing the popup.";
+    if (uploadStatusEl) {
+      uploadStatusEl.textContent = defaultUploadStatus;
+      uploadStatusEl.dataset.state = "idle";
+    }
+    if (uploadHandoffHintEl) {
+      uploadHandoffHintEl.classList.remove("hidden");
+    }
+  }
+
+  if (isFirefox && uploadFileInput) {
+    uploadFileInput.setAttribute("disabled", "disabled");
   }
 
   if (customTextArea && !customTextArea.dataset.defaultPlaceholder) {
@@ -497,7 +522,7 @@
     if (analyzeCustomBtn) analyzeCustomBtn.disabled = disabled;
     if (logoutButton) logoutButton.disabled = !currentUser;
     if (uploadFileBtn) uploadFileBtn.disabled = disabled;
-    if (uploadFileInput) uploadFileInput.disabled = disabled;
+  if (uploadFileInput) uploadFileInput.disabled = disabled || isFirefox;
     if (customTextArea) {
       customTextArea.disabled = disabled;
       const placeholder = customTextArea.dataset.defaultPlaceholder || "";
@@ -522,6 +547,50 @@
     } else {
       setUploadStatus(defaultUploadStatus, "idle");
     }
+  }
+
+  function openUploadWorkspace() {
+    if (!hasAccess) {
+      setUploadStatus("Activate your plan to unlock file uploads.", "warning");
+      setError("Activate your plan to upload and analyze documents.");
+      return;
+    }
+
+    if (!uploadWorkspaceUrl) {
+      setUploadStatus("Upload workspace unavailable. Reload and try again.", "error");
+      setError("Upload workspace unavailable. Reload and try again.");
+      return;
+    }
+
+    setUploadStatus("Opening the upload workspace in a new window...", "busy");
+
+    const fallbackFeatures = "width=520,height=720,resizable=yes,scrollbars=yes";
+
+    void (async () => {
+      if (typeof browser !== "undefined" && browser?.windows?.create) {
+        try {
+          await browser.windows.create({
+            url: uploadWorkspaceUrl,
+            type: "popup",
+            width: 520,
+            height: 720,
+          });
+          setUploadStatus("Upload workspace opened. Results sync automatically.", "success");
+          return;
+        } catch (apiError) {
+          console.warn("Unable to open upload workspace via browser.windows.create", apiError);
+        }
+      }
+
+      try {
+        window.open(uploadWorkspaceUrl, "_blank", fallbackFeatures);
+        setUploadStatus("Upload workspace opened. Results sync automatically.", "success");
+      } catch (fallbackError) {
+        console.error("Unable to open upload workspace", fallbackError);
+        setUploadStatus("Couldn't open the upload workspace. Try again.", "error");
+        setError("Unable to open upload workspace. Try again.");
+      }
+    })();
   }
 
   function setupUploadDropzone() {
@@ -568,18 +637,32 @@
       false,
     );
 
-    uploadDropzone.addEventListener("click", () => {
+    const triggerUploadSelection = () => {
+      if (!hasAccess) {
+        setUploadStatus("Activate your plan to unlock file uploads.", "warning");
+        setError("Activate your plan to upload and analyze documents.");
+        return;
+      }
+
+      if (isFirefox) {
+        openUploadWorkspace();
+        return;
+      }
+
       if (uploadFileInput && !uploadFileInput.disabled) {
         uploadFileInput.click();
+      } else {
+        setUploadStatus("Upload field unavailable. Reload and try again.", "error");
+        setError("Upload field unavailable. Reload and try again.");
       }
-    });
+    };
+
+    uploadDropzone.addEventListener("click", triggerUploadSelection);
 
     uploadDropzone.addEventListener("keydown", (event) => {
       if (event.key === "Enter" || event.key === " " || event.key === "Spacebar") {
         event.preventDefault();
-        if (uploadFileInput && !uploadFileInput.disabled) {
-          uploadFileInput.click();
-        }
+        triggerUploadSelection();
       }
     });
   }
@@ -1315,6 +1398,11 @@
         return;
       }
 
+      if (isFirefox) {
+        openUploadWorkspace();
+        return;
+      }
+
       if (uploadFileInput) {
         uploadFileInput.click();
       } else {
@@ -1326,6 +1414,10 @@
 
   if (uploadFileInput) {
     uploadFileInput.addEventListener("change", async (event) => {
+      if (isFirefox) {
+        uploadFileInput.value = "";
+        return;
+      }
       const file = event?.target?.files?.[0];
       try {
         await handleUploadedFile(file);
@@ -1345,6 +1437,8 @@
 
   browser.runtime.onMessage.addListener((message) => {
     if (message.type !== "LEGALDEEP_ANALYSIS_READY") return;
+    setUploadStatus("Upload complete. Scroll down for highlights or open the dashboard for the full report.", "success");
+    setIdle("Ready");
     void loadLastAnalysis();
   });
 
