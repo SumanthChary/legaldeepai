@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LegalDeep AI · Detailed Analysis</title>
+    <link rel="stylesheet" href="popup.css" />
+    <link rel="stylesheet" href="report.css" />
+  </head>
+  <body class="report-page">
+    <div class="report-root">
+      <header class="report-header">
+        <div class="report-brand">
+          <img src="icons/icon-48.png" alt="LegalDeep AI" class="report-brand-icon" />
+          <div class="report-brand-copy">
+            <p class="report-brand-title">LegalDeep AI</p>
+            <p class="report-brand-subtitle">Contract Intelligence</p>
+          </div>
+        </div>
+        <div class="report-header-actions">
+          <button id="report-close" class="btn ghost" type="button">Close</button>
+          <button id="report-dashboard" class="btn primary" type="button">Open dashboard</button>
+        </div>
+      </header>
+
+      <main class="report-main">
+        <section class="report-card report-summary" aria-live="polite">
+          <div class="report-summary-header">
+            <h1 id="report-document-name">Detailed analysis</h1>
+            <div class="report-summary-meta">
+              <span id="report-risk-chip" class="risk-chip risk-info">INFO</span>
+              <span id="report-score-chip" class="score-pill">0</span>
+              <span id="report-words-chip" class="pill">0 words</span>
+            </div>
+          </div>
+          <p id="report-summary-text" class="report-summary-text">Run an analysis to see the insights here.</p>
+          <div id="report-highlight-section" class="report-highlights hidden">
+            <h2>Top risk themes</h2>
+            <div id="report-highlight-chips" class="highlight-chip-list"></div>
+          </div>
+          <dl class="report-metrics">
+            <div class="report-metric">
+              <dt>Updated</dt>
+              <dd id="report-updated">Just now</dd>
+            </div>
+            <div class="report-metric">
+              <dt>Source</dt>
+              <dd id="report-source">Upload</dd>
+            </div>
+            <div class="report-metric">
+              <dt>Status</dt>
+              <dd id="report-truncation">Full</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section class="report-card" aria-label="Flagged risks">
+          <header class="report-section-header">
+            <h2>Flagged findings</h2>
+            <span id="report-issues-count" class="pill">0</span>
+          </header>
+          <ul id="report-issues" class="report-issues"></ul>
+        </section>
+
+        <section class="report-card" aria-label="Next steps">
+          <h2>Next steps</h2>
+          <ul class="report-next-steps">
+            <li>Download the full report from the dashboard for sharing.</li>
+            <li>Send a re-analysis once edits are made to the contract.</li>
+            <li>Invite teammates to collaborate inside LegalDeep AI.</li>
+          </ul>
+        </section>
+      </main>
+    </div>
+
+    <script src="report.js"></script>
+  </body>
+</html>

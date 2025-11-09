@@ -3,6 +3,7 @@
   const RECENT_ANALYSES_KEY = "legaldeepRecentAnalyses";
   const ANALYSIS_COUNT_KEY = "legaldeepAnalysisCount";
   const RISK_COUNT_KEY = "legaldeepRiskCount";
+  const REPORT_MAP_KEY = "legaldeepAnalysisByTimestamp";
   const RECENT_LIMIT = 5;
   const hasExtensionStorage = typeof browser !== "undefined" && browser?.storage?.local;
 
@@ -117,6 +118,7 @@
 
     await objectStorage.set(STORAGE_KEY, payload);
     const result = await persistRecentAnalysis(payload);
+    await persistReportLookup(payload);
 
     if (result.isNew) {
       totalAnalyses += 1;
@@ -125,6 +127,27 @@
       totalRiskFindings += riskAddition;
       await objectStorage.set(RISK_COUNT_KEY, totalRiskFindings);
     }
+  }
+
+  async function persistReportLookup(payload) {
+    if (!payload?.timestamp) return;
+
+    const existing = await objectStorage.get(REPORT_MAP_KEY);
+    const lookup = existing && typeof existing === "object" ? existing : {};
+    lookup[payload.timestamp] = payload;
+
+    const timestamps = Object.keys(lookup)
+      .map((key) => Number.parseInt(key, 10))
+      .filter((value) => Number.isFinite(value))
+      .sort((a, b) => b - a)
+      .slice(0, RECENT_LIMIT);
+
+    const trimmed = timestamps.reduce((acc, stamp) => {
+      acc[stamp] = lookup[stamp];
+      return acc;
+    }, {});
+
+    await objectStorage.set(REPORT_MAP_KEY, trimmed);
   }
 
   function renderResult(payload, preparation = {}) {
@@ -175,6 +198,36 @@
     }
   }
 
+  function openDetailedReport(payload) {
+    if (!payload?.timestamp) return;
+
+  const url = typeof browser !== "undefined" && browser.runtime?.getURL ? browser.runtime.getURL("report.html") : null;
+    if (!url) {
+      return;
+    }
+
+    const reportUrl = new URL(url, window.location.href);
+    reportUrl.searchParams.set("timestamp", String(payload.timestamp));
+
+    const finalUrl = reportUrl.toString();
+
+    if (typeof browser !== "undefined" && browser.tabs?.create) {
+      browser.tabs
+        .create({ url: finalUrl })
+        .catch((error) => {
+          console.warn("Unable to open report tab via browser.tabs.create", error);
+          window.open(finalUrl, "_blank");
+        });
+      return;
+    }
+
+    try {
+      window.open(finalUrl, "_blank");
+    } catch (error) {
+      console.warn("Unable to open report window", error);
+    }
+  }
+
   async function processFile(file) {
     if (!uploadToolkit?.prepareFileForAnalysis) {
       setStatus("Upload helper unavailable. Reload this window.", "error");
@@ -216,6 +269,8 @@
         ? `${kindLabel} analyzed (preview truncated to keep things snappy).`
         : `${kindLabel} analyzed. You can close this window.`;
       setStatus(completionMessage, "success");
+
+      openDetailedReport(payload);
 
       try {
         await browser.runtime.sendMessage({ type: "LEGALDEEP_ANALYSIS_READY" });

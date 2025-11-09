@@ -31,6 +31,8 @@
   const issuesEmptyEl = document.getElementById("issues-empty");
   const highlightsSection = document.getElementById("analysis-highlights");
   const highlightChipsEl = document.getElementById("analysis-highlight-chips");
+  const analysisActionsEl = document.getElementById("analysis-actions");
+  const openReportBtn = document.getElementById("open-report");
   const planBadge = document.getElementById("plan-badge");
   const accountCard = document.getElementById("account-card");
   const accountEmail = document.getElementById("account-email");
@@ -256,6 +258,7 @@
   let totalAnalyses = 0;
   let totalRiskFindings = 0;
   let recentAnalyses = [];
+  let latestAnalysisTimestamp = null;
 
   async function clearCachedAnalysis() {
     try {
@@ -263,6 +266,9 @@
     } catch (error) {
       console.warn("Unable to clear cached analysis", error);
     }
+    latestAnalysisTimestamp = null;
+    updateReportButtonVisibility(false);
+    updateReportButtonDisabledState();
   }
 
   async function loadCachedProfile(userId) {
@@ -414,6 +420,9 @@
     }
 
     renderAnalysis(payload);
+    latestAnalysisTimestamp = payload.timestamp || Date.now();
+    updateReportButtonVisibility(true);
+    updateReportButtonDisabledState();
   }
 
   function formatRelativeTimestamp(timestamp) {
@@ -515,6 +524,18 @@
     element.classList.toggle("hidden", !show);
   }
 
+  function updateReportButtonVisibility(force) {
+    if (!analysisActionsEl || !openReportBtn) return;
+    const shouldShow = typeof force === "boolean" ? force : Boolean(latestAnalysisTimestamp);
+    analysisActionsEl.classList.toggle("hidden", !shouldShow);
+  }
+
+  function updateReportButtonDisabledState() {
+    if (!openReportBtn) return;
+    const disabled = !hasAccess || busy || !latestAnalysisTimestamp;
+    openReportBtn.disabled = disabled;
+  }
+
   function refreshControls() {
     const disabled = !hasAccess || busy;
     if (analyzeSelectionBtn) analyzeSelectionBtn.disabled = disabled;
@@ -523,6 +544,7 @@
     if (logoutButton) logoutButton.disabled = !currentUser;
     if (uploadFileBtn) uploadFileBtn.disabled = disabled;
   if (uploadFileInput) uploadFileInput.disabled = disabled || isFirefox;
+    updateReportButtonDisabledState();
     if (customTextArea) {
       customTextArea.disabled = disabled;
       const placeholder = customTextArea.dataset.defaultPlaceholder || "";
@@ -591,6 +613,22 @@
         setError("Unable to open upload workspace. Try again.");
       }
     })();
+  }
+
+  function openReportView() {
+    const baseUrl = typeof browser !== "undefined" && browser.runtime?.getURL ? browser.runtime.getURL("report.html") : null;
+    const url = baseUrl ? new URL(baseUrl, window.location.href) : null;
+
+    if (url && latestAnalysisTimestamp) {
+      url.searchParams.set("timestamp", String(latestAnalysisTimestamp));
+    }
+
+    const finalUrl = url ? url.toString() : null;
+    if (finalUrl) {
+      openTab(finalUrl);
+    } else {
+      openTab(DASHBOARD_URL);
+    }
   }
 
   function setupUploadDropzone() {
@@ -1386,6 +1424,10 @@
     manageAccountBtn.addEventListener("click", () => openTab(DASHBOARD_URL));
   }
 
+  if (openReportBtn) {
+    openReportBtn.addEventListener("click", openReportView);
+  }
+
   if (manageBillingBtn) {
     manageBillingBtn.addEventListener("click", () => openTab(BILLING_URL));
   }
@@ -1448,6 +1490,8 @@
 
   setupUploadDropzone();
   refreshUploadStatusForAccess();
+  updateReportButtonVisibility(false);
+  updateReportButtonDisabledState();
   void initializeSupabase();
   void loadRecentAnalysesFromStorage();
   void loadUsageCounters();

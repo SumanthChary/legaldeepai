@@ -598,6 +598,16 @@ textarea:focus {
   gap: 14px;
 }
 
+.analysis-actions {
+  margin-top: 8px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.analysis-actions .btn {
+  min-width: 176px;
+}
+
 .analysis-header {
   display: flex;
   justify-content: space-between;
