@@ -85,6 +85,33 @@ export const Footer = () => {
   return (
     <footer className="border-t bg-background w-full flex-shrink-0">
       <div className="max-w-full px-3 py-4 sm:px-4 sm:py-6 md:py-8 xl:px-8 xl:py-10">
+        {/* Trust badges row */}
+        <div className="flex flex-wrap items-center justify-center gap-6 md:gap-8 py-4 md:py-6 mb-6 border-b border-gray-200 dark:border-gray-700">
+          <div className="flex items-center gap-3">
+            <div className="h-8 w-12 bg-gray-300 dark:bg-gray-600 rounded flex items-center justify-center text-xs font-bold opacity-60">
+              VISA
+            </div>
+            <div className="h-8 w-12 bg-gray-300 dark:bg-gray-600 rounded flex items-center justify-center text-xs font-bold opacity-60">
+              MC
+            </div>
+            <div className="h-8 w-12 bg-gray-300 dark:bg-gray-600 rounded flex items-center justify-center text-xs font-bold opacity-60">
+              PP
+            </div>
+          </div>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+            </svg>
+            <span>256-bit SSL Encrypted</span>
+          </div>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+            </svg>
+            <span>SOC 2 Compliant</span>
+          </div>
+        </div>
+
         <div className="grid gap-3 sm:gap-4 md:gap-6 xl:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
           <div>
             <h3 className="mb-2 sm:mb-3 md:mb-4 text-base sm:text-lg font-semibold">Stay Connected</h3>
@@ -176,7 +203,7 @@ export const Footer = () => {
         </div>
         
         <div className="mt-3 sm:mt-4 md:mt-6 xl:mt-8 border-t pt-3 sm:pt-4 md:pt-6 xl:pt-8 text-center text-xs sm:text-sm text-muted-foreground">
-          <p>© 2024 LegalAI. All rights reserved.</p>
+          <p>© 2025 LegalDeep AI. All rights reserved.</p>
         </div>
       </div>
     </footer>
