@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Check, Users, Clock, Shield, TrendingDown } from "lucide-react";
+import { ArrowRight, Check, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { DemoVideo } from "@/components/blocks/demo-video";
 import { InView } from "@/components/ui/in-view";
@@ -23,139 +23,85 @@ export const HeroSection = ({
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 lg:py-20 relative z-10">
         <div className="grid lg:grid-cols-12 gap-6 lg:gap-8 xl:gap-16 items-center">
           <div className="lg:col-span-5 space-y-4 md:space-y-6 lg:space-y-8">
-            {/* Social Proof Counter */}
             <InView variants={{
-              hidden: { opacity: 0, y: 20 },
-              visible: { opacity: 1, y: 0 }
-            }} transition={{ duration: 0.5 }}>
-              <div className="grid grid-cols-3 gap-3 md:gap-4 p-4 md:p-6 bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-2xl shadow-sm">
-                <div className="text-center">
-                  <div className="flex items-center justify-center gap-1 mb-1">
-                    <Users className="h-4 w-4 md:h-5 md:w-5 text-blue-600" />
-                    <p className="text-xl md:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">1,247+</p>
-                  </div>
-                  <p className="text-xs md:text-sm text-gray-600">Contracts Analyzed</p>
-                </div>
-                <div className="text-center border-x border-gray-200">
-                  <div className="flex items-center justify-center gap-1 mb-1">
-                    <TrendingDown className="h-4 w-4 md:h-5 md:w-5 text-green-600" />
-                    <p className="text-xl md:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">$374K+</p>
-                  </div>
-                  <p className="text-xs md:text-sm text-gray-600">Saved in Fees</p>
-                </div>
-                <div className="text-center">
-                  <div className="flex items-center justify-center gap-1 mb-1">
-                    <Clock className="h-4 w-4 md:h-5 md:w-5 text-purple-600" />
-                    <p className="text-xl md:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">1.8m</p>
-                  </div>
-                  <p className="text-xs md:text-sm text-gray-600">Avg Analysis</p>
-                </div>
-              </div>
-            </InView>
-
-            <InView variants={{
-              hidden: { opacity: 0 },
-              visible: { opacity: 1 }
-            }} transition={{ duration: 0.5 }}>
+            hidden: {
+              opacity: 0
+            },
+            visible: {
+              opacity: 1
+            }
+          }} transition={{
+            duration: 0.5
+          }}>
               <div className="space-y-3 md:space-y-4 lg:space-y-6">
                 {/* Premium badge - special for Whop users */}
-                {isWhopUser && (
-                  <div className="inline-flex items-center gap-1.5 md:gap-2 px-2.5 py-1.5 md:px-3 md:py-2 lg:px-4 lg:py-2 rounded-full bg-gradient-to-r from-blue-100 to-purple-100 border border-blue-200/50 backdrop-blur-sm">
-                    <Users className="h-3 w-3 md:h-4 md:w-4 text-blue-600" />
-                    <span className="text-xs md:text-sm font-medium text-blue-700">
-                      Welcome from Whop! 🎉
-                    </span>
-                  </div>
-                )}
+                <div className={`inline-flex items-center gap-1.5 md:gap-2 px-2.5 py-1.5 md:px-3 md:py-2 lg:px-4 lg:py-2 rounded-full ${isWhopUser ? 'bg-gradient-to-r from-blue-100 to-purple-100 border border-blue-200/50' : 'bg-gradient-to-r from-green-100 to-emerald-100 border border-green-200/50'} backdrop-blur-sm`}>
+                  <Users className={`h-3 w-3 md:h-4 md:w-4 ${isWhopUser ? 'text-blue-600' : 'text-green-600'}`} />
+                  <span className={`text-xs md:text-sm font-medium ${isWhopUser ? 'text-blue-700' : 'text-green-700'}`}>
+                    {isWhopUser ? 'Welcome from Whop! 🎉' : 'PRO - Trusted by Professionals'}
+                  </span>
+                </div>
                 
                 <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold bg-gradient-to-br from-gray-900 via-gray-800 to-gray-600 bg-clip-text text-transparent leading-tight">
-                  Catch <span className="font-editorial-new italic bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Contract Traps</span> Before They Cost You <span className="bg-gradient-to-r from-red-600 to-rose-600 bg-clip-text text-transparent font-black">$300+</span>
+                  Review 30-Page <span className="font-editorial-new italic text-blue-600 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Contracts</span> in 12 Minutes, <span className="bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent">Not 2 Hours</span>
                 </h1>
               </div>
             </InView>
             
             <InView variants={{
-              hidden: { opacity: 0 },
-              visible: { opacity: 1 }
-            }} transition={{ duration: 0.5 }}>
+            hidden: {
+              opacity: 0
+            },
+            visible: {
+              opacity: 1
+            }
+          }} transition={{
+            duration: 0.5
+          }}>
               <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 leading-relaxed max-w-xl">
-                {isWhopUser ? 'You\'re all set! Access your premium LegalDeep AI subscription and transform your legal workflow today.' : 'Upload any contract. Get instant AI analysis. Catch hidden clauses lawyers charge $500+ to find.'}
+                {isWhopUser ? 'You\'re all set! Access your premium LegalDeep AI subscription and transform your legal workflow today.' : 'Slash review time, catch hidden risks, and deliver clear answers your clients love. No setup, just upload and go.'}
               </p>
             </InView>
             
             <InView variants={{
-              hidden: { opacity: 0 },
-              visible: { opacity: 1 }
-            }} transition={{ duration: 0.5 }}>
-              <div className="flex flex-col gap-3 md:gap-4">
-                {/* Dual CTAs */}
-                <div className="flex flex-col sm:flex-row gap-2 md:gap-3">
-                  <Button 
-                    size="lg" 
-                    className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-lg hover:shadow-xl transition-all duration-300 border-0 w-full sm:w-auto text-base md:text-lg px-6 md:px-8 h-12 md:h-14" 
-                    onClick={() => navigate("/pricing")}
-                  >
-                    Analyze One Contract - $24
-                    <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5" />
-                  </Button>
-                  {!isWhopUser && (
-                    <Button 
-                      size="lg" 
-                      variant="outline" 
-                      className="border-2 border-blue-600 text-blue-600 hover:bg-blue-50 transition-all duration-300 w-full sm:w-auto text-base md:text-lg px-6 md:px-8 h-12 md:h-14 font-semibold" 
-                      onClick={() => navigate("/pricing")}
-                    >
-                      Get Unlimited - $97/mo
-                    </Button>
-                  )}
-                </div>
-
-                {/* Trust line */}
-                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 md:gap-4 text-xs md:text-sm text-gray-600">
-                  <div className="flex items-center gap-1.5">
-                    <div className="h-5 w-5 rounded-full bg-green-100 flex items-center justify-center">
-                      <Check className="h-3 w-3 text-green-600" />
-                    </div>
-                    <span>2-minute analysis</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <div className="h-5 w-5 rounded-full bg-blue-100 flex items-center justify-center">
-                      <Shield className="h-3 w-3 text-blue-600" />
-                    </div>
-                    <span>Bank-level security</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <div className="h-5 w-5 rounded-full bg-purple-100 flex items-center justify-center">
-                      <Check className="h-3 w-3 text-purple-600" />
-                    </div>
-                    <span>Money-back guarantee</span>
-                  </div>
-                </div>
+            hidden: {
+              opacity: 0
+            },
+            visible: {
+              opacity: 1
+            }
+          }} transition={{
+            duration: 0.5
+          }}>
+              <div className="flex flex-col sm:flex-row gap-2 md:gap-3 lg:gap-4">
+                <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300 border-0 w-full sm:w-auto" onClick={() => navigate(isWhopUser ? "/dashboard" : "/pricing")}>
+                  {isWhopUser ? 'Access Your Dashboard' : 'View Pricing'}
+                  <ArrowRight className="ml-1.5 h-3.5 w-3.5 md:ml-2 md:h-4 md:w-4" />
+                </Button>
+                {!isWhopUser && <Button size="lg" variant="outline" className="border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-all duration-300 w-full sm:w-auto" onClick={() => navigate("/mobile-app")}>
+                    Download App
+                  </Button>}
               </div>
             </InView>
             
-            {/* Pricing Clarity Box */}
             <InView variants={{
-              hidden: { opacity: 0 },
-              visible: { opacity: 1 }
-            }} transition={{ duration: 0.5 }}>
-              <div className="p-4 md:p-6 rounded-xl bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200">
-                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 md:gap-4">
-                  <div>
-                    <p className="text-xs md:text-sm text-gray-600 mb-1">Traditional approach</p>
-                    <p className="text-lg md:text-xl text-gray-400 line-through font-semibold">$300-500 lawyer</p>
-                  </div>
-                  <div className="h-8 md:h-12 w-px bg-gray-300 hidden md:block"></div>
-                  <div className="flex-1">
-                    <p className="text-xs md:text-sm text-gray-600 mb-1">Your price today</p>
-                    <p className="text-3xl md:text-4xl lg:text-5xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">$24</p>
-                  </div>
-                  <div className="flex-shrink-0">
-                    <div className="px-3 py-2 bg-green-600 text-white rounded-lg text-center">
-                      <p className="text-xs font-medium">Save $276+</p>
-                      <p className="text-lg font-bold">92% OFF</p>
-                    </div>
-                  </div>
+            hidden: {
+              opacity: 0
+            },
+            visible: {
+              opacity: 1
+            }
+          }} transition={{
+            duration: 0.5
+          }}>
+              <div className="pt-4 md:pt-6 lg:pt-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3 lg:gap-4">
+                  {benefits.map((benefit, index) => <div key={index} className="flex items-center gap-2 md:gap-3 p-2.5 md:p-3 lg:p-4 rounded-lg bg-white/50 backdrop-blur-sm border border-gray-200/50 hover:border-gray-300/50 transition-all duration-300">
+                      <div className="flex-shrink-0 w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center">
+                        <Check className="h-2.5 w-2.5 md:h-3 md:w-3 lg:h-3.5 lg:w-3.5 text-white" />
+                      </div>
+                      <span className="text-xs md:text-sm lg:text-base text-gray-700 font-medium">{benefit}</span>
+                    </div>)}
                 </div>
               </div>
             </InView>
@@ -181,7 +127,7 @@ export const HeroSection = ({
                       className="w-full h-auto object-cover"
                       loading="eager"
                       decoding="async"
-                      fetchPriority="high"
+                      fetchpriority="high"
                       width={1536}
                       height={1024}
                     />

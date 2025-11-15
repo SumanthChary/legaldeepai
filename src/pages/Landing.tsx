@@ -1,7 +1,6 @@
 
 import { PageLayout } from "@/components/layout";
 import { HeroSection } from "@/components/blocks/hero-section";
-import { FinalCTASection } from "@/components/blocks/final-cta-section";
 import { WhopWelcomeUpsell } from "@/components/whop";
 import { WhopService } from "@/integrations/whop";
 import { Suspense, lazy, useEffect, useMemo, useState } from "react";
@@ -100,7 +99,6 @@ const Landing = () => {
           <div className="bg-white/90 backdrop-blur-sm">
             <FAQSection faqs={faqs} />
           </div>
-          <FinalCTASection />
         </Suspense>
       </PageLayout>
     </div>

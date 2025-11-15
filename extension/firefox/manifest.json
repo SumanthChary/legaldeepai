@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "LegalDeep AI Risk Inspector",
-  "version": "1.5.10",
+  "version": "1.5.9",
   "description": "Analyze legal documents for risk factors using LegalDeep AI heuristics.",
   "browser_specific_settings": {
     "gecko": {

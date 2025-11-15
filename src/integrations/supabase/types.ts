@@ -57,7 +57,7 @@ export type Database = {
           endpoint: string
           error_message: string | null
           id: string
-          ip_address: unknown
+          ip_address: unknown | null
           method: string
           response_time_ms: number | null
           status: string
@@ -70,7 +70,7 @@ export type Database = {
           endpoint: string
           error_message?: string | null
           id?: string
-          ip_address?: unknown
+          ip_address?: unknown | null
           method: string
           response_time_ms?: number | null
           status: string
@@ -83,7 +83,7 @@ export type Database = {
           endpoint?: string
           error_message?: string | null
           id?: string
-          ip_address?: unknown
+          ip_address?: unknown | null
           method?: string
           response_time_ms?: number | null
           status?: string
@@ -106,7 +106,7 @@ export type Database = {
           created_at: string
           details: Json | null
           id: string
-          ip_address: unknown
+          ip_address: unknown | null
           organization_id: string | null
           resource_id: string | null
           resource_type: string | null
@@ -118,7 +118,7 @@ export type Database = {
           created_at?: string
           details?: Json | null
           id?: string
-          ip_address?: unknown
+          ip_address?: unknown | null
           organization_id?: string | null
           resource_id?: string | null
           resource_type?: string | null
@@ -130,7 +130,7 @@ export type Database = {
           created_at?: string
           details?: Json | null
           id?: string
-          ip_address?: unknown
+          ip_address?: unknown | null
           organization_id?: string | null
           resource_id?: string | null
           resource_type?: string | null
@@ -535,60 +535,6 @@ export type Database = {
         }
         Relationships: []
       }
-      signature_events: {
-        Row: {
-          actor_email: string | null
-          actor_type: string | null
-          created_at: string
-          event_type: string
-          id: string
-          ip_address: string | null
-          payload: Json | null
-          request_id: string | null
-          session_id: string | null
-          user_agent: string | null
-        }
-        Insert: {
-          actor_email?: string | null
-          actor_type?: string | null
-          created_at?: string
-          event_type: string
-          id?: string
-          ip_address?: string | null
-          payload?: Json | null
-          request_id?: string | null
-          session_id?: string | null
-          user_agent?: string | null
-        }
-        Update: {
-          actor_email?: string | null
-          actor_type?: string | null
-          created_at?: string
-          event_type?: string
-          id?: string
-          ip_address?: string | null
-          payload?: Json | null
-          request_id?: string | null
-          session_id?: string | null
-          user_agent?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "signature_events_request_id_fkey"
-            columns: ["request_id"]
-            isOneToOne: false
-            referencedRelation: "signature_requests"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "signature_events_session_id_fkey"
-            columns: ["session_id"]
-            isOneToOne: false
-            referencedRelation: "signing_sessions"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       signature_fields: {
         Row: {
           assigned_signer_email: string
@@ -626,40 +572,28 @@ export type Database = {
       }
       signature_requests: {
         Row: {
-          audit_pdf_path: string | null
-          completed_document_path: string | null
           created_at: string
-          document_hash: string | null
           document_name: string
           document_path: string
           id: string
-          last_notification_at: string | null
           status: string
           updated_at: string
           user_id: string
         }
         Insert: {
-          audit_pdf_path?: string | null
-          completed_document_path?: string | null
           created_at?: string
-          document_hash?: string | null
           document_name: string
           document_path: string
           id?: string
-          last_notification_at?: string | null
           status?: string
           updated_at?: string
           user_id: string
         }
         Update: {
-          audit_pdf_path?: string | null
-          completed_document_path?: string | null
           created_at?: string
-          document_hash?: string | null
           document_name?: string
           document_path?: string
           id?: string
-          last_notification_at?: string | null
           status?: string
           updated_at?: string
           user_id?: string
@@ -706,51 +640,30 @@ export type Database = {
       }
       signing_sessions: {
         Row: {
-          audit_trail: Json
           created_at: string
           expires_at: string
           field_id: string
           id: string
-          last_email_at: string | null
-          otp_attempts: number
-          otp_code_expires_at: string | null
-          otp_code_hash: string | null
-          otp_verified_at: string | null
           session_token: string
           signed: boolean
-          signed_at: string | null
           signer_email: string
         }
         Insert: {
-          audit_trail?: Json
           created_at?: string
           expires_at: string
           field_id: string
           id?: string
-          last_email_at?: string | null
-          otp_attempts?: number
-          otp_code_expires_at?: string | null
-          otp_code_hash?: string | null
-          otp_verified_at?: string | null
           session_token: string
           signed?: boolean
-          signed_at?: string | null
           signer_email: string
         }
         Update: {
-          audit_trail?: Json
           created_at?: string
           expires_at?: string
           field_id?: string
           id?: string
-          last_email_at?: string | null
-          otp_attempts?: number
-          otp_code_expires_at?: string | null
-          otp_code_hash?: string | null
-          otp_verified_at?: string | null
           session_token?: string
           signed?: boolean
-          signed_at?: string | null
           signer_email?: string
         }
         Relationships: [
@@ -1019,7 +932,10 @@ export type Database = {
           username: string
         }[]
       }
-      get_user_organization_id: { Args: { p_user_id: string }; Returns: string }
+      get_user_organization_id: {
+        Args: { p_user_id: string }
+        Returns: string
+      }
       is_organization_admin: {
         Args: { p_org_id: string; p_user_id: string }
         Returns: boolean

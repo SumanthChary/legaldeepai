@@ -2,7 +2,7 @@
 export const getPricingPlans = (isAnnual: boolean) => [
   {
     name: "Pay Per Use",
-    price: "$24",
+    price: "$19",
     period: "/document",
     description: "Perfect for occasional reviews with immediate results.",
     features: [
