@@ -29,10 +29,10 @@ export const PricingSection = () => {
         >
           <div className="text-center mb-6 md:mb-8 lg:mb-12">
             <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-primary mb-3 md:mb-4 lg:mb-6">
-              Choose Your Legal AI Plan
+              Simple, Honest Pricing
             </h2>
             <p className="text-sm sm:text-base md:text-lg text-gray-600 max-w-3xl mx-auto mb-2">
-              From solo practitioners to enterprise firms—unlock the power of AI-driven legal document analysis from day one.
+              No hidden fees. Pay only for what you use.
             </p>
             <p className="text-sm md:text-base text-primary font-medium mb-4 md:mb-6">
               Every subscription starts with a 7-day free trial. Cancel anytime before billing begins.
@@ -108,6 +108,13 @@ export const PricingSection = () => {
                     plan={plan}
                     className={plan.highlight ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0' : ''}
                   />
+                  
+                  {/* Comparison text for Pay Per Use plan */}
+                  {plan.tier === 'pay_per_document' && (
+                    <p className="text-xs md:text-sm text-center text-gray-500 mt-4">
+                      vs. Lawyer review: <span className="line-through text-red-500 font-semibold">$500-2,000</span> (5-10 days)
+                    </p>
+                  )}
                 </CardContent>
               </Card>
             </InView>
