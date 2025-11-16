@@ -28,10 +28,10 @@ const Landing = () => {
     setIsWhopUser(WhopService.isWhopUser());
   }, []);
   const benefits = [
-    "Reduce review time by 90%",
-    "Improve analysis accuracy", 
-    "Ensure compliance across jurisdictions",
-    "Streamline team collaboration"
+    "Save $300+ in lawyer fees per contract",
+    "Catch hidden risks before you sign",
+    "Know your obligations in plain English",
+    "Share analysis with your team instantly"
   ];
 
   const faqs = [
