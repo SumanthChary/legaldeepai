@@ -7,14 +7,12 @@ import { Suspense, lazy, useEffect, useMemo, useState } from "react";
 
 const DemoSection = lazy(() => import("@/components/blocks/demo-section").then(module => ({ default: module.DemoSection })));
 const TestimonialsSection = lazy(() => import("@/components/blocks/testimonials-with-marquee").then(module => ({ default: module.TestimonialsSection })));
-const AboutSection = lazy(() => import("@/components/blocks/about-section").then(module => ({ default: module.AboutSection })));
 const TrustSection = lazy(() => import("@/components/blocks/trust-section").then(module => ({ default: module.TrustSection })));
 const FAQSection = lazy(() => import("@/components/blocks/faq-section").then(module => ({ default: module.FAQSection })));
 const PricingSection = lazy(() => import("@/components/blocks/pricing-section").then(module => ({ default: module.PricingSection })));
 const HowItWorksSection = lazy(() => import("@/components/blocks/how-it-works-section").then(module => ({ default: module.HowItWorksSection })));
 const FeaturedSection = lazy(() => import("@/components/blocks/featured-section").then(module => ({ default: module.FeaturedSection })));
 const PowerfulFeaturesSection = lazy(() => import("@/components/blocks/powerful-features-section").then(module => ({ default: module.PowerfulFeaturesSection })));
-const CompetitiveAdvantageSection = lazy(() => import("@/components/blocks/competitive-advantage-section").then(module => ({ default: module.CompetitiveAdvantageSection })));
 
 const Landing = () => {
   const [isWhopUser, setIsWhopUser] = useState(false);
@@ -62,6 +60,22 @@ const Landing = () => {
     {
       question: "How is LegalDeep AI different from ChatGPT or NotebookLM?",
       answer: "While general AI tools like ChatGPT and NotebookLM can read documents, LegalDeep AI is specifically designed for legal work. We focus on understanding legal document structures, maintaining professional security standards, and providing features tailored to legal workflows rather than general document analysis."
+    },
+    {
+      question: "What if I'm not satisfied?",
+      answer: "100% money-back guarantee within 30 days. If our analysis doesn't provide value, we refund immediately—no questions asked. We're confident our AI will catch risks worth far more than $24."
+    },
+    {
+      question: "How long does analysis take?",
+      answer: "Average 1.8 minutes. Upload your contract → AI analyzes 8 key sections → Download comprehensive report. Most contracts are processed in under 2 minutes, day or night."
+    },
+    {
+      question: "Do I need a subscription?",
+      answer: "No subscription required. Pay $24 per contract for one-time analysis, or choose $97/mo for unlimited analyses if you review contracts regularly. No hidden fees, cancel anytime."
+    },
+    {
+      question: "Can LegalDeep AI replace my lawyer?",
+      answer: "No—and we don't try to. LegalDeep AI helps you spot risks and understand contracts faster, so you can have more productive conversations with your lawyer (or avoid lawyer fees for simple reviews). Think of it as your first line of defense."
     }
   ];
   
@@ -82,7 +96,6 @@ const Landing = () => {
           <FeaturedSection />
           <HowItWorksSection />
           <PowerfulFeaturesSection />
-          <CompetitiveAdvantageSection />
           <TrustSection />
           {/* Show special Whop upsell for Whop users */}
           {isWhopUser && <WhopWelcomeUpsell />}
@@ -93,9 +106,6 @@ const Landing = () => {
             <TestimonialsSection />
           </div>
           
-          <div className="bg-gradient-to-br from-slate-50 to-gray-100/50">
-            <AboutSection />
-          </div>
           <div className="bg-white/90 backdrop-blur-sm">
             <FAQSection faqs={faqs} />
           </div>
