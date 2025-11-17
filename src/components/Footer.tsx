@@ -28,14 +28,13 @@ export const Footer = () => {
     }
 
     try {
-      // Send welcome email via our send-email function
-      const { data, error } = await supabase.functions.invoke('send-email', {
+      const { error } = await supabase.functions.invoke('send-email', {
         body: { 
           to: email,
           subject: "Welcome to LegalDeep AI Newsletter!",
           html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-              <h1 style="color: #2563eb; text-align: center;">Welcome to LegalDeep AI!</h1>
+              <h1 style="color: #0D9488; text-align: center;">Welcome to LegalDeep AI!</h1>
               <p>Thank you for subscribing to our newsletter.</p>
               <p>You'll now receive updates about:</p>
               <ul>
@@ -83,19 +82,20 @@ export const Footer = () => {
   };
 
   return (
-    <footer className="border-t bg-background w-full flex-shrink-0">
-      <div className="max-w-full px-3 py-4 sm:px-4 sm:py-6 md:py-8 xl:px-8 xl:py-10">
-        <div className="grid gap-3 sm:gap-4 md:gap-6 xl:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
-          <div>
-            <h3 className="mb-2 sm:mb-3 md:mb-4 text-base sm:text-lg font-semibold">Stay Connected</h3>
-            <p className="mb-2 sm:mb-3 md:mb-4 text-xs sm:text-sm text-muted-foreground">
-              Get updates on new features and releases
+    <footer className="border-t border-border/40 bg-gradient-to-br from-primary/5 via-white to-accent/5 w-full flex-shrink-0">
+      <div className="max-w-7xl mx-auto px-4 py-12 lg:py-16">
+        <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
+          {/* Newsletter Section */}
+          <div className="lg:col-span-2">
+            <h3 className="mb-4 text-lg font-bold text-foreground">Stay Connected</h3>
+            <p className="mb-4 text-sm text-muted-foreground">
+              Get updates on new features and legal tech insights
             </p>
-            <form onSubmit={handleSubscribe} className="relative">
+            <form onSubmit={handleSubscribe} className="relative max-w-md">
               <Input
                 type="email"
                 placeholder="Enter your email"
-                className="pr-12 h-8 sm:h-9 md:h-10 text-xs sm:text-sm"
+                className="pr-12 h-11"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -103,80 +103,69 @@ export const Footer = () => {
               />
               <Button
                 size="icon"
-                className="absolute right-1 top-1 h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8"
+                className="absolute right-1 top-1 h-9 w-9 bg-primary hover:bg-primary/90"
                 disabled={isLoading}
                 type="submit"
               >
-                <Send className={`h-3 w-3 sm:h-4 sm:w-4 ${isLoading ? 'animate-pulse' : ''}`} />
+                <Send className="h-4 w-4" />
               </Button>
             </form>
           </div>
-          
+
+          {/* Product Links */}
           <div>
-            <h3 className="mb-2 sm:mb-3 md:mb-4 text-base sm:text-lg font-semibold">Quick Links</h3>
-            <nav className="space-y-1 sm:space-y-2 text-xs sm:text-sm">
-              <a href="/" className="block text-muted-foreground hover:text-primary">
-                Home
-              </a>
-              <a href="/features" className="block text-muted-foreground hover:text-primary">
-                Features
-              </a>
-              <a href="/pricing" className="block text-muted-foreground hover:text-primary">
-                Pricing
-              </a>
-              <a href="/support" className="block text-muted-foreground hover:text-primary">
-                Support
-              </a>
-            </nav>
+            <h3 className="mb-4 text-sm font-semibold text-foreground uppercase tracking-wider">Product</h3>
+            <ul className="space-y-3 text-sm">
+              <li><a href="/features" className="text-muted-foreground hover:text-primary transition-colors">Features</a></li>
+              <li><a href="/pricing" className="text-muted-foreground hover:text-primary transition-colors">Pricing</a></li>
+              <li><a href="/documentation" className="text-muted-foreground hover:text-primary transition-colors">Documentation</a></li>
+              <li><a href="/api" className="text-muted-foreground hover:text-primary transition-colors">API</a></li>
+            </ul>
           </div>
-          
+
+          {/* Company Links */}
           <div>
-            <h3 className="mb-2 sm:mb-3 md:mb-4 text-base sm:text-lg font-semibold">Legal</h3>
-            <nav className="space-y-1 sm:space-y-2 text-xs sm:text-sm">
-              <a href="/terms" className="block text-muted-foreground hover:text-primary">
-                Terms & Conditions
-              </a>
-              <a href="/privacy" className="block text-muted-foreground hover:text-primary">
-                Privacy Policy
-              </a>
-              <a href="/security" className="block text-muted-foreground hover:text-primary">
-                Security
-              </a>
-            </nav>
+            <h3 className="mb-4 text-sm font-semibold text-foreground uppercase tracking-wider">Company</h3>
+            <ul className="space-y-3 text-sm">
+              <li><a href="/blog" className="text-muted-foreground hover:text-primary transition-colors">Blog</a></li>
+              <li><button onClick={scrollToFAQs} className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
+                <HelpCircle className="h-4 w-4" />
+                FAQs
+              </button></li>
+              <li><a href="/support" className="text-muted-foreground hover:text-primary transition-colors">Support</a></li>
+            </ul>
           </div>
-          
-          <div className="sm:col-span-2 lg:col-span-1">
-            <h3 className="mb-2 sm:mb-3 md:mb-4 text-base sm:text-lg font-semibold">Contact</h3>
-            <div className="space-y-1 sm:space-y-2 text-xs sm:text-sm text-muted-foreground">
-              <p className="break-all sm:break-normal">sumanthchary.business@gmail.com</p>
-              <p>+91 8125228079</p>
-            </div>
-          </div>
-          
+
+          {/* Legal Links */}
           <div>
-            <h3 className="mb-2 sm:mb-3 md:mb-4 text-base sm:text-lg font-semibold">Follow Us</h3>
-            <div className="flex space-x-2 sm:space-x-4">
-              <Button variant="ghost" size="icon" asChild className="h-8 w-8 sm:h-9 sm:w-9">
-                <a href="https://x.com/SumanthChary07" target="_blank" rel="noopener noreferrer">
-                  <Twitter className="h-3 w-3 sm:h-4 sm:w-4" />
-                </a>
-              </Button>
-              <Button variant="ghost" size="icon" asChild className="h-8 w-8 sm:h-9 sm:w-9">
-                <a href="https://www.instagram.com/sumanth_chary07" target="_blank" rel="noopener noreferrer">
-                  <Instagram className="h-3 w-3 sm:h-4 sm:w-4" />
-                </a>
-              </Button>
-              <Button variant="ghost" size="icon" asChild className="h-8 w-8 sm:h-9 sm:w-9">
-                <a href="https://www.linkedin.com/in/sumanthchary" target="_blank" rel="noopener noreferrer">
-                  <Linkedin className="h-3 w-3 sm:h-4 sm:w-4" />
-                </a>
-              </Button>
-            </div>
+            <h3 className="mb-4 text-sm font-semibold text-foreground uppercase tracking-wider">Legal</h3>
+            <ul className="space-y-3 text-sm">
+              <li><a href="/privacy" className="text-muted-foreground hover:text-primary transition-colors">Privacy Policy</a></li>
+              <li><a href="/terms" className="text-muted-foreground hover:text-primary transition-colors">Terms of Service</a></li>
+              <li><a href="/security" className="text-muted-foreground hover:text-primary transition-colors">Security</a></li>
+            </ul>
           </div>
         </div>
-        
-        <div className="mt-3 sm:mt-4 md:mt-6 xl:mt-8 border-t pt-3 sm:pt-4 md:pt-6 xl:pt-8 text-center text-xs sm:text-sm text-muted-foreground">
-          <p>© 2024 LegalAI. All rights reserved.</p>
+
+        {/* Bottom Section */}
+        <div className="mt-12 pt-8 border-t border-border/40 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-sm text-muted-foreground">
+            © {new Date().getFullYear()} LegalDeep AI. All rights reserved.
+          </p>
+          <div className="flex gap-4">
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+              <Twitter className="h-5 w-5" />
+            </a>
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+              <Linkedin className="h-5 w-5" />
+            </a>
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+              <Facebook className="h-5 w-5" />
+            </a>
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+              <Instagram className="h-5 w-5" />
+            </a>
+          </div>
         </div>
       </div>
     </footer>

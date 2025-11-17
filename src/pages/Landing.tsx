@@ -13,6 +13,8 @@ const PricingSection = lazy(() => import("@/components/blocks/pricing-section").
 const HowItWorksSection = lazy(() => import("@/components/blocks/how-it-works-section").then(module => ({ default: module.HowItWorksSection })));
 const FeaturedSection = lazy(() => import("@/components/blocks/featured-section").then(module => ({ default: module.FeaturedSection })));
 const PowerfulFeaturesSection = lazy(() => import("@/components/blocks/powerful-features-section").then(module => ({ default: module.PowerfulFeaturesSection })));
+const ComparisonSection = lazy(() => import("@/components/blocks/comparison-section").then(module => ({ default: module.ComparisonSection })));
+const FinalCTASection = lazy(() => import("@/components/blocks/final-cta-section").then(module => ({ default: module.FinalCTASection })));
 
 const Landing = () => {
   const [isWhopUser, setIsWhopUser] = useState(false);
@@ -97,18 +99,13 @@ const Landing = () => {
           <HowItWorksSection />
           <PowerfulFeaturesSection />
           <TrustSection />
+          <ComparisonSection />
           {/* Show special Whop upsell for Whop users */}
           {isWhopUser && <WhopWelcomeUpsell />}
-          <div className="bg-gradient-to-br from-gray-50 to-blue-50/50">
-            <PricingSection />
-          </div>
-          <div className="bg-white/90 backdrop-blur-sm">
-            <TestimonialsSection />
-          </div>
-          
-          <div className="bg-white/90 backdrop-blur-sm">
-            <FAQSection faqs={faqs} />
-          </div>
+          <PricingSection />
+          <TestimonialsSection />
+          <FAQSection faqs={faqs} />
+          <FinalCTASection />
         </Suspense>
       </PageLayout>
     </div>
