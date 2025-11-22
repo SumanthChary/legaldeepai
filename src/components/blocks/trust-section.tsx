@@ -58,7 +58,6 @@ export const TrustSection = () => {
                   <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary to-accent rounded-2xl mb-6 shadow-lg">
                     <item.icon className="h-8 w-8 text-primary-foreground" />
                   </div>
-                  <div className="text-3xl font-bold text-primary mb-2">{item.metric}</div>
                   <h3 className="text-lg font-semibold text-foreground mb-2">{item.title}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">{item.description}</p>
                 </div>

@@ -1,5 +1,4 @@
-
-import { Users } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { InView } from "@/components/ui/in-view";
@@ -8,7 +7,7 @@ export const CTASection = () => {
   const navigate = useNavigate();
   
   return (
-    <div className="bg-gradient-to-br from-primary via-primary to-primary/90 text-white py-8 md:py-12 lg:py-16 xl:py-24">
+    <section className="py-16 md:py-24 bg-gradient-to-br from-primary via-accent to-primary">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <InView
           variants={{
@@ -17,23 +16,25 @@ export const CTASection = () => {
           }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-3 md:mb-4 lg:mb-6">
-            Ready to Transform Your Legal Document Workflow?
-          </h2>
-          <p className="text-sm sm:text-base md:text-lg lg:text-xl mb-4 md:mb-6 lg:mb-8 opacity-90 max-w-2xl mx-auto">
-            Join thousands of legal professionals who trust our AI-powered solution
-          </p>
-          <Button
-            variant="secondary"
-            size="lg"
-            className="bg-white text-primary hover:bg-white/90 transition-all duration-300 shadow-lg hover:shadow-xl"
-            onClick={() => navigate("/pricing")}
-          >
-            Choose a Plan
-            <Users className="ml-1.5 h-3.5 w-3.5 md:ml-2 md:h-4 md:w-4" />
-          </Button>
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary-foreground mb-6">
+              Ready to Transform Your Legal Document Workflow?
+            </h2>
+            <p className="text-lg md:text-xl text-primary-foreground/90 mb-8 max-w-2xl mx-auto leading-relaxed">
+              Join thousands of legal professionals who trust our AI-powered solution
+            </p>
+            <Button
+              variant="secondary"
+              size="lg"
+              className="bg-background text-foreground hover:bg-background/90 transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105 text-lg px-8 py-6 h-auto"
+              onClick={() => navigate("/pricing")}
+            >
+              Choose a Plan
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+          </div>
         </InView>
       </div>
-    </div>
+    </section>
   );
 };

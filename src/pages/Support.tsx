@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Mail, Phone, Send } from "lucide-react";
+import { Mail, Phone, Send, MessageCircle } from "lucide-react";
 
 const Support = () => {
   const [formData, setFormData] = useState({
@@ -43,14 +43,13 @@ const Support = () => {
     }
 
     try {
-      // Send support email
       const { data, error } = await supabase.functions.invoke('send-email', {
         body: { 
           to: "sumanthchary.business@gmail.com",
           subject: `Support Request: ${formData.subject}`,
           html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-              <h1 style="color: #2563eb;">New Support Request</h1>
+              <h1 style="color: hsl(173, 80%, 40%);">New Support Request</h1>
               <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
                 <p><strong>Name:</strong> ${formData.name}</p>
                 <p><strong>Email:</strong> ${formData.email}</p>
@@ -60,9 +59,6 @@ const Support = () => {
                 <h3>Message:</h3>
                 <p style="white-space: pre-wrap;">${formData.message}</p>
               </div>
-              <p style="color: #666; font-size: 14px; margin-top: 20px;">
-                Sent from LegalDeep AI Support Form
-              </p>
             </div>
           `,
           replyTo: formData.email
@@ -71,14 +67,13 @@ const Support = () => {
 
       if (error) throw error;
 
-      // Send confirmation email to user
       await supabase.functions.invoke('send-email', {
         body: { 
           to: formData.email,
           subject: "We received your support request",
           html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-              <h1 style="color: #2563eb;">Thank you for contacting us!</h1>
+              <h1 style="color: hsl(173, 80%, 40%);">Thank you for contacting us!</h1>
               <p>Hi ${formData.name},</p>
               <p>We have received your support request and will get back to you as soon as possible.</p>
               <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
@@ -87,10 +82,6 @@ const Support = () => {
                 <p><strong>Message:</strong> ${formData.message}</p>
               </div>
               <p>Our typical response time is within 24 hours during business days.</p>
-              <p style="color: #666; font-size: 14px; margin-top: 30px;">
-                Best regards,<br>
-                The LegalDeep AI Support Team
-              </p>
             </div>
           `
         }
@@ -116,114 +107,108 @@ const Support = () => {
 
   return (
     <PageLayout>
-      <div className="bg-gradient-to-b from-background to-secondary/20 min-h-screen">
-        <div className="container mx-auto px-4 py-12 max-w-4xl">
-          <div className="text-center mb-12">
-            <h1 className="text-3xl md:text-4xl font-bold text-primary mb-4">Contact & Support</h1>
-            <p className="text-lg text-muted-foreground">Have questions or need help? We're here for you.</p>
+      <div className="bg-gradient-to-br from-background via-primary/5 to-accent/5 min-h-screen">
+        <div className="container mx-auto px-4 py-16 max-w-6xl">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-6">
+              <MessageCircle className="w-4 h-4" />
+              <span className="text-sm font-semibold">Get In Touch</span>
+            </div>
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">Contact & Support</h1>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">Have questions or need help? We're here for you.</p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
-            {/* Contact Form */}
-            <Card>
+            <Card className="shadow-xl border-border">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Send className="h-5 w-5" />
+                <CardTitle className="flex items-center gap-2 text-2xl">
+                  <Send className="h-6 w-6 text-primary" />
                   Send us a message
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-4">
-                  <div>
-                    <Input
-                      placeholder="Your Name *"
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      required
-                      disabled={isLoading}
-                    />
-                  </div>
-                  <div>
-                    <Input
-                      type="email"
-                      placeholder="Your Email *"
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      required
-                      disabled={isLoading}
-                    />
-                  </div>
-                  <div>
-                    <Input
-                      placeholder="Subject *"
-                      value={formData.subject}
-                      onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                      required
-                      disabled={isLoading}
-                    />
-                  </div>
-                  <div>
-                    <Textarea
-                      placeholder="Your message *"
-                      rows={6}
-                      value={formData.message}
-                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      required
-                      disabled={isLoading}
-                    />
-                  </div>
-                  <Button type="submit" className="w-full" disabled={isLoading}>
+                  <Input
+                    placeholder="Your Name *"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    required
+                    disabled={isLoading}
+                  />
+                  <Input
+                    type="email"
+                    placeholder="Your Email *"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    required
+                    disabled={isLoading}
+                  />
+                  <Input
+                    placeholder="Subject *"
+                    value={formData.subject}
+                    onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                    required
+                    disabled={isLoading}
+                  />
+                  <Textarea
+                    placeholder="Your message *"
+                    rows={6}
+                    value={formData.message}
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    required
+                    disabled={isLoading}
+                  />
+                  <Button type="submit" className="w-full" disabled={isLoading} size="lg">
                     {isLoading ? "Sending..." : "Send Message"}
                   </Button>
                 </form>
               </CardContent>
             </Card>
 
-            {/* Contact Info */}
             <div className="space-y-6">
-              <Card>
+              <Card className="shadow-xl border-border">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Mail className="h-5 w-5" />
+                  <CardTitle className="flex items-center gap-2 text-xl">
+                    <Mail className="h-5 w-5 text-primary" />
                     Email Support
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground mb-2">Get help via email</p>
+                  <p className="text-muted-foreground mb-3">Get help via email</p>
                   <a 
                     href="mailto:sumanthchary.business@gmail.com" 
-                    className="text-primary hover:underline font-medium"
+                    className="text-primary hover:underline font-medium text-lg"
                   >
                     sumanthchary.business@gmail.com
                   </a>
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="shadow-xl border-border">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Phone className="h-5 w-5" />
+                  <CardTitle className="flex items-center gap-2 text-xl">
+                    <Phone className="h-5 w-5 text-primary" />
                     Phone Support
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground mb-2">Call us for urgent matters</p>
-                  <p className="font-medium">+91 8125228079</p>
+                  <p className="text-muted-foreground mb-3">Call us for urgent matters</p>
+                  <p className="font-bold text-lg text-foreground">+91 8125228079</p>
                   <p className="text-sm text-muted-foreground mt-2">
                     Monday - Friday, 9 AM - 6 PM IST
                   </p>
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="shadow-xl border-border bg-gradient-to-br from-primary/5 to-accent/5">
                 <CardHeader>
-                  <CardTitle>Frequently Asked Questions</CardTitle>
+                  <CardTitle className="text-xl">Frequently Asked Questions</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground mb-4">
                     Check our FAQ section for quick answers to common questions.
                   </p>
-                  <Button variant="outline" asChild>
+                  <Button variant="outline" asChild size="lg">
                     <a href="/#faqs">View FAQs</a>
                   </Button>
                 </CardContent>
