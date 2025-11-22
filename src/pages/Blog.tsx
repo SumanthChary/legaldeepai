@@ -1,6 +1,6 @@
 import { PageLayout } from "@/components/layout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Book, Clock, User } from "lucide-react";
+import { BookOpen, Clock, User, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 
@@ -101,40 +101,50 @@ const Blog = () => {
 
   return (
     <PageLayout>
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl font-bold text-primary mb-8">Latest Articles</h1>
-          <div className="space-y-8">
-            {articles.map((article) => (
-              <Card key={article.id} className="hover:shadow-md transition-shadow">
-                <CardHeader>
-                  <CardTitle className="text-2xl">{article.title}</CardTitle>
-                  <CardDescription className="text-lg">{article.description}</CardDescription>
-                  <div className="flex items-center gap-6 text-sm text-muted-foreground mt-4">
-                    <div className="flex items-center gap-2">
-                      <User className="h-4 w-4" />
-                      {article.author}
+      <div className="bg-gradient-to-br from-background via-primary/5 to-accent/5 min-h-screen">
+        <div className="container mx-auto px-4 py-16">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-6">
+                <BookOpen className="w-4 h-4" />
+                <span className="text-sm font-semibold">Blog</span>
+              </div>
+              <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">Latest Articles</h1>
+              <p className="text-xl text-muted-foreground">Insights and best practices for legal professionals</p>
+            </div>
+
+            <div className="space-y-8">
+              {articles.map((article) => (
+                <Card key={article.id} className="hover:shadow-xl transition-all duration-300 border-border group">
+                  <CardHeader>
+                    <CardTitle className="text-2xl group-hover:text-primary transition-colors">{article.title}</CardTitle>
+                    <CardDescription className="text-lg">{article.description}</CardDescription>
+                    <div className="flex items-center gap-6 text-sm text-muted-foreground mt-4">
+                      <div className="flex items-center gap-2">
+                        <User className="h-4 w-4 text-primary" />
+                        {article.author}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Clock className="h-4 w-4 text-primary" />
+                        {article.readTime}
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Clock className="h-4 w-4" />
-                      {article.readTime}
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 whitespace-pre-line">
-                    {article.content.substring(0, 200)}...
-                  </p>
-                  <Button 
-                    variant="link" 
-                    className="mt-4 p-0 h-auto font-semibold"
-                    onClick={() => navigate(`/blog/${article.id}`)}
-                  >
-                    Read More →
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground whitespace-pre-line leading-relaxed">
+                      {article.content.substring(0, 200)}...
+                    </p>
+                    <Button 
+                      variant="link" 
+                      className="mt-4 p-0 h-auto font-semibold text-primary group-hover:gap-2 transition-all"
+                      onClick={() => navigate(`/blog/${article.id}`)}
+                    >
+                      Read More <ArrowRight className="ml-1 h-4 w-4" />
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
         </div>
       </div>

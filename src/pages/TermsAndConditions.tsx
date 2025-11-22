@@ -4,9 +4,16 @@ import { Card } from "@/components/ui/card";
 const TermsAndConditions = () => {
   return (
     <PageLayout>
-      <div className="container mx-auto px-4 py-16 max-w-4xl">
-        <h1 className="text-4xl font-bold mb-8">Terms and Conditions</h1>
-        <Card className="p-8">
+      <div className="bg-gradient-to-br from-background via-primary/5 to-accent/5 min-h-screen">
+        <div className="container mx-auto px-4 py-16 max-w-4xl">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-6">
+              <span className="text-sm font-semibold">Legal</span>
+            </div>
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">Terms and Conditions</h1>
+            <p className="text-muted-foreground">Last updated: March 2024</p>
+          </div>
+          <Card className="p-8 md:p-12 shadow-xl border-border">
           <div className="space-y-6 text-muted-foreground">
             <section>
               <h2 className="text-2xl font-semibold text-foreground mb-3">1. Acceptance of Terms</h2>
@@ -134,7 +141,8 @@ const TermsAndConditions = () => {
               <p>Last updated: {new Date().toLocaleDateString()}</p>
             </div>
           </div>
-        </Card>
+          </Card>
+        </div>
       </div>
     </PageLayout>
   );

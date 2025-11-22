@@ -5,13 +5,18 @@ import { Shield, Lock, Server, Eye, FileCheck, Users } from "lucide-react";
 const SecurityPolicy = () => {
   return (
     <PageLayout>
-      <div className="container mx-auto px-4 py-16 max-w-4xl">
-        <div className="flex items-center gap-3 mb-8">
-          <Shield className="w-10 h-10 text-primary" />
-          <h1 className="text-4xl font-bold">Security & Compliance</h1>
-        </div>
-        
-        <Card className="p-8">
+      <div className="bg-gradient-to-br from-background via-primary/5 to-accent/5 min-h-screen">
+        <div className="container mx-auto px-4 py-16 max-w-4xl">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-6">
+              <Shield className="w-4 h-4" />
+              <span className="text-sm font-semibold">Security</span>
+            </div>
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">Security & Compliance</h1>
+            <p className="text-muted-foreground">Enterprise-grade protection for your legal documents</p>
+          </div>
+          
+          <Card className="p-8 md:p-12 shadow-xl border-border">
           <div className="space-y-6 text-muted-foreground">
             <section>
               <div className="flex items-center gap-2 mb-3">
@@ -177,7 +182,8 @@ const SecurityPolicy = () => {
               <p>Last updated: {new Date().toLocaleDateString()}</p>
             </div>
           </div>
-        </Card>
+          </Card>
+        </div>
       </div>
     </PageLayout>
   );
